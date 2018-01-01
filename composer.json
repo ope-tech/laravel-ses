@@ -1,0 +1,51 @@
+{
+    "name": "oliveready7/laravel-ses",
+    "description": "Allows you to track opens, deliveries, bounces, complaints and clicked links when sending emails through Laravel and Amazon SES",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Oliver Eady",
+            "email": "oli@oliveready.com"
+        }
+    ],
+    "require": {
+        "illuminate/support": "^5.5",
+        "aws/aws-sdk-php": "^3.28",
+        "illuminate/console": "^5.5",
+        "illuminate/mail": "^5.5",
+        "illuminate/database": "5.5",
+        "ramsey/uuid": "^3.7",
+        "Nesbot/Carbon": "^1.22",
+        "illuminate/container": "^5.5",
+        "illuminate/routing": "^5.5",
+        "guzzlehttp/guzzle": "^6.3",
+        "paquettg/php-html-parser": "^1.7"
+    },
+    "require-dev": {
+        "mockery/mockery": "~1.0",
+        "orchestra/database": "~3.5",
+        "orchestra/testbench": "~3.5",
+        "phpunit/phpunit": "~6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "oliveready7\\LaravelSes\\": "src/"
+        }
+    },
+    "autoload-dev": {
+       "psr-4": {
+           "oliveready7\\LaravelSes\\Tests\\": "tests/"
+       }
+   },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "oliveready7\\LaravelSes\\LaravelSesServiceProvider"
+            ],
+            "aliases": {
+                "SesMail": "oliveready7\\LaravelSes\\SesMail"
+            }
+        }
+    }
+}

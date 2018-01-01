@@ -30,6 +30,8 @@ class TestMailable extends Mailable
      */
     public function build()
     {
-        return $this->view('LaravelSes::test');
+        return $this
+            ->from('test@oliveready.com')
+            ->view('LaravelSes::test');
     }
 }

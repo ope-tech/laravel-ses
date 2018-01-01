@@ -28,13 +28,14 @@ class SnsSetup {
         ]);
 
     }
-    public function init() {
-        $this->setupNotification('Bounce');
-        $this->setupNotification('Complaint');
-        $this->setupNotification('Delivery');
+    public function init($protocol) {
+        $this->setupNotification('Bounce', $protocol);
+        $this->setupNotification('Complaint', $protocol);
+        $this->setupNotification('Delivery', $protocol);
     }
 
-    public function setupNotification($type) {
+    public function setupNotification($type, $protocol) {
+
         $result = $this->sns->createTopic([
             'Name' => "laravel-ses-{$type}"
         ]);
@@ -44,8 +45,8 @@ class SnsSetup {
         $urlSlug = strtolower($type);
 
         $result = $this->sns->subscribe([
-            'Endpoint' => config('app.url') . "/api/laravel-ses/notification/{$urlSlug}",
-            'Protocol' => 'https',
+            'Endpoint' => config('app.url') . "/laravel-ses/notification/{$urlSlug}",
+            'Protocol' => $protocol,
             'TopicArn' => $topicArn
         ]);
 
@@ -65,7 +66,7 @@ class SnsSetup {
     }
 
     public function notificationIsSet($type) {
-        $result = $this->ses->getIdentityNotificationAttributes(['Identities' => [config('mail.ses.domain')]]);
+        $result = $this->ses->getIdentityNotificationAttributes(['Identities' => [config('services.ses.domain')]]);
         return isset($result['NotificationAttributes'][config('services.ses.domain')]["{$type}Topic"]);
     }
 }

@@ -10,7 +10,7 @@ class SetupSNS extends Command
      *
      * @var string
      */
-    protected $signature = 'setup:sns';
+    protected $signature = 'setup:sns {--http}';
 
     /**
      * The console command description.
@@ -36,7 +36,8 @@ class SetupSNS extends Command
      */
     public function handle()
     {
+        $protocol = $this->option('http') ? 'http' : 'https';
         $snsSetup = new SnsSetup;
-        $snsSetup->init();
+        $snsSetup->init($protocol);
     }
 }

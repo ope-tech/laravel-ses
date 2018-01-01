@@ -9,7 +9,6 @@ Install via composer
 
 Add to composer.json
 ```
-
 "repositories": [
     {
         "type": "git",
@@ -22,11 +21,9 @@ Add to composer.json
     "oliveready7/laravel-ses": "dev-master"
 }
 ```
-
 Make sure your app/config/services.php has SES values set
 
 ```
-
 'ses' => [
     'key' => your_ses_key,
     'secret' => your_ses_secret,
@@ -35,7 +32,7 @@ Make sure your app/config/services.php has SES values set
 ],
 ```
 
-Important to note that if you're using a IAM, it needs access to
+Important to note that if you're using an IAM, it needs access to
 SNS (for deliveries, bounces and complaints) as well as SES
 
 Make sure your mail driver located in app/config/mail.php is set to 'ses'
@@ -43,21 +40,18 @@ Make sure your mail driver located in app/config/mail.php is set to 'ses'
 Run command to setup Amazon email notifications
 
 ```
-
 php artisan setup:sns
 ```
 
 Publish public assets
 
 ```
-
 php artisan vendor:publish --tag=public --force
 ```
 
 Lastly migrate package's database tables
 
 ```
-
 php artisan migrate
 ```
 
@@ -67,7 +61,6 @@ php artisan migrate
 To send an email with all tracking enabled
 
 ```
-
 SesMail::enableAllTracking()
     ->to('hello@example.com')
     ->send(new Mailable);
@@ -98,7 +91,6 @@ SesMail::enableDeliveryTracking();
 The batching option gives you the chance to group emails, so you can get the results for a specific group
 
 ```
-
 SesMail::enableAllTracking()
     ->setBatch('welcome_emails')
     ->to('hello@example.com')
@@ -108,7 +100,6 @@ SesMail::enableAllTracking()
 You can manipulate the results manually by querying the database. Or you can use functions that come with the package.
 
 ```
-
 oliveready7\LaravelSes\Models\SentEmail::statsForBatch('welcome_emails');
 
 //example result
@@ -131,8 +122,13 @@ oliveready7\LaravelSes\Models\SentEmail::statsForBatch('welcome_emails');
 ```
 
 Send count = number of emails that were attempted
+
 Deliveries = number of emails that were delivered
+
 Opens = number of emails that were opened
+
 Complaints = number of people that put email into spam
+
 Click throughs = number of people that clicked at least one link in your email
+
 Link Popularity = number of unique clicks on each link in the email, ordered by the most clicked.

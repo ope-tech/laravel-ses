@@ -9,6 +9,23 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 
 class ComplaintController extends Controller {
+    public function hasComplained($email) {
+        $emailComplaints =  EmailComplaint::whereEmail($email)->get();
+
+        if($emailComplaints->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'complained' => false
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'complained' => true,
+            'complaints' => $emailComplaints
+        ]);
+    }
+
     public function complaint() {
         $result = json_decode(request()->getContent());
 
@@ -43,7 +60,7 @@ class ComplaintController extends Controller {
                 'complained_at' =>  Carbon::parse($message->mail->timestamp)
             ]);
         }catch(ModelNotFoundException $e) {
-        
+
         }
     }
 }

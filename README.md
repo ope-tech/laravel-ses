@@ -164,3 +164,25 @@ Data always has the 'success' key indicating whether the request was successful 
         ]
     }
 ```
+
+```GET /laravel-ses/api/has/complained/{email}```
+
+#### Parameters - none
+
+#### Response
+
+```json
+    {
+        "success": "true",
+        "complained": "true",
+        "complaints": [
+            {
+                "message_id":"8b",
+                "sent_email_id": "23",
+                "type": "abuse",
+                "email": "wanyama@hotmail.com",
+                "bounced_at": "2018-01-02 09:12:00"
+            }
+        ]
+    }
+```

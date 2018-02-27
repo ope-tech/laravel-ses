@@ -132,3 +132,35 @@ Complaints = number of people that put email into spam
 Click throughs = number of people that clicked at least one link in your email
 
 Link Popularity = number of unique clicks on each link in the email, ordered by the most clicked.
+
+### API INFO
+
+Data always has the 'success' key indicating whether the request was successful or not
+
+400 bad request = validation for the endpoint failed
+
+404 = something in your query was not found
+
+422 = any other error that might have occurred
+
+```GET /laravel-ses/api/has/bounced/{email}```
+
+#### Parameters - none
+
+#### Response
+
+```json
+    {
+        "success": "true",
+        "bounced": "true",
+        "bounces": [
+            {
+                "message_id":"7a",
+                "sent_email_id": "1",
+                "type": "Permanent",
+                "email": "harrykane@gmail.com",
+                "bounced_at": "2018-01-01 12:00:00"
+            }
+        ]
+    }
+```

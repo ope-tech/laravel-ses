@@ -11,6 +11,25 @@ use GuzzleHttp\Client;
 
 
 class BounceController extends Controller {
+
+    public function hasBounced($email) {
+        $emailBounces =  EmailBounce::whereEmail($email)->get();
+
+        if($emailBounces->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'bounced' => false
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'bounced' => true,
+            'bounces' => $emailBounces
+        ]);
+    }
+
+
     public function bounce() {
         $result = json_decode(request()->getContent());
 

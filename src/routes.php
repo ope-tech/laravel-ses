@@ -10,4 +10,6 @@ Route::prefix('/laravel-ses')->group(function () {
 
     Route::get('beacon/{beaconIdentifier}', 'oliveready7\LaravelSes\Controllers\OpenController@open');
     Route::get('link/{linkId}', 'oliveready7\LaravelSes\Controllers\LinkController@click');
+
+    Route::get('api/has/bounced/{email}', 'oliveready7\LaravelSes\Controllers\BounceController@hasBounced');
 });

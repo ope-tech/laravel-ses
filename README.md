@@ -186,3 +186,27 @@ Data always has the 'success' key indicating whether the request was successful 
         ]
     }
 ```
+
+```GET /laravel-ses/api/stats/batch/{batchName}```
+
+#### Parameters - none
+
+#### Response
+
+```json
+    {
+        "success": "true",
+        "data": {
+            "success":true,
+            "data": {
+                "send_count":0,
+                "deliveries":0,
+                "opens":0,
+                "bounces":0,
+                "complaints":0,
+                "click_throughs":0,
+                "link_popularity":[]
+            }
+        }
+    }
+```

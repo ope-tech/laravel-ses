@@ -100,7 +100,7 @@ SesMail::enableAllTracking()
 You can manipulate the results manually by querying the database. Or you can use functions that come with the package.
 
 ```
-oliveready7\LaravelSes\Models\SentEmail::statsForBatch('welcome_emails');
+SesMail::statsForBatch('welcome_emails');
 
 //example result
 [

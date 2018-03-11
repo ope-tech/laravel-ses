@@ -46,6 +46,10 @@ class SesMailer extends Mailer {
         return $sentEmail;
     }
 
+    public function statsForBatch($batchName) {
+        return SentEmail::statsForBatch($batchName);
+    }
+
     public function setupTracking($emailBody, SentEmail $sentEmail) {
         $mailProcessor = new MailProcessor($sentEmail, $emailBody);
 

@@ -128,6 +128,25 @@ class BatchEmailTest extends FeatureTestCase {
             ])
         ], SentEmail::statsForBatch('welcome_emails'));
 
+        //check stats can be gotten with Facade as well
+
+        $this->assertArraySubset([
+            "send_count" => 8,
+            "deliveries" => 7,
+            "opens" => 4,
+            "bounces" => 1,
+            "complaints" => 2,
+            "click_throughs" => 3,
+            "link_popularity" => collect([
+                "https://google.com" => [
+                    "clicks" => 3
+                ],
+                "https://superficial.io" => [
+                    "clicks" => 1
+                ]
+            ])
+        ], SesMail::statsForBatch('welcome_emails'));
+
 
     }
 }

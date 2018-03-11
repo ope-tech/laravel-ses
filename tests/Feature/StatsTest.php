@@ -44,7 +44,7 @@ class StatsTest extends FeatureTestCase
             ]);
 
         //batch that has no data
-        $l = $this->get('laravel-ses/api/stats/batch/lukaku')
+        $this->get('laravel-ses/api/stats/batch/lukaku')
             ->assertStatus(200)
             ->assertJson([
                 'success' => true,
@@ -59,7 +59,6 @@ class StatsTest extends FeatureTestCase
                     ]
                 ]
             ]);
-        dd($l->getContent());
     }
 
 

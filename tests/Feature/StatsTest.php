@@ -7,6 +7,7 @@ use oliveready7\LaravelSes\SesMail;
 use oliveready7\LaravelSes\Models\SentEmail;
 use oliveready7\LaravelSes\Models\EmailOpen;
 use oliveready7\LaravelSes\Models\EmailLink;
+use oliveready7\LaravelSes\Models\EmailComplaint;
 use oliveready7\LaravelSes\Mocking\TestMailable;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -18,6 +19,167 @@ class StatsTest extends FeatureTestCase
         $this->setupBasicCampaign();
     }
 
+    public function testStatsForAnEmailEndPoint() {
+        // make sure stats are correct for default campaingn
+        $this->get('laravel-ses/api/stats/email/something@gmail.com')
+            ->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+                'data' => [
+                    'counts' => [
+                        "sent_emails" => 1,
+                        "deliveries" => 1,
+                        "opens" => 1,
+                        "bounces" => 0,
+                        "complaints" => 0,
+                        "click_throughs" => 1
+                    ],
+                    'data' => [
+                        'sent_emails' => [
+                            [
+                                "email" => "something@gmail.com",
+                                "batch" => "welcome_emails"
+                            ]
+                        ],
+                        'deliveries' => [
+                            [
+                                "email" => "something@gmail.com",
+                                "batch" => "welcome_emails"
+                            ]
+                        ],
+                        'click_throughs' => [
+                            [
+                                "sent_email_id" => "1",
+                                'original_url' => "https://google.com"
+                            ],
+                            [
+                                "sent_email_id" => "1",
+                                "original_url" => "https://superficial.io",
+                            ]
+                        ]
+
+                    ]
+                ]
+            ]);
+
+            // add some more campaigns
+            SesMail::enableAllTracking()
+                ->setBatch('win_back')
+                ->to("something@gmail.com")
+                ->send(new TestMailable());
+
+            SesMail::enableAllTracking()
+                ->setBatch('june_newsletter')
+                ->to("something@gmail.com")
+                ->send(new TestMailable());
+
+
+            $messageId  = SentEmail::whereEmail('something@gmail.com')->whereBatch('win_back')->first()->message_id;
+            $fakeJson = json_decode($this->generateBounceJson($messageId, 'something@gmail.com'));
+            $this->json('POST', 'laravel-ses/notification/bounce', (array)$fakeJson);
+
+            $messageId = SentEmail::whereEmail('something@gmail.com')->whereBatch('win_back')->first()->message_id;
+            $fakeJson = json_decode($this->generateDeliveryJson($messageId, 'something@gmail.com'));
+            $this->json('POST','/laravel-ses/notification/delivery',(array)$fakeJson);
+
+            $messageId  = SentEmail::whereEmail('something@gmail.com')->whereBatch('win_back')->first()->message_id;
+            $fakeJson = json_decode($this->generateComplaintJson($messageId, 'something@gmail.com'));
+            $this->json('POST', 'laravel-ses/notification/complaint', (array)$fakeJson);
+
+            $l = $this->get('laravel-ses/api/stats/email/something@gmail.com');
+
+            $links = SentEmail::whereEmail('something@gmail.com')
+                ->whereBatch('win_back')
+                ->first()
+                ->emailLinks;
+
+
+            $linkId = $links->first()->link_identifier;
+            $this->get("https://laravel-ses.com/laravel-ses/link/$linkId");
+
+            $j = $this->get('laravel-ses/api/stats/email/something@gmail.com')
+                ->assertStatus(200)
+                ->assertJson([
+                    'success' => true,
+                    'data' => [
+                        'counts' => [
+                            "sent_emails" => 3,
+                            "deliveries" => 2,
+                            "opens" => 1,
+                            "bounces" => 1,
+                            "complaints" => 1,
+                            "click_throughs" => 2
+                        ],
+                        'data' => [
+                            'sent_emails' => [
+                                [
+                                    "email" => "something@gmail.com",
+                                    "batch" => "welcome_emails"
+                                ],
+                                [
+                                    "email" => "something@gmail.com",
+                                    "batch" => 'win_back'
+                                ],
+                                [
+                                    "email" => "something@gmail.com",
+                                    "batch" => 'june_newsletter'
+                                ]
+                            ],
+                            'deliveries' => [
+                                [
+                                    "email" => "something@gmail.com",
+                                    "batch" => "welcome_emails"
+                                ],
+                                [
+                                    "email" => "something@gmail.com",
+                                    "batch" => "win_back"
+                                ]
+                            ],
+                            'click_throughs' => [
+                                [
+                                    "sent_email_id" => "1",
+                                    'original_url' => "https://google.com",
+                                    "batch" => 'welcome_emails'
+                                ],
+                                [
+                                    "sent_email_id" => "1",
+                                    "original_url" => "https://superficial.io",
+                                    "batch" => 'welcome_emails'
+                                ],
+                                [
+                                    "original_url" => "https://google.com",
+                                    "batch" => 'win_back'
+                                ]
+                            ]
+
+                        ]
+                    ],
+
+                ]);
+            $this->get('laravel-ses/api/stats/email/does@notexist.com')
+                ->assertStatus(200)
+                ->assertJson([
+                    'success' => true,
+                    'data' => [
+                        'counts' => [
+                            "sent_emails" => 0,
+                            "deliveries" => 0,
+                            "opens" => 0,
+                            "bounces" => 0,
+                            "complaints" => 0,
+                            "click_throughs" => 0
+                        ],
+                        'data' => [
+                            "sent_emails" => [],
+                            "deliveries" => [],
+                            "opens" => [],
+                            "bounces" => [],
+                            "complaints" => [],
+                            "click_throughs" => [],
+                        ]
+                    ]
+                ]);
+    }
 
     public function testStatsForBatchEndPoint() {
         //stats with data

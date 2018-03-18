@@ -14,4 +14,5 @@ Route::prefix('/laravel-ses')->group(function () {
     Route::get('api/has/bounced/{email}', 'oliveready7\LaravelSes\Controllers\BounceController@hasBounced');
     Route::get('api/has/complained/{email}', 'oliveready7\LaravelSes\Controllers\ComplaintController@hasComplained');
     Route::get('api/stats/batch/{name}', 'oliveready7\LaravelSes\Controllers\StatsController@statsForBatch');
+    Route::get('api/stats/email/{email}', 'oliveready7\LaravelSes\Controllers\StatsController@statsForEmail');
 });

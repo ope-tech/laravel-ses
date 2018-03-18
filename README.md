@@ -210,3 +210,188 @@ Data always has the 'success' key indicating whether the request was successful 
         }
     }
 ```
+
+```GET /laravel-ses/api/stats/email/{email}```
+
+#### Parameters - none
+
+#### Response
+
+```json
+{
+"success": true,
+"data": {
+    "counts": {
+        "sent_emails": 3,
+        "deliveries": 2,
+        "opens": 1,
+        "bounces": 1,
+        "complaints": 1,
+        "click_throughs": 2
+    },
+    "data": {
+        "sent_emails": [
+            {
+                "id": 1,
+                "message_id": "d3e2028a324fde23363ec3a073ecd436@swift.generated",
+                "email": "something@gmail.com",
+                "batch": "welcome_emails",
+                "sent_at": "2018-03-18 10:28:26",
+                "delivered_at": "2017-08-25 07:58:40",
+                "complaint_tracking": "1",
+                "delivery_tracking": "1",
+                "bounce_tracking": "1",
+                "created_at": "2018-03-18 10:28:26",
+                "updated_at": "2018-03-18 10:28:26"
+            },
+            {
+                "id": 9,
+                "message_id": "b623bf23064c088fa044a58f22ddacad@swift.generated",
+                "email": "something@gmail.com",
+                "batch": "win_back",
+                "sent_at": "2018-03-18 10:28:26",
+                "delivered_at": "2017-08-25 07:58:40",
+                "complaint_tracking": "1",
+                "delivery_tracking": "1",
+                "bounce_tracking": "1",
+                "created_at": "2018-03-18 10:28:26",
+                "updated_at": "2018-03-18 10:28:26"
+            },
+            {
+                "id": 10,
+                "message_id": "ec100dcd13ce91b6b28002173564d1b9@swift.generated",
+                "email": "something@gmail.com",
+                "batch": "june_newsletter",
+                "sent_at": "2018-03-18 10:28:26",
+                "delivered_at": null,
+                "complaint_tracking": "1",
+                "delivery_tracking": "1",
+                "bounce_tracking": "1",
+                "created_at": "2018-03-18 10:28:26",
+                "updated_at": "2018-03-18 10:28:26"
+            }
+        ],
+        "deliveries": [
+            {
+                "id": 1,
+                "message_id": "d3e2028a324fde23363ec3a073ecd436@swift.generated",
+                "email": "something@gmail.com",
+                "batch": "welcome_emails",
+                "sent_at": "2018-03-18 10:28:26",
+                "delivered_at": "2017-08-25 07:58:40",
+                "complaint_tracking": "1",
+                "delivery_tracking": "1",
+                "bounce_tracking": "1",
+                "created_at": "2018-03-18 10:28:26",
+                "updated_at": "2018-03-18 10:28:26"
+            },
+            {
+                "id": 9,
+                "message_id": "b623bf23064c088fa044a58f22ddacad@swift.generated",
+                "email": "something@gmail.com",
+                "batch": "win_back",
+                "sent_at": "2018-03-18 10:28:26",
+                "delivered_at": "2017-08-25 07:58:40",
+                "complaint_tracking": "1",
+                "delivery_tracking": "1",
+                "bounce_tracking": "1",
+                "created_at": "2018-03-18 10:28:26",
+                "updated_at": "2018-03-18 10:28:26"
+            }
+        ],
+        "opens": [
+            {
+                "id": 1,
+                "sent_email_id": "1",
+                "email": "something@gmail.com",
+                "batch": "welcome_emails",
+                "beacon_identifier": "bfd935de-2219-4f86-9bd3-24afd06cc37a",
+                "url": "https://laravel-ses.com/laravel-ses/beacon/bfd935de-2219-4f86-9bd3-24afd06cc37a",
+                "opened_at": "2018-03-18 10:28:26",
+                "created_at": "2018-03-18 10:28:26",
+                "updated_at": "2018-03-18 10:28:26"
+            }
+        ],
+        "bounces": [
+            {
+                "id": 3,
+                "message_id": "b623bf23064c088fa044a58f22ddacad@swift.generated",
+                "sent_email_id": "9",
+                "type": "abuse",
+                "email": "something@gmail.com",
+                "complained_at": "2017-08-25 07:58:39",
+                "created_at": "2018-03-18 10:28:26",
+                "updated_at": "2018-03-18 10:28:26"
+            }
+        ],
+        "complaints": [
+            {
+                "id": 3,
+                "message_id": "b623bf23064c088fa044a58f22ddacad@swift.generated",
+                "sent_email_id": "9",
+                "type": "abuse",
+                "email": "something@gmail.com",
+                "complained_at": "2017-08-25 07:58:39",
+                "created_at": "2018-03-18 10:28:26",
+                "updated_at": "2018-03-18 10:28:26"
+            }
+        ],
+        "click_throughs": [
+            {
+                "id": 1,
+                "link_identifier": "0f14e25d-4712-4a9a-be6b-b190dc1a31b3",
+                "sent_email_id": "1",
+                "original_url": "https://google.com",
+                "batch": "welcome_emails",
+                "clicked": "1",
+                "click_count": "1",
+                "created_at": "2018-03-18 10:28:26",
+                "updated_at": "2018-03-18 10:28:26",
+                "message_id": "d3e2028a324fde23363ec3a073ecd436@swift.generated",
+                "email": "something@gmail.com",
+                "sent_at": "2018-03-18 10:28:26",
+                "delivered_at": "2017-08-25 07:58:40",
+                "complaint_tracking": "1",
+                "delivery_tracking": "1",
+                "bounce_tracking": "1"
+            },
+            {
+                "id": 1,
+                "link_identifier": "c7933d15-8e22-41e7-9074-e327ee02cf1a",
+                "sent_email_id": "1",
+                "original_url": "https://superficial.io",
+                "batch": "welcome_emails",
+                "clicked": "1",
+                "click_count": "1",
+                "created_at": "2018-03-18 10:28:26",
+                "updated_at": "2018-03-18 10:28:26",
+                "message_id": "d3e2028a324fde23363ec3a073ecd436@swift.generated",
+                "email": "something@gmail.com",
+                "sent_at": "2018-03-18 10:28:26",
+                "delivered_at": "2017-08-25 07:58:40",
+                "complaint_tracking": "1",
+                "delivery_tracking": "1",
+                "bounce_tracking": "1"
+            },
+            {
+                "id": 9,
+                "link_identifier": "be2d0bc9-87b7-48cc-8b57-6b714bfc9d48",
+                "sent_email_id": "9",
+                "original_url": "https://google.com",
+                "batch": "win_back",
+                "clicked": "1",
+                "click_count": "1",
+                "created_at": "2018-03-18 10:28:26",
+                "updated_at": "2018-03-18 10:28:26",
+                "message_id": "b623bf23064c088fa044a58f22ddacad@swift.generated",
+                "email": "something@gmail.com",
+                "sent_at": "2018-03-18 10:28:26",
+                "delivered_at": "2017-08-25 07:58:40",
+                "complaint_tracking": "1",
+                "delivery_tracking": "1",
+                "bounce_tracking": "1"
+            }
+        ]
+    }
+}
+```

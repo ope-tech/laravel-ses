@@ -24,6 +24,10 @@ class SentEmail extends Model
         return $this->hasMany('oliveready7\LaravelSes\Models\EmailLink');
     }
 
+    public function emailBounce() {
+        return $this->hasOne('oliveready7\LaravelSes\Models\EmailBounce');
+    }
+
     public static function numberSentForBatch($batchName) {
         return self::whereBatch($batchName)
             ->count();

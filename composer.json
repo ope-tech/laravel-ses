@@ -10,15 +10,15 @@
         }
     ],
     "require": {
-        "illuminate/support": "^5.5",
+        "illuminate/support": "5.5.*",
         "aws/aws-sdk-php": "^3.28",
-        "illuminate/console": "^5.5",
-        "illuminate/mail": "^5.5",
-        "illuminate/database": "^5.5",
+        "illuminate/console": "5.5.*",
+        "illuminate/mail": "5.5.*",
+        "illuminate/database": "5.5.*",
         "ramsey/uuid": "^3.7",
         "Nesbot/Carbon": "^1.22",
-        "illuminate/container": "^5.5",
-        "illuminate/routing": "^5.5",
+        "illuminate/container": "5.5.*",
+        "illuminate/routing": "5.5.*",
         "guzzlehttp/guzzle": "^6.3",
         "paquettg/php-html-parser": "^1.7"
     },

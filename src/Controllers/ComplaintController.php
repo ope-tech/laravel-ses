@@ -2,13 +2,13 @@
 namespace oliveready7\LaravelSes\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use Psr\Http\Message\ServerRequestInterface;
 use oliveready7\LaravelSes\Models\SentEmail;
 use oliveready7\LaravelSes\Models\EmailComplaint;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 
-class ComplaintController extends Controller {
+class ComplaintController extends BaseController {
     public function hasComplained($email) {
         $emailComplaints =  EmailComplaint::whereEmail($email)->get();
 
@@ -26,7 +26,9 @@ class ComplaintController extends Controller {
         ]);
     }
 
-    public function complaint() {
+    public function complaint(ServerRequestInterface $request) {
+        $this->validateSns($request);
+
         $result = json_decode(request()->getContent());
 
         //if amazon is trying to confirm the subscription

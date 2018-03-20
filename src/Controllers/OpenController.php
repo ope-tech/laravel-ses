@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Routing\Controller;
 use Carbon\Carbon;
 
-class OpenController extends Controller
+class OpenController extends BaseController
 {
     public function open($beaconIdentifier) {
         try {

@@ -2,15 +2,18 @@
 namespace oliveready7\LaravelSes\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use Psr\Http\Message\ServerRequestInterface;
 use oliveready7\LaravelSes\Models\SentEmail;
 use oliveready7\LaravelSes\Models\EmailBounce;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use Aws\Sns\Message;
+use Aws\Sns\MessageValidator;
+use Aws\Sns\Exception\InvalidSnsMessageException;
 
 
-class BounceController extends Controller {
+class BounceController extends BaseController {
 
     public function hasBounced($email) {
         $emailBounces =  EmailBounce::whereEmail($email)->get();
@@ -30,7 +33,9 @@ class BounceController extends Controller {
     }
 
 
-    public function bounce() {
+    public function bounce(ServerRequestInterface $request) {
+        $this->validateSns($request);
+
         $result = json_decode(request()->getContent());
 
         //if amazon is trying to confirm the subscription

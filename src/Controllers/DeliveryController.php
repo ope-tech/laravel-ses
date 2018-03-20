@@ -2,15 +2,18 @@
 namespace oliveready7\LaravelSes\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use Psr\Http\Message\ServerRequestInterface;
 use oliveready7\LaravelSes\Models\SentEmail;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 
 
-class DeliveryController extends Controller {
-    public function delivery() {
+class DeliveryController extends BaseController {
+    public function delivery(ServerRequestInterface $request) {
+
+        $this->validateSns($request);
+
         $result = json_decode(request()->getContent());
 
         //if amazon is trying to confirm the subscription

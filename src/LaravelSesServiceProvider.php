@@ -24,6 +24,11 @@ class LaravelSesServiceProvider extends ServiceProvider {
            __DIR__.'/Assets' => public_path('laravel-ses'),
         ], 'public');
 
+        $this->publishes([
+            __DIR__.'/Config/laravelses.php' => config_path('laravelses.php')
+        ], 'config');
+
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 SetupSns::class
@@ -38,6 +43,10 @@ class LaravelSesServiceProvider extends ServiceProvider {
      */
     public function register()
     {
+        $this->mergeConfigFrom(
+           __DIR__.'/Config/laravelses.php', 'laravelses'
+       );
+
         $this->registerIlluminateMailer();
     }
 

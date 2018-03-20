@@ -4,7 +4,7 @@ namespace oliveready7\LaravelSes\Controllers;
 use Illuminate\Routing\Controller;
 use SesMail;
 
-class StatsController extends Controller
+class StatsController extends BaseController
 {
     public function statsForBatch($batchName) {
         return ['success' => true, 'data' => SesMail::statsForBatch($batchName)];

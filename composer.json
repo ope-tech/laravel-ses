@@ -20,7 +20,10 @@
         "illuminate/container": "5.5.*",
         "illuminate/routing": "5.5.*",
         "guzzlehttp/guzzle": "^6.3",
-        "paquettg/php-html-parser": "^1.7"
+        "paquettg/php-html-parser": "^1.7",
+        "aws/aws-php-sns-message-validator": "^1.4",
+        "symfony/psr-http-message-bridge": "^1.0",
+        "zendframework/zend-diactoros": "^1.7"
     },
     "require-dev": {
         "mockery/mockery": "~1.0",

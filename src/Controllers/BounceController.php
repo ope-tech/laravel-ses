@@ -8,9 +8,6 @@ use oliveready7\LaravelSes\Models\EmailBounce;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use Aws\Sns\Message;
-use Aws\Sns\MessageValidator;
-use Aws\Sns\Exception\InvalidSnsMessageException;
 
 
 class BounceController extends BaseController {

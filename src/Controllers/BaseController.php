@@ -3,6 +3,9 @@
 namespace oliveready7\LaravelSes\Controllers;
 use Illuminate\Routing\Controller;
 use Psr\Http\Message\ServerRequestInterface;
+use Aws\Sns\Message;
+use Aws\Sns\MessageValidator;
+use Aws\Sns\Exception\InvalidSnsMessageException;
 
 class BaseController extends Controller
 {

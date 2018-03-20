@@ -55,6 +55,14 @@ Lastly migrate package's database tables
 php artisan migrate
 ```
 
+Optionally you can publish the package's config (laravelses.php)
+
+```
+php artisan vendor:publish --tag=config
+```
+
+Config Options
+- aws_sns_validator - whether the package uses AWS's SNS validator for inbound SNS requests. Default = false
 
 ## Usage
 
@@ -132,6 +140,8 @@ Complaints = number of people that put email into spam
 Click throughs = number of people that clicked at least one link in your email
 
 Link Popularity = number of unique clicks on each link in the email, ordered by the most clicked.
+
+
 
 ### API INFO
 

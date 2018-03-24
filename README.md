@@ -37,7 +37,9 @@ SNS (for deliveries, bounces and complaints) as well as SES
 
 Make sure your mail driver located in app/config/mail.php is set to 'ses'
 
-Run command to setup Amazon email notifications
+Run command to setup Amazon email notifications.
+
+If your application uses the http protocol instead of https add the --http flag to this command
 
 ```
 php artisan setup:sns

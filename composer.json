@@ -3,10 +3,19 @@
     "description": "Allows you to track opens, deliveries, bounces, complaints and clicked links when sending emails through Laravel and Amazon SES",
     "type": "library",
     "license": "MIT",
+    "keywords": [
+        "Laravel",
+        "SES",
+        "Amazon",
+        "Email",
+        "Amazon Simple Email Service",
+        "Email Marketing",
+        "Email Tracking"
+    ],
     "authors": [
         {
             "name": "Oliver Eady",
-            "email": "oli@oliveready.com"
+            "email": "oliveready7@gmail.com"
         }
     ],
     "require": {

@@ -257,7 +257,7 @@ class StatsTest extends FeatureTestCase
             "complaints" => 0,
             "click_throughs" => 0,
             "link_popularity" => new Collection()
-        ], SentEmail::statsForBatch('welcome_emails'));
+        ], SesMail::statsForBatch('welcome_emails'));
 
         //deliver all emails apart from bounced email
         foreach ($emails as $email) {

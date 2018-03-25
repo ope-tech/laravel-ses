@@ -42,7 +42,7 @@ class BatchEmailTest extends FeatureTestCase
             "complaints" => 0,
             "click_throughs" => 0,
             "link_popularity" => new Collection()
-        ], SentEmail::statsForBatch('welcome_emails'));
+        ], SesMail::statsForBatch('welcome_emails'));
 
         //deliver all emails apart from bounced email
         foreach ($emails as $email) {
@@ -128,7 +128,7 @@ class BatchEmailTest extends FeatureTestCase
                     "clicks" => 1
                 ]
             ])
-        ], SentEmail::statsForBatch('welcome_emails'));
+        ], SesMail::statsForBatch('welcome_emails'));
 
         //check stats can be gotten with Facade as well
 

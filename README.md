@@ -9,17 +9,7 @@ Install via composer
 
 Add to composer.json
 ```
-"repositories": [
-    {
-        "type": "git",
-        "url": "git@github.com:oliveready7/laravel-ses.git"
-    }
-],
-
-
-"require": {
-    "oliveready7/laravel-ses": "dev-master"
-}
+composer require oliveready7/laravel-ses
 ```
 Make sure your app/config/services.php has SES values set
 

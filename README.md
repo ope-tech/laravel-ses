@@ -1,5 +1,5 @@
 # laravel-ses
-A Laravel Package that allows you to get simple sending statistics for emails you send through SES, including deliveries, opens, bounces, complaints and link tracking
+A Laravel 5.5+ Package that allows you to get simple sending statistics for emails you send through SES, including deliveries, opens, bounces, complaints and link tracking
 
 ### This package is still in early development
 

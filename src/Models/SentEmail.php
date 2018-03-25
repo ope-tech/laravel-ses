@@ -113,18 +113,4 @@ class SentEmail extends Model
             })
             ->sortByDesc('clicks');
     }
-
-
-    public static function statsForBatch($batchName)
-    {
-        return [
-            'send_count' => self::numberSentForBatch($batchName),
-            'deliveries' => self::deliveriesForBatch($batchName),
-            'opens' => self::opensForBatch($batchName),
-            'bounces' => self::bouncesForBatch($batchName),
-            'complaints' => self::complaintsForBatch($batchName),
-            'click_throughs' => self::getAmountOfUsersThatClickedAtLeastOneLink($batchName),
-            'link_popularity' => self::getLinkPopularityOrder($batchName)
-        ];
-    }
 }

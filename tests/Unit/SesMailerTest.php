@@ -1,27 +1,30 @@
 <?php
 
 namespace oliveready7\LaravelSes\Tests\Unit;
+
 use SesMail;
 use oliveready7\LaravelSes\Mocking\TestMailable;
 use oliveready7\LaravelSes\Exceptions\TooManyEmails;
 
-class SesMailerTest extends UnitTestCase {
-
-    public function test_exception_is_thrown_when_trying_to_send_to_more_than_one_person() {
+class SesMailerTest extends UnitTestCase
+{
+    public function testExceptionIsThrownWhenTryingToSendToMoreThanOnePerson()
+    {
         SesMail::fake();
         $mail = new TestMailable();
         $exceptionThrown = false;
 
         try {
             SesMail::to(['oliveready@gmail.com', 'something@whatever.com'])->send($mail);
-        }catch(TooManyEmails $e){
+        } catch (TooManyEmails $e) {
             $exceptionThrown = true;
         }
 
         $this->assertTrue($exceptionThrown);
     }
 
-    public function test_tracking_settings_are_set_correctly() {
+    public function testTrackingSettingsAreSetCorrectly()
+    {
         SesMail::enableOpenTracking()
             ->enableLinkTracking()
             ->enableBounceTracking();

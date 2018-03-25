@@ -12,9 +12,8 @@ use oliveready7\LaravelSes\Models\EmailComplaint;
 use oliveready7\LaravelSes\Models\EmailOpen;
 use Carbon\Carbon;
 
-
-class SesMailer extends Mailer {
-
+class SesMailer extends Mailer
+{
     private $openTracking = false;
     private $linkTracking = false;
     private $bounceTracking = false;
@@ -22,8 +21,8 @@ class SesMailer extends Mailer {
     private $deliveryTracking = false;
     private $batch;
 
-    protected function sendSwiftMessage($message) {
-
+    protected function sendSwiftMessage($message)
+    {
         $sentEmail = $this->initMessage($message); //adds database record for the email
         $newBody = $this->setupTracking($message->getBody(), $sentEmail); //parses email body and adds tracking functionality
         $message->setBody($newBody); //sets the new parsed body as email body
@@ -32,10 +31,12 @@ class SesMailer extends Mailer {
     }
 
     //this will be called every time
-    public function initMessage($message) {
+    public function initMessage($message)
+    {
         //open tracking etc won't work if emails are sent to more than one recepient at a time
-        if(sizeOf($message->getTo()) > 1)
+        if (sizeOf($message->getTo()) > 1) {
             throw new TooManyEmails("Tried to send to too many emails only one email may be set");
+        }
 
         $sentEmail = SentEmail::create([
             'message_id' => $message->getId(),
@@ -50,11 +51,13 @@ class SesMailer extends Mailer {
         return $sentEmail;
     }
 
-    public function statsForBatch($batchName) {
+    public function statsForBatch($batchName)
+    {
         return SentEmail::statsForBatch($batchName);
     }
 
-    public function statsForEmail($email) {
+    public function statsForEmail($email)
+    {
         return [
             'counts' => [
                 'sent_emails' => SentEmail::whereEmail($email)->count(),
@@ -89,75 +92,93 @@ class SesMailer extends Mailer {
         ];
     }
 
-    public function setupTracking($emailBody, SentEmail $sentEmail) {
+    public function setupTracking($emailBody, SentEmail $sentEmail)
+    {
         $mailProcessor = new MailProcessor($sentEmail, $emailBody);
 
-        if($this->openTracking) $mailProcessor->openTracking();
-        if($this->linkTracking) $mailProcessor->linkTracking();
+        if ($this->openTracking) {
+            $mailProcessor->openTracking();
+        }
+        if ($this->linkTracking) {
+            $mailProcessor->linkTracking();
+        }
 
         return $mailProcessor->getEmailBody();
     }
 
-    public function setBatch($batch) {
+    public function setBatch($batch)
+    {
         $this->batch = $batch;
         return $this;
     }
 
-    public function getBatch() {
+    public function getBatch()
+    {
         return $this->batch;
     }
 
-    public function enableOpenTracking() {
+    public function enableOpenTracking()
+    {
         $this->openTracking = true;
         return $this;
     }
 
-    public function enableLinkTracking() {
+    public function enableLinkTracking()
+    {
         $this->linkTracking = true;
         return $this;
     }
 
-    public function enableBounceTracking() {
+    public function enableBounceTracking()
+    {
         $this->bounceTracking = true;
         return $this;
     }
 
-    public function enableComplaintTracking() {
+    public function enableComplaintTracking()
+    {
         $this->complaintTracking = true;
         return $this;
     }
 
-    public function enableDeliveryTracking() {
+    public function enableDeliveryTracking()
+    {
         $this->deliveryTracking = true;
         return $this;
     }
 
-    public function disableOpenTracking() {
+    public function disableOpenTracking()
+    {
         $this->openTracking = false;
         return $this;
     }
 
-    public function disableLinkTracking() {
+    public function disableLinkTracking()
+    {
         $this->linkTracking = false;
         return $this;
     }
 
-    public function disableBounceTracking() {
+    public function disableBounceTracking()
+    {
         $this->bounceTracking = false;
         return $this;
     }
 
-    public function disableComplaintTracking() {
+    public function disableComplaintTracking()
+    {
         $this->complaintTracking = false;
         return $this;
     }
 
-    public function disableDeliveryTracking() {
+    public function disableDeliveryTracking()
+    {
         $this->deliveryTracking = false;
         return $this;
     }
 
-    public function enableAllTracking() {
+    public function enableAllTracking()
+    {
         return $this->enableOpenTracking()
             ->enableLinkTracking()
             ->enableBounceTracking()
@@ -165,7 +186,8 @@ class SesMailer extends Mailer {
             ->enableDeliveryTracking();
     }
 
-    public function disableAllTracking() {
+    public function disableAllTracking()
+    {
         return $this->disableOpenTracking()
             ->disableLinkTracking()
             ->disableBounceTracking()
@@ -175,7 +197,8 @@ class SesMailer extends Mailer {
 
 
 
-    public function trackingSettings() {
+    public function trackingSettings()
+    {
         return [
             'openTracking' => $this->openTracking,
             'linkTracking' => $this->linkTracking,

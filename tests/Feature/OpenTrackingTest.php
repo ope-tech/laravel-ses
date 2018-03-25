@@ -1,15 +1,17 @@
 <?php
 
 namespace oliveready7\LaravelSes\Tests\Feature;
+
 use SesMail;
 use oliveready7\LaravelSes\Models\SentEmail;
 use oliveready7\LaravelSes\Models\EmailOpen;
 use oliveready7\LaravelSes\Tests\Feature\FeatureTestCase;
 use oliveready7\LaravelSes\Mocking\TestMailable;
 
-class OpenTrackingTest extends FeatureTestCase{
-
-    public function test_open_tracking() {
+class OpenTrackingTest extends FeatureTestCase
+{
+    public function testOpenTracking()
+    {
         SesMail::fake();
         SesMail::enableOpenTracking();
         SesMail::to('harrykane9@gmail.com')->send(new TestMailable());
@@ -31,5 +33,4 @@ class OpenTrackingTest extends FeatureTestCase{
         //check email open has been saved
         $this->assertNotNull(EmailOpen::first()->opened_at);
     }
-
 }

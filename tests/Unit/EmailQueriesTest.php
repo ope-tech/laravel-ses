@@ -1,13 +1,14 @@
 <?php
 
 namespace oliveready7\LaravelSes\Tests\Unit;
-use oliveready7\LaravelSes\Models\{EmailBounce, EmailComplaint};
 
+use oliveready7\LaravelSes\Models\EmailBounce;
+use oliveready7\LaravelSes\Models\EmailComplaint;
 
-
-class EmailQueriesTest extends UnitTestCase {
-
-    function test_has_complained_endpoint_returns_true_when_an_email_has_complained() {
+class EmailQueriesTest extends UnitTestCase
+{
+    public function testHasComplainedEndpointReturnsTrueWhenAnEmailHasComplained()
+    {
         EmailComplaint::create([
             'message_id' => '8b',
             'sent_email_id' => 23,
@@ -33,7 +34,8 @@ class EmailQueriesTest extends UnitTestCase {
             ]);
     }
 
-    function test_has_complained_endpoint_returns_false_when_an_email_has_not_complained() {
+    public function testHasComplainedEndpointReturnsFalseWhenAnEmailHasNotComplained()
+    {
         $this->get('laravel-ses/api/has/complained/wanyama@hotmail.com')
             ->assertStatus(200)
             ->assertJson([
@@ -42,7 +44,8 @@ class EmailQueriesTest extends UnitTestCase {
             ]);
     }
 
-    function test_has_bounced_endpoint_returns_true_when_an_email_has_bounced() {
+    public function testHasBouncedEndpointReturnsTrueWhenAnEmailHasBounced()
+    {
         EmailBounce::create([
             'message_id' => '7a',
             'sent_email_id' => '1',
@@ -68,7 +71,8 @@ class EmailQueriesTest extends UnitTestCase {
             ]);
     }
 
-    function test_has_bounced_endpoint_returns_false_when_an_email_has_not_bounced() {
+    public function testHasBouncedEndpointReturnsFalseWhenAnEmailHasNotBounced()
+    {
         $res = $this->get('laravel-ses/api/has/bounced/harrykane@gmail.com')
             ->assertStatus(200)
             ->assertJson([

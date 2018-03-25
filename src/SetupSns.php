@@ -1,6 +1,7 @@
 <?php
 
 namespace oliveready7\LaravelSes;
+
 use Illuminate\Console\Command;
 
 class SetupSNS extends Command

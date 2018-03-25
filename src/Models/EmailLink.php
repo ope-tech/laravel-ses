@@ -10,17 +10,20 @@ class EmailLink extends Model
 
     protected $guarded = [];
 
-    public function sentEmail() {
+    public function sentEmail()
+    {
         return $this->belongsTo('oliveready7\LaravelSes\Models\SentEmail');
     }
 
-    public function setClicked($clicked) {
+    public function setClicked($clicked)
+    {
         $this->clicked = $clicked;
         $this->save();
         return $this;
     }
 
-    public function incrementClickCount() {
+    public function incrementClickCount()
+    {
         $this->click_count++;
         $this->save();
         return $this;

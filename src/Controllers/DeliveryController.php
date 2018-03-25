@@ -8,16 +8,16 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 
-
-class DeliveryController extends BaseController {
-    public function delivery(ServerRequestInterface $request) {
-
+class DeliveryController extends BaseController
+{
+    public function delivery(ServerRequestInterface $request)
+    {
         $this->validateSns($request);
 
         $result = json_decode(request()->getContent());
 
         //if amazon is trying to confirm the subscription
-        if(isset($result->Type) && $result->Type == 'SubscriptionConfirmation') {
+        if (isset($result->Type) && $result->Type == 'SubscriptionConfirmation') {
             $client = new Client;
             $client->get($result->SubscribeURL);
 
@@ -42,9 +42,8 @@ class DeliveryController extends BaseController {
                 ->whereDeliveryTracking(true)
                 ->firstOrFail();
             $sentEmail->setDeliveredAt($deliveryTime);
-        }catch(ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             //delivery won't be logged if this hits
-
         }
     }
 }

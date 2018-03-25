@@ -1,5 +1,6 @@
 <?php
 namespace oliveready7\LaravelSes\Tests\Unit;
+
 use oliveready7\LaravelSes\SesMail;
 use oliveready7\LaravelSes\LaravelSesServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;

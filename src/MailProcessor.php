@@ -1,35 +1,42 @@
 <?php
 
 namespace oliveready7\LaravelSes;
+
 use Ramsey\Uuid\Uuid;
 use oliveready7\LaravelSes\Models\EmailOpen;
 use oliveready7\LaravelSes\Models\SentEmail;
 use oliveready7\LaravelSes\Models\EmailLink;
 use PHPHtmlParser\Dom;
 
-class MailProcessor {
+class MailProcessor
+{
     protected $emailBody;
     protected $batch;
     protected $sentEmail;
 
-    function __construct(SentEmail $sentEmail, $emailBody){
+    public function __construct(SentEmail $sentEmail, $emailBody)
+    {
         $this->setEmailBody($emailBody);
         $this->setSentEmail($sentEmail);
     }
 
-    public function getEmailBody() {
+    public function getEmailBody()
+    {
         return $this->emailBody;
     }
 
-    private function setEmailBody($body) {
+    private function setEmailBody($body)
+    {
         $this->emailBody = $body;
     }
 
-    private function setSentEmail(SentEmail $email) {
+    private function setSentEmail(SentEmail $email)
+    {
         $this->sentEmail = $email;
     }
 
-    public function openTracking() {
+    public function openTracking()
+    {
         $beaconIdentifier = Uuid::uuid4()->toString();
         $beaconUrl = config('app.url') . "/laravel-ses/beacon/$beaconIdentifier";
 
@@ -46,19 +53,21 @@ class MailProcessor {
         return $this;
     }
 
-    public function linkTracking() {
-            $dom = new Dom;
-            $dom->load($this->getEmailBody());
-            $anchors = $dom->find('a');
-            foreach($anchors as $anchor) {
-                $originalUrl = $anchor->getAttribute('href');
-                $anchor->setAttribute('href',$this->createAppLink($originalUrl));
-            }
-            $this->setEmailBody($dom->innerHtml);
-            return $this;
+    public function linkTracking()
+    {
+        $dom = new Dom;
+        $dom->load($this->getEmailBody());
+        $anchors = $dom->find('a');
+        foreach ($anchors as $anchor) {
+            $originalUrl = $anchor->getAttribute('href');
+            $anchor->setAttribute('href', $this->createAppLink($originalUrl));
         }
+        $this->setEmailBody($dom->innerHtml);
+        return $this;
+    }
 
-    private function createAppLink(string $originalUrl) {
+    private function createAppLink(string $originalUrl)
+    {
         $linkIdentifier = Uuid::uuid4()->toString();
 
         //first create the link
@@ -71,6 +80,4 @@ class MailProcessor {
 
         return config('app.url') . "/laravel-ses/link/$linkIdentifier";
     }
-
-
 }

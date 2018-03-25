@@ -7,9 +7,10 @@ use oliveready7\LaravelSes\Models\EmailLink;
 use oliveready7\LaravelSes\Tests\Feature\FeatureTestCase;
 use Ramsey\Uuid\Uuid;
 
-class ClickTrackingTest extends FeatureTestCase {
-
-    public function test_email_links_can_be_tracked() {
+class ClickTrackingTest extends FeatureTestCase
+{
+    public function testEmailLinksCanBeTracked()
+    {
         $linkId = Uuid::uuid4()->toString();
 
         EmailLink::create([

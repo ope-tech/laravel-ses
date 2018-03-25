@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 
-
-class BounceController extends BaseController {
-
-    public function hasBounced($email) {
+class BounceController extends BaseController
+{
+    public function hasBounced($email)
+    {
         $emailBounces =  EmailBounce::whereEmail($email)->get();
 
-        if($emailBounces->isEmpty()) {
+        if ($emailBounces->isEmpty()) {
             return response()->json([
                 'success' => true,
                 'bounced' => false
@@ -30,13 +30,14 @@ class BounceController extends BaseController {
     }
 
 
-    public function bounce(ServerRequestInterface $request) {
+    public function bounce(ServerRequestInterface $request)
+    {
         $this->validateSns($request);
 
         $result = json_decode(request()->getContent());
 
         //if amazon is trying to confirm the subscription
-        if(isset($result->Type) && $result->Type == 'SubscriptionConfirmation') {
+        if (isset($result->Type) && $result->Type == 'SubscriptionConfirmation') {
             $client = new Client;
             $client->get($result->SubscribeURL);
 
@@ -64,10 +65,8 @@ class BounceController extends BaseController {
                 'email' => $message->mail->destination[0],
                 'bounced_at' => Carbon::parse($message->mail->timestamp)
             ]);
-        }catch(ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             //bounce won't be logged if this is hit
         }
-
     }
-
 }

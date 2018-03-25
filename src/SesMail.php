@@ -14,7 +14,8 @@ class SesMail extends Facade
 {
     public static function fake()
     {
-        static::swap(new SesMailFake(
+        static::swap(
+            new SesMailFake(
             Container::getInstance()['view'],
             Container::getInstance()['swift.mailer'],
             Container::getInstance()['events']

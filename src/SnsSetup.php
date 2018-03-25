@@ -1,14 +1,17 @@
 <?php
 
 namespace oliveready7\LaravelSes;
+
 use Aws\Ses\SesClient;
 use Aws\Sns\SnsClient;
 
-class SnsSetup {
+class SnsSetup
+{
     protected $ses;
     protected $sns;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->ses = new SesClient([
             'credentials' => [
                 'key' => config('services.ses.key'),
@@ -26,16 +29,16 @@ class SnsSetup {
             'region' => config('services.ses.region'),
             'version' => 'latest'
         ]);
-
     }
-    public function init($protocol) {
+    public function init($protocol)
+    {
         $this->setupNotification('Bounce', $protocol);
         $this->setupNotification('Complaint', $protocol);
         $this->setupNotification('Delivery', $protocol);
     }
 
-    public function setupNotification($type, $protocol) {
-
+    public function setupNotification($type, $protocol)
+    {
         $result = $this->sns->createTopic([
             'Name' => "laravel-ses-{$type}"
         ]);
@@ -65,7 +68,8 @@ class SnsSetup {
         return true;
     }
 
-    public function notificationIsSet($type) {
+    public function notificationIsSet($type)
+    {
         $result = $this->ses->getIdentityNotificationAttributes(['Identities' => [config('services.ses.domain')]]);
         return isset($result['NotificationAttributes'][config('services.ses.domain')]["{$type}Topic"]);
     }

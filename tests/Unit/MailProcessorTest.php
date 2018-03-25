@@ -5,9 +5,10 @@ use oliveready7\LaravelSes\Models\EmailOpen;
 use oliveready7\LaravelSes\Models\EmailLink;
 use oliveready7\LaravelSes\Tests\Unit\UnitTestCase;
 
-class MailProcessorTest extends UnitTestCase {
-
-    public function test_open_tracking_beacon_is_present_in_email() {
+class MailProcessorTest extends UnitTestCase
+{
+    public function testOpenTrackingBeaconIsPresentInEmail()
+    {
         $body = 'this is a test email body';
 
         $sentEmail = SentEmail::create([
@@ -27,7 +28,8 @@ class MailProcessorTest extends UnitTestCase {
         );
     }
 
-    public function test_links_are_parsed_correctly_so_they_can_be_tracked() {
+    public function testLinksAreParsedCorrectlySoTheyCanBeTracked()
+    {
         //body of text with one link in it
         $body = "This is a test body of text, <a href='https://click.me'>Click Me</a>";
 

@@ -11,33 +11,40 @@ class SentEmail extends Model
 
     protected $guarded = [];
 
-    public function setDeliveredAt($time) {
+    public function setDeliveredAt($time)
+    {
         $this->delivered_at = $time;
         $this->save();
     }
 
-    public function emailOpen() {
+    public function emailOpen()
+    {
         return $this->hasOne('oliveready7\LaravelSes\Models\EmailOpen');
     }
 
-    public function emailLinks() {
+    public function emailLinks()
+    {
         return $this->hasMany('oliveready7\LaravelSes\Models\EmailLink');
     }
 
-    public function emailBounce() {
+    public function emailBounce()
+    {
         return $this->hasOne('oliveready7\LaravelSes\Models\EmailBounce');
     }
 
-    public function emailComplaint() {
+    public function emailComplaint()
+    {
         return $this->hasOne('oliveready7\LaravelSes\Models\EmailComplaint');
     }
 
-    public static function numberSentForBatch($batchName) {
+    public static function numberSentForBatch($batchName)
+    {
         return self::whereBatch($batchName)
             ->count();
     }
 
-    public static function opensForBatch($batchName) {
+    public static function opensForBatch($batchName)
+    {
         return self::join(
                 'laravel_ses_email_opens',
                 'laravel_ses_sent_emails.id',
@@ -48,7 +55,8 @@ class SentEmail extends Model
             ->count();
     }
 
-    public static function bouncesForBatch($batchName) {
+    public static function bouncesForBatch($batchName)
+    {
         return self::join(
                 'laravel_ses_email_bounces',
                 'laravel_ses_sent_emails.id',
@@ -59,7 +67,8 @@ class SentEmail extends Model
             ->count();
     }
 
-    public static function complaintsForBatch($batchName) {
+    public static function complaintsForBatch($batchName)
+    {
         return self::join(
                 'laravel_ses_email_complaints',
                 'laravel_ses_sent_emails.id',
@@ -70,15 +79,17 @@ class SentEmail extends Model
             ->count();
     }
 
-    public static function deliveriesForBatch($batchName) {
+    public static function deliveriesForBatch($batchName)
+    {
         return self::whereBatch($batchName)
             ->whereNotNull('delivered_at')
             ->count();
     }
 
-    public static function getAmountOfUsersThatClickedAtLeastOneLink($batchName) {
+    public static function getAmountOfUsersThatClickedAtLeastOneLink($batchName)
+    {
         return self::where('laravel_ses_sent_emails.batch', $batchName)
-            ->join('laravel_ses_email_links', function($join) {
+            ->join('laravel_ses_email_links', function ($join) {
                 $join
                     ->on('laravel_ses_sent_emails.id', '=', 'sent_email_id')
                     ->where('laravel_ses_email_links.clicked', '=', true);
@@ -87,23 +98,25 @@ class SentEmail extends Model
             ->count(\DB::raw('DISTINCT(email)'));
     }
 
-    public static function getLinkPopularityOrder($batchName) {
+    public static function getLinkPopularityOrder($batchName)
+    {
         return self::where('laravel_ses_sent_emails.batch', $batchName)
-            ->join('laravel_ses_email_links', function($join) {
+            ->join('laravel_ses_email_links', function ($join) {
                 $join
                     ->on('laravel_ses_sent_emails.id', '=', 'sent_email_id')
                     ->where('laravel_ses_email_links.clicked', '=', true);
             })
             ->get()
             ->groupBy('original_url')
-            ->map(function($linkClicks) {
+            ->map(function ($linkClicks) {
                 return ['clicks' => $linkClicks->count()];
             })
             ->sortByDesc('clicks');
     }
 
 
-    public static function statsForBatch($batchName) {
+    public static function statsForBatch($batchName)
+    {
         return [
             'send_count' => self::numberSentForBatch($batchName),
             'deliveries' => self::deliveriesForBatch($batchName),
@@ -113,7 +126,5 @@ class SentEmail extends Model
             'click_throughs' => self::getAmountOfUsersThatClickedAtLeastOneLink($batchName),
             'link_popularity' => self::getLinkPopularityOrder($batchName)
         ];
-
-
     }
 }

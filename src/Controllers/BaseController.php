@@ -1,6 +1,7 @@
 <?php
 
 namespace oliveready7\LaravelSes\Controllers;
+
 use Illuminate\Routing\Controller;
 use Psr\Http\Message\ServerRequestInterface;
 use Aws\Sns\Message;
@@ -11,7 +12,7 @@ class BaseController extends Controller
 {
     public function validateSns(ServerRequestInterface $request)
     {
-        if(config('laravelses.aws_sns_validator')) {
+        if (config('laravelses.aws_sns_validator')) {
             $message = Message::fromPsrRequest($request);
             $validator = new MessageValidator();
             try {

@@ -6,9 +6,10 @@ use oliveready7\LaravelSes\Models\SentEmail;
 use oliveready7\LaravelSes\Models\EmailBounce;
 use oliveready7\LaravelSes\Tests\Feature\FeatureTestCase;
 
-class BounceTrackingTest extends FeatureTestCase {
-
-    public function test_bounce_tracking() {
+class BounceTrackingTest extends FeatureTestCase
+{
+    public function testBounceTracking()
+    {
         SentEmail::create([
             'message_id' => '84b8739d03d2245baed4999232916608@swift.generated',
             'email' => 'eriksen23@gmail.com',
@@ -31,15 +32,18 @@ class BounceTrackingTest extends FeatureTestCase {
         ], EmailBounce::first()->toArray());
     }
 
-    public function test_subscription_confirmation() {
+    public function testSubscriptionConfirmation()
+    {
         $fakeJson = json_decode($this->exampleSubscriptionResponse);
-        $response = $this->json('POST',
+        $response = $this->json(
+            'POST',
             '/laravel-ses/notification/bounce',
             (array)$fakeJson
         )->assertJson(['success' => true]);
     }
 
-    public function test_a_bounce_is_not_stored_when_there_is_no_equivilant_message_id() {
+    public function testABounceIsNotStoredWhenThereIsNoEquivilantMessageId()
+    {
         SentEmail::create([
             'message_id' => 'abcaseasyas123@swift.generated',
             'email' => 'eriksen23@gmail.com'
@@ -52,11 +56,10 @@ class BounceTrackingTest extends FeatureTestCase {
             'laravel-ses/notification/bounce',
             (array)$fakeJson
         );
-
-
     }
 
-    public function test_that_bounce_is_not_recorded_if_bounce_tracking_is_not_set() {
+    public function testThatBounceIsNotRecordedIfBounceTrackingIsNotSet()
+    {
         SentEmail::create([
             'message_id' => '84b8739d03d2245baed4999232916608@swift.generated',
             'email' => 'eriksen23@gmail.com'

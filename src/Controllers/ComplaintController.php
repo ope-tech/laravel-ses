@@ -8,11 +8,13 @@ use oliveready7\LaravelSes\Models\EmailComplaint;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 
-class ComplaintController extends BaseController {
-    public function hasComplained($email) {
+class ComplaintController extends BaseController
+{
+    public function hasComplained($email)
+    {
         $emailComplaints =  EmailComplaint::whereEmail($email)->get();
 
-        if($emailComplaints->isEmpty()) {
+        if ($emailComplaints->isEmpty()) {
             return response()->json([
                 'success' => true,
                 'complained' => false
@@ -26,13 +28,14 @@ class ComplaintController extends BaseController {
         ]);
     }
 
-    public function complaint(ServerRequestInterface $request) {
+    public function complaint(ServerRequestInterface $request)
+    {
         $this->validateSns($request);
 
         $result = json_decode(request()->getContent());
 
         //if amazon is trying to confirm the subscription
-        if(isset($result->Type) && $result->Type == 'SubscriptionConfirmation') {
+        if (isset($result->Type) && $result->Type == 'SubscriptionConfirmation') {
             $client = new Client;
             $client->get($result->SubscribeURL);
 
@@ -61,8 +64,7 @@ class ComplaintController extends BaseController {
                 'email' => $message->mail->destination[0],
                 'complained_at' =>  Carbon::parse($message->mail->timestamp)
             ]);
-        }catch(ModelNotFoundException $e) {
-
+        } catch (ModelNotFoundException $e) {
         }
     }
 }

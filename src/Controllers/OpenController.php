@@ -10,10 +10,11 @@ use Carbon\Carbon;
 
 class OpenController extends BaseController
 {
-    public function open($beaconIdentifier) {
+    public function open($beaconIdentifier)
+    {
         try {
             $open = EmailOpen::whereBeaconIdentifier($beaconIdentifier)->firstOrFail();
-        }catch(ModelNotFoundException $e){
+        } catch (ModelNotFoundException $e) {
             return response()->json(['success' => false, 'errors' => ['Invalid Beacon']], 422);
         }
 

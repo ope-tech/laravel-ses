@@ -5,9 +5,10 @@ namespace oliveready7\LaravelSes\Tests\Feature;
 use oliveready7\LaravelSes\Models\SentEmail;
 use oliveready7\LaravelSes\Tests\Feature\FeatureTestCase;
 
-class DeliveryTrackingTest extends FeatureTestCase {
-    public function test_delivery_tracking() {
-
+class DeliveryTrackingTest extends FeatureTestCase
+{
+    public function testDeliveryTracking()
+    {
         SentEmail::create([
             'message_id' => 'a4947f1f3fdb397b3a7bf2d3b7d2f53e@swift.generated',
             'email' => 'eriksen23@gmail.com',
@@ -24,15 +25,18 @@ class DeliveryTrackingTest extends FeatureTestCase {
         $this->assertNotNull(SentEmail::first()->delivered_at);
     }
 
-    public function test_confirm_subscription() {
+    public function testConfirmSubscription()
+    {
         $fakeJson = json_decode($this->exampleSubscriptionResponse);
-        $response = $this->json('POST',
+        $response = $this->json(
+            'POST',
             '/laravel-ses/notification/delivery',
             (array)$fakeJson
         )->assertJson(['success' => true]);
     }
 
-    public function test_delivery_time_is_not_set_if_tracking_not_enabled() {
+    public function testDeliveryTimeIsNotSetIfTrackingNotEnabled()
+    {
         SentEmail::create([
             'message_id' => 'a4947f1f3fdb397b3a7bf2d3b7d2f53e@swift.generated',
             'email' => 'eriksen23@gmail.com'

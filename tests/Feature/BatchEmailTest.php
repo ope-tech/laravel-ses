@@ -1,6 +1,7 @@
 <?php
 
 namespace oliveready7\LaravelSes\Tests\Feature;
+
 use oliveready7\LaravelSes\Tests\Feature\FeatureTestCase;
 use oliveready7\LaravelSes\SesMail;
 use oliveready7\LaravelSes\Models\SentEmail;
@@ -9,10 +10,10 @@ use oliveready7\LaravelSes\Models\EmailLink;
 use oliveready7\LaravelSes\Mocking\TestMailable;
 use Illuminate\Database\Eloquent\Collection;
 
-
-class BatchEmailTest extends FeatureTestCase {
-
-    public function test_batch_emails_can_be_sent_and_stats_can_be_gotten() {
+class BatchEmailTest extends FeatureTestCase
+{
+    public function testBatchEmailsCanBeSentAndStatsCanBeGotten()
+    {
         SesMail::fake();
 
         $emails = [
@@ -26,7 +27,7 @@ class BatchEmailTest extends FeatureTestCase {
             'complaint@yes.com'
         ];
 
-        foreach($emails as $email) {
+        foreach ($emails as $email) {
             SesMail::enableAllTracking()
                 ->setBatch('welcome_emails')
                 ->to($email)
@@ -44,11 +45,12 @@ class BatchEmailTest extends FeatureTestCase {
         ], SentEmail::statsForBatch('welcome_emails'));
 
         //deliver all emails apart from bounced email
-        foreach($emails as $email) {
-            if($email != 'bounce@ses.com'){
+        foreach ($emails as $email) {
+            if ($email != 'bounce@ses.com') {
                 $messageId = SentEmail::whereEmail($email)->first()->message_id;
                 $fakeJson = json_decode($this->generateDeliveryJson($messageId));
-                $this->json('POST',
+                $this->json(
+                    'POST',
                     '/laravel-ses/notification/delivery',
                     (array)$fakeJson
                 );
@@ -77,8 +79,8 @@ class BatchEmailTest extends FeatureTestCase {
             'no@gmail.com'
         ];
 
-        foreach($emails as $email) {
-            if(in_array($email, $openedEmails)) {
+        foreach ($emails as $email) {
+            if (in_array($email, $openedEmails)) {
                 //get the open identifier
                 $id = EmailOpen::whereEmail($email)->first()->beacon_identifier;
                 $this->get("laravel-ses/beacon/{$id}");
@@ -146,7 +148,5 @@ class BatchEmailTest extends FeatureTestCase {
                 ]
             ])
         ], SesMail::statsForBatch('welcome_emails'));
-
-
     }
 }

@@ -7,8 +7,8 @@ use Illuminate\Mail\MailServiceProvider;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-
-class LaravelSesServiceProvider extends ServiceProvider {
+class LaravelSesServiceProvider extends ServiceProvider
+{
 
     /**
      * Bootstrap any application services.
@@ -44,7 +44,8 @@ class LaravelSesServiceProvider extends ServiceProvider {
     public function register()
     {
         $this->mergeConfigFrom(
-           __DIR__.'/Config/laravelses.php', 'laravelses'
+           __DIR__.'/Config/laravelses.php',
+            'laravelses'
        );
 
         $this->registerIlluminateMailer();
@@ -59,7 +60,9 @@ class LaravelSesServiceProvider extends ServiceProvider {
             // on the mailer. This allows us to resolve mailer classes via containers
             // for maximum testability on said classes instead of passing Closures.
             $mailer = new SesMailer(
-                $app['view'], $app['swift.mailer'], $app['events']
+                $app['view'],
+                $app['swift.mailer'],
+                $app['events']
             );
 
             if ($app->bound('queue')) {

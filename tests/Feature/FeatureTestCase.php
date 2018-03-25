@@ -1,5 +1,6 @@
 <?php
 namespace oliveready7\LaravelSes\Tests\Feature;
+
 use oliveready7\LaravelSes\SesMail;
 use oliveready7\LaravelSes\LaravelSesServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
@@ -47,7 +48,8 @@ class FeatureTestCase extends OrchestraTestCase
     }
 
 
-    public function generateBounceJson($messageId, $email = 'bounce@simulator.amazonses.com') {
+    public function generateBounceJson($messageId, $email = 'bounce@simulator.amazonses.com')
+    {
         return '{"Type" : "Notification",
           "MessageId" : "950a823d-501f-5137-a9a3-d0246f6094b6",
           "TopicArn" : "arn:aws:sns:eu-west-1:111158800833:laravel-ses-Bounce",
@@ -59,7 +61,8 @@ class FeatureTestCase extends OrchestraTestCase
           "UnsubscribeURL" : "https://sns.eu-west-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-west-1:111111111111:laravel-ses-Bounce:7546aed7-b188-46f6-913c-2f548c0cb251"}';
     }
 
-    public function generateComplaintJson($messageId, $email = 'complaint@simulator.amazonses.com') {
+    public function generateComplaintJson($messageId, $email = 'complaint@simulator.amazonses.com')
+    {
         return '{
             "Type": "Notification",
             "MessageId": "950a823d-501f-5137-a9a3-d0246f6094b6",
@@ -68,7 +71,8 @@ class FeatureTestCase extends OrchestraTestCase
         }';
     }
 
-    public function generateDeliveryJson($messageId, $email = 'success@simulator.amazonses.com') {
+    public function generateDeliveryJson($messageId, $email = 'success@simulator.amazonses.com')
+    {
         return '{
             "Type": "Notification",
             "MessageId": "950a823d-501f-5137-a9a3-d0246f6094b6",

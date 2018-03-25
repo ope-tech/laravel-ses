@@ -6,9 +6,10 @@ use oliveready7\LaravelSes\Models\SentEmail;
 use oliveready7\LaravelSes\Models\EmailComplaint;
 use oliveready7\LaravelSes\Tests\Feature\FeatureTestCase;
 
-class ComplaintTrackingTest extends FeatureTestCase {
-
-    public function test_complaint_tracking() {
+class ComplaintTrackingTest extends FeatureTestCase
+{
+    public function testComplaintTracking()
+    {
         SentEmail::create([
             'message_id' => '049c6b53557871a2a1fb77e117f60971@swift.generated',
             'email' => 'eriksen23@gmail.com',
@@ -32,7 +33,8 @@ class ComplaintTrackingTest extends FeatureTestCase {
     }
 
 
-    public function test_a_complaint_is_not_stored_when_there_is_no_equivlanent_message_id() {
+    public function testAComplaintIsNotStoredWhenThereIsNoEquivlanentMessageId()
+    {
         SentEmail::create([
             'message_id' => 'abcaseasyas123@swift.generated',
             'email' => 'eriksen23@gmail.com',
@@ -50,15 +52,18 @@ class ComplaintTrackingTest extends FeatureTestCase {
         $this->assertNull(EmailComplaint::first());
     }
 
-    public function test_subscription_confirmation() {
+    public function testSubscriptionConfirmation()
+    {
         $fakeJson = json_decode($this->exampleSubscriptionResponse);
-        $response = $this->json('POST',
+        $response = $this->json(
+            'POST',
             '/laravel-ses/notification/complaint',
             (array)$fakeJson
         )->assertJson(['success' => true]);
     }
 
-    public function test_that_complaint_is_not_recorded_if_complaint_tracking_is_not_set() {
+    public function testThatComplaintIsNotRecordedIfComplaintTrackingIsNotSet()
+    {
         SentEmail::create([
             'message_id' => '049c6b53557871a2a1fb77e117f60971@swift.generated',
             'email' => 'eriksen23@gmail.com'
@@ -95,6 +100,4 @@ class ComplaintTrackingTest extends FeatureTestCase {
     	"TopicArn": "arn:aws:sns:eu-west-1:111111111111:laravel-ses-Bounce",
     	"Message": "{\"notificationType\":\"Complaint\",\"complaint\":{\"complainedRecipients\":[{\"emailAddress\":\"complaint@simulator.amazonses.com\"}],\"timestamp\":\"2017-08-25T07:58:41.000Z\",\"feedbackId\":\"0102015e1866790f-365140b7-896b-11e7-90ec-fd10e954797f-000000\",\"userAgent\":\"Amazon SES Mailbox Simulator\",\"complaintFeedbackType\":\"abuse\"},\"mail\":{\"timestamp\":\"2017-08-25T07:58:39.000Z\",\"source\":\"test@laravel-ses.com\",\"sourceArn\":\"arn:aws:ses:eu-west-1:111111111111:identity/babecall.co.uk\",\"sourceIp\":\"127.0.0.1\",\"sendingAccountId\":\"111111111111\",\"messageId\":\"0102015e18666ec9-e00f3e03-f3fd-486f-9522-ebc919b8ea9c-000000\",\"destination\":[\"complaint@simulator.amazonses.com\"],\"headersTruncated\":false,\"headers\":[{\"name\":\"Message-ID\",\"value\":\"<049c6b53557871a2a1fb77e117f60971@swift.generated>\"},{\"name\":\"Date\",\"value\":\"Fri, 25 Aug 2017 07:58:39 +0000\"},{\"name\":\"Subject\",\"value\":\"test\"},{\"name\":\"From\",\"value\":\"test@laravel-ses.com\"},{\"name\":\"Reply-To\",\"value\":\"test@laravel-ses.com\"},{\"name\":\"To\",\"value\":\"complaint@simulator.amazonses.com\"},{\"name\":\"MIME-Version\",\"value\":\"1.0\"},{\"name\":\"Content-Type\",\"value\":\"text/html charset=utf-8\"},{\"name\":\"Content-Transfer-Encoding\",\"value\":\"quoted-printable\"}],\"commonHeaders\":{\"from\":[\"test@laravel-ses.com\"],\"replyTo\":[\"test@laravel-ses.com\"],\"date\":\"Fri, 25 Aug 2017 07:58:39 +0000\",\"to\":[\"complaint@simulator.amazonses.com\"],\"messageId\":\"<049c6b53557871a2a1fb77e117f60971@swift.generated>\",\"subject\":\"test\"}}}"
     }';
-
-
 }

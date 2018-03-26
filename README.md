@@ -1,5 +1,5 @@
 # laravel-ses
-A Laravel 5.5+ Package that allows you to get simple sending statistics for emails you send through SES, including deliveries, opens, bounces, complaints and link tracking. 
+A Laravel 5.5+ Package that allows you to get simple sending statistics for emails you send through SES, including deliveries, opens, bounces, complaints and link tracking.
 
 Install via composer
 
@@ -23,7 +23,7 @@ SNS (for deliveries, bounces and complaints) as well as SES
 
 Make sure your mail driver located in app/config/mail.php is set to 'ses'
 
-Run command to setup Amazon email notifications.
+Run command to setup Amazon email notifications. Make sure in your configuration your app URL is set correctly.
 
 If your application uses the http protocol instead of https add the --http flag to this command
 

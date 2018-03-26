@@ -23,21 +23,13 @@ SNS (for deliveries, bounces and complaints) as well as SES
 
 Make sure your mail driver located in app/config/mail.php is set to 'ses'
 
-Run command to setup Amazon email notifications. Make sure in your configuration your app URL is set correctly.
-
-If your application uses the http protocol instead of https add the --http flag to this command
-
-```
-php artisan setup:sns
-```
-
 Publish public assets
 
 ```
 php artisan vendor:publish --tag=public --force
 ```
 
-Lastly migrate package's database tables
+Migrate the package's database tables
 
 ```
 php artisan migrate
@@ -51,6 +43,14 @@ php artisan vendor:publish --tag=config
 
 Config Options
 - aws_sns_validator - whether the package uses AWS's SNS validator for inbound SNS requests. Default = false
+
+Run command in production to setup Amazon email notifications to track bounces, complaints and deliveries. Make sure in your configuration your app URL is set correctly.
+
+If your application uses the http protocol instead of https add the --http flag to this command
+
+```
+php artisan setup:sns
+```
 
 ## Usage
 

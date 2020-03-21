@@ -45,6 +45,8 @@ php artisan vendor:publish --tag=config
 Config Options
 - aws_sns_validator - whether the package uses AWS's SNS validator for inbound SNS requests. Default = false
 
+https://github.com/aws/aws-php-sns-message-validator
+
 Run command in **production** to setup Amazon email notifications to track bounces, complaints and deliveries. 
 Make sure in your configuration your app URL is set correctly.
 

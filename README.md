@@ -1,7 +1,7 @@
 ![alt text](laravel-ses.png "Laravel SES")
 
-# laravel-ses
-A Laravel 6+ Package that allows you to get simple sending statistics for emails you send through SES, 
+# Laravel AWS Simple Email Service
+A Laravel 6+ Package that allows you to get sending statistics for emails you send through AWS SES (Simple Email Service), 
 including deliveries, opens, bounces, complaints and link tracking.
 
 Install via composer

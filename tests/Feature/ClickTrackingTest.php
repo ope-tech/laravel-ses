@@ -1,10 +1,10 @@
 <?php
 
-namespace oliveready7\LaravelSes\Tests\Feature;
+namespace Juhasev\LaravelSes\Tests\Feature;
 
-use oliveready7\LaravelSes\Models\SentEmail;
-use oliveready7\LaravelSes\Models\EmailLink;
-use oliveready7\LaravelSes\Tests\Feature\FeatureTestCase;
+use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Models\EmailLink;
+use Juhasev\LaravelSes\Tests\Feature\FeatureTestCase;
 use Ramsey\Uuid\Uuid;
 
 class ClickTrackingTest extends FeatureTestCase
@@ -24,16 +24,17 @@ class ClickTrackingTest extends FeatureTestCase
 
         $this->assertEquals('https://redirect.com', $res->getTargetUrl());
 
-        $this->assertArraySubset([
-            'clicked' => true,
-            'click_count' => 1
-        ], EmailLink::first()->toArray());
+        $emailLink = EmailLink::first()->toArray();
+
+        $this->assertTrue($emailLink['clicked']);
+        $this->assertEquals(1, $emailLink['click_count']);
 
         $this->get("https://laravel-ses.com/laravel-ses/link/$linkId");
 
-        $this->assertArraySubset([
-            'clicked' => true,
-            'click_count' => 2
-        ], EmailLink::first()->toArray());
+        $emailLink = EmailLink::first()->toArray();
+
+        $this->assertTrue($emailLink['clicked']);
+        $this->assertEquals(2, $emailLink['click_count']);
+
     }
 }

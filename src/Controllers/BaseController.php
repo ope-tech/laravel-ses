@@ -1,6 +1,6 @@
 <?php
 
-namespace oliveready7\LaravelSes\Controllers;
+namespace Juhasev\LaravelSes\Controllers;
 
 use Illuminate\Routing\Controller;
 use Psr\Http\Message\ServerRequestInterface;

@@ -1,6 +1,6 @@
 <?php
 
-namespace oliveready7\LaravelSes\Models;
+namespace Juhasev\LaravelSes\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,9 +10,13 @@ class EmailLink extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'clicked' => 'boolean'
+    ];
+
     public function sentEmail()
     {
-        return $this->belongsTo('oliveready7\LaravelSes\Models\SentEmail');
+        return $this->belongsTo(SentEmail::class);
     }
 
     public function setClicked($clicked)

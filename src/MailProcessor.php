@@ -1,11 +1,11 @@
 <?php
 
-namespace oliveready7\LaravelSes;
+namespace Juhasev\LaravelSes;
 
 use Ramsey\Uuid\Uuid;
-use oliveready7\LaravelSes\Models\EmailOpen;
-use oliveready7\LaravelSes\Models\SentEmail;
-use oliveready7\LaravelSes\Models\EmailLink;
+use Juhasev\LaravelSes\Models\EmailOpen;
+use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Models\EmailLink;
 use PHPHtmlParser\Dom;
 
 class MailProcessor

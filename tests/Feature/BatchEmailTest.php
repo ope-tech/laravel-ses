@@ -1,13 +1,13 @@
 <?php
 
-namespace oliveready7\LaravelSes\Tests\Feature;
+namespace Juhasev\LaravelSes\Tests\Feature;
 
-use oliveready7\LaravelSes\Tests\Feature\FeatureTestCase;
-use oliveready7\LaravelSes\SesMail;
-use oliveready7\LaravelSes\Models\SentEmail;
-use oliveready7\LaravelSes\Models\EmailOpen;
-use oliveready7\LaravelSes\Models\EmailLink;
-use oliveready7\LaravelSes\Mocking\TestMailable;
+use Juhasev\LaravelSes\Tests\Feature\FeatureTestCase;
+use Juhasev\LaravelSes\SesMail;
+use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Models\EmailOpen;
+use Juhasev\LaravelSes\Models\EmailLink;
+use Juhasev\LaravelSes\Mocking\TestMailable;
 use Illuminate\Database\Eloquent\Collection;
 
 class BatchEmailTest extends FeatureTestCase
@@ -34,15 +34,14 @@ class BatchEmailTest extends FeatureTestCase
                 ->send(new TestMailable());
         }
 
-        //make sure all stats are 0 apart from sent emails
-        $this->assertArraySubset([
-            "send_count" => 8,
-            "deliveries" => 0,
-            "opens" => 0,
-            "complaints" => 0,
-            "click_throughs" => 0,
-            "link_popularity" => new Collection()
-        ], SesMail::statsForBatch('welcome_emails'));
+        $stats = SesMail::statsForBatch('welcome_emails');
+
+        // Make sure all stats are 0 apart except sent emails
+        $this->assertEquals(8, $stats['send_count']);
+        $this->assertEquals(0, $stats['deliveries']);
+        $this->assertEquals(0, $stats['opens']);
+        $this->assertEquals(0, $stats['complaints']);
+        $this->assertEquals(0, $stats['click_throughs']);
 
         //deliver all emails apart from bounced email
         foreach ($emails as $email) {
@@ -57,12 +56,12 @@ class BatchEmailTest extends FeatureTestCase
             }
         }
 
-        //bounce an email
+        // Bounce an email
         $messageId  = SentEmail::whereEmail('bounce@ses.com')->first()->message_id;
         $fakeJson = json_decode($this->generateBounceJson($messageId));
         $this->json('POST', 'laravel-ses/notification/bounce', (array)$fakeJson);
 
-        //two complaints
+        // Two complaints
         $messageId  = SentEmail::whereEmail('complaint@yes.com')->first()->message_id;
         $fakeJson = json_decode($this->generateComplaintJson($messageId));
         $this->json('POST', 'laravel-ses/notification/complaint', (array)$fakeJson);
@@ -113,7 +112,9 @@ class BatchEmailTest extends FeatureTestCase
 
         //check that stats are now correct, click throughs = amount of users that clicked at least one link
         //link popularity is amount of unique clicks on a link in the email body, ordered by most popular
-        $this->assertArraySubset([
+        $stats = SesMail::statsForBatch('welcome_emails');
+
+        $this->assertEquals([
             "send_count" => 8,
             "deliveries" => 7,
             "opens" => 4,
@@ -128,25 +129,6 @@ class BatchEmailTest extends FeatureTestCase
                     "clicks" => 1
                 ]
             ])
-        ], SesMail::statsForBatch('welcome_emails'));
-
-        //check stats can be gotten with Facade as well
-
-        $this->assertArraySubset([
-            "send_count" => 8,
-            "deliveries" => 7,
-            "opens" => 4,
-            "bounces" => 1,
-            "complaints" => 2,
-            "click_throughs" => 3,
-            "link_popularity" => collect([
-                "https://google.com" => [
-                    "clicks" => 3
-                ],
-                "https://superficial.io" => [
-                    "clicks" => 1
-                ]
-            ])
-        ], SesMail::statsForBatch('welcome_emails'));
+        ], $stats);
     }
 }

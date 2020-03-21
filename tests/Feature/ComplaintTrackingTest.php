@@ -1,10 +1,10 @@
 <?php
 
-namespace oliveready7\LaravelSes\Tests\Feature;
+namespace Juhasev\LaravelSes\Tests\Feature;
 
-use oliveready7\LaravelSes\Models\SentEmail;
-use oliveready7\LaravelSes\Models\EmailComplaint;
-use oliveready7\LaravelSes\Tests\Feature\FeatureTestCase;
+use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Models\EmailComplaint;
+use Juhasev\LaravelSes\Tests\Feature\FeatureTestCase;
 
 class ComplaintTrackingTest extends FeatureTestCase
 {
@@ -17,23 +17,24 @@ class ComplaintTrackingTest extends FeatureTestCase
         ]);
 
         $fakeJson = json_decode($this->exampleSesResponse);
-        $res = $this->json(
+
+        $this->json(
             'POST',
             'laravel-ses/notification/complaint',
             (array)$fakeJson
         );
 
-        //check bounce is logged correctly, note email Amazon returns is set as email rather than email set in sent email
-        $this->assertArraySubset([
-            'type' => 'abuse',
-            'message_id' => '049c6b53557871a2a1fb77e117f60971@swift.generated',
-            'sent_email_id' => 1,
-            'email' => 'complaint@simulator.amazonses.com'
-        ], EmailComplaint::first()->toArray());
+        $emailComplaint = EmailComplaint::first()->toArray();
+
+        // Check bounce is logged correctly
+        // Note email Amazon returns is set as email rather than email set in sent email
+        $this->assertEquals('abuse', $emailComplaint['type']);
+        $this->assertEquals('049c6b53557871a2a1fb77e117f60971@swift.generated', $emailComplaint['message_id']);
+        $this->assertEquals(1, $emailComplaint['sent_email_id']);
+        $this->assertEquals('complaint@simulator.amazonses.com', $emailComplaint['email']);
     }
 
-
-    public function testAComplaintIsNotStoredWhenThereIsNoEquivlanentMessageId()
+    public function testAComplaintIsNotStoredWhenThereIsNoEquivalentMessageId()
     {
         SentEmail::create([
             'message_id' => 'abcaseasyas123@swift.generated',
@@ -41,9 +42,9 @@ class ComplaintTrackingTest extends FeatureTestCase
             'complaint_tracking' => true
         ]);
 
-
         $fakeJson = json_decode($this->exampleSesResponse);
-        $res = $this->json(
+
+        $this->json(
             'POST',
             'laravel-ses/notification/bounce',
             (array)$fakeJson
@@ -55,7 +56,8 @@ class ComplaintTrackingTest extends FeatureTestCase
     public function testSubscriptionConfirmation()
     {
         $fakeJson = json_decode($this->exampleSubscriptionResponse);
-        $response = $this->json(
+
+        $this->json(
             'POST',
             '/laravel-ses/notification/complaint',
             (array)$fakeJson
@@ -70,7 +72,8 @@ class ComplaintTrackingTest extends FeatureTestCase
         ]);
 
         $fakeJson = json_decode($this->exampleSesResponse);
-        $res = $this->json(
+
+        $this->json(
             'POST',
             'laravel-ses/notification/complaint',
             (array)$fakeJson
@@ -78,7 +81,6 @@ class ComplaintTrackingTest extends FeatureTestCase
 
         $this->assertNull(EmailComplaint::first());
     }
-
 
     private $exampleSubscriptionResponse = '{
           "Type" : "SubscriptionConfirmation",
@@ -92,7 +94,6 @@ class ComplaintTrackingTest extends FeatureTestCase
           "Signature" : "EXAMPLEpH+DcEwjAPg8O9mY8dReBSwksfg2S7WKQcikcNKWLQjwu6A4VbeS0QHVCkhRS7fUQvi2egU3N858fiTDN6bkkOxYDVrY0Ad8L10Hs3zH81mtnPk5uvvolIC1CXGu43obcgFxeL3khZl8IKvO61GWB6jI9b5+gLPoBc1Q=",
           "SigningCertURL" : "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-f3ecfb7224c7233fe7bb5f59f96de52f.pem"
     }';
-
 
     private $exampleSesResponse = '{
     	"Type": "Notification",

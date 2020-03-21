@@ -1,9 +1,9 @@
 <?php
 
-namespace oliveready7\LaravelSes\Tests\Feature;
+namespace Juhasev\LaravelSes\Tests\Feature;
 
-use oliveready7\LaravelSes\Models\SentEmail;
-use oliveready7\LaravelSes\Tests\Feature\FeatureTestCase;
+use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Tests\Feature\FeatureTestCase;
 
 class DeliveryTrackingTest extends FeatureTestCase
 {

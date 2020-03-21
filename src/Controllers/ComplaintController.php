@@ -1,10 +1,10 @@
 <?php
-namespace oliveready7\LaravelSes\Controllers;
+namespace Juhasev\LaravelSes\Controllers;
 
 use Illuminate\Http\Request;
 use Psr\Http\Message\ServerRequestInterface;
-use oliveready7\LaravelSes\Models\SentEmail;
-use oliveready7\LaravelSes\Models\EmailComplaint;
+use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Models\EmailComplaint;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 

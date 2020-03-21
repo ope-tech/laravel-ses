@@ -1,19 +1,19 @@
 <?php
 
-namespace oliveready7\LaravelSes\Tests\Feature;
+namespace Juhasev\LaravelSes\Tests\Feature;
 
-use oliveready7\LaravelSes\Tests\Feature\FeatureTestCase;
-use oliveready7\LaravelSes\SesMail;
-use oliveready7\LaravelSes\Models\SentEmail;
-use oliveready7\LaravelSes\Models\EmailOpen;
-use oliveready7\LaravelSes\Models\EmailLink;
-use oliveready7\LaravelSes\Models\EmailComplaint;
-use oliveready7\LaravelSes\Mocking\TestMailable;
+use Juhasev\LaravelSes\Tests\Feature\FeatureTestCase;
+use Juhasev\LaravelSes\SesMail;
+use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Models\EmailOpen;
+use Juhasev\LaravelSes\Models\EmailLink;
+use Juhasev\LaravelSes\Models\EmailComplaint;
+use Juhasev\LaravelSes\Mocking\TestMailable;
 use Illuminate\Database\Eloquent\Collection;
 
 class StatsTest extends FeatureTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -249,15 +249,15 @@ class StatsTest extends FeatureTestCase
                 ->send(new TestMailable());
         }
 
-        //make sure all stats are 0 apart from sent emails
-        $this->assertArraySubset([
-            "send_count" => 8,
-            "deliveries" => 0,
-            "opens" => 0,
-            "complaints" => 0,
-            "click_throughs" => 0,
-            "link_popularity" => new Collection()
-        ], SesMail::statsForBatch('welcome_emails'));
+        $statsForBatch = SesMail::statsForBatch('welcome_emails');
+
+        // Make sure all stats are 0 apart except sent_emails
+        $this->assertEquals(8, $statsForBatch['send_count']);
+        $this->assertEquals(0, $statsForBatch['deliveries']);
+        $this->assertEquals(0, $statsForBatch['opens']);
+        $this->assertEquals(0, $statsForBatch['complaints']);
+        $this->assertEquals(0, $statsForBatch['click_throughs']);
+        $this->assertEquals(new Collection(), $statsForBatch['link_popularity']);
 
         //deliver all emails apart from bounced email
         foreach ($emails as $email) {

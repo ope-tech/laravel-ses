@@ -1,6 +1,6 @@
 <?php
 
-namespace oliveready7\LaravelSes\Mocking;
+namespace Juhasev\LaravelSes\Mocking;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;

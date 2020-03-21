@@ -1,9 +1,9 @@
 <?php
 
-namespace oliveready7\LaravelSes\Models;
+namespace Juhasev\LaravelSes\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use oliveready7\LaravelSes\Models\EmailLink;
+use Juhasev\LaravelSes\Models\EmailLink;
 
 class SentEmail extends Model
 {
@@ -19,22 +19,22 @@ class SentEmail extends Model
 
     public function emailOpen()
     {
-        return $this->hasOne('oliveready7\LaravelSes\Models\EmailOpen');
+        return $this->hasOne(EmailOpen::class);
     }
 
     public function emailLinks()
     {
-        return $this->hasMany('oliveready7\LaravelSes\Models\EmailLink');
+        return $this->hasMany(EmailLink::class);
     }
 
     public function emailBounce()
     {
-        return $this->hasOne('oliveready7\LaravelSes\Models\EmailBounce');
+        return $this->hasOne(EmailBounce::class);
     }
 
     public function emailComplaint()
     {
-        return $this->hasOne('oliveready7\LaravelSes\Models\EmailComplaint');
+        return $this->hasOne(EmailComplaint::class);
     }
 
     public static function numberSentForBatch($batchName)

@@ -1,6 +1,6 @@
 <?php
 
-namespace oliveready7\LaravelSes\Exceptions;
+namespace Juhasev\LaravelSes\Exceptions;
 
 use RuntimeException;
 

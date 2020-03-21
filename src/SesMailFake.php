@@ -1,18 +1,18 @@
 <?php
 
-namespace oliveready7\LaravelSes;
+namespace Juhasev\LaravelSes;
 
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Contracts\Mail\Mailable;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use oliveready7\LaravelSes\SesMailerInterface;
-use oliveready7\LaravelSes\TrackingTrait;
+use Juhasev\LaravelSes\SesMailerInterface;
+use Juhasev\LaravelSes\TrackingTrait;
 use Illuminate\Support\Testing\Fakes\PendingMailFake;
 use Carbon\Carbon;
-use oliveready7\LaravelSes\Models\SentEmail;
-use oliveready7\LaravelSes\Services\Stats;
-use oliveready7\LaravelSes\Exceptions\TooManyEmails;
+use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Services\Stats;
+use Juhasev\LaravelSes\Exceptions\TooManyEmails;
 
 class SesMailFake implements SesMailerInterface, Mailer
 {

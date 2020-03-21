@@ -1,13 +1,13 @@
 <?php
-namespace oliveready7\LaravelSes\Tests\Unit;
+namespace Juhasev\LaravelSes\Tests\Unit;
 
-use oliveready7\LaravelSes\SesMail;
-use oliveready7\LaravelSes\LaravelSesServiceProvider;
+use Juhasev\LaravelSes\SesMail;
+use Juhasev\LaravelSes\LaravelSesServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class UnitTestCase extends OrchestraTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->artisan('migrate', ['--database' => 'testbench']);

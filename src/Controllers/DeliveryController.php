@@ -1,9 +1,9 @@
 <?php
-namespace oliveready7\LaravelSes\Controllers;
+namespace Juhasev\LaravelSes\Controllers;
 
 use Illuminate\Http\Request;
 use Psr\Http\Message\ServerRequestInterface;
-use oliveready7\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Models\SentEmail;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
 use GuzzleHttp\Client;

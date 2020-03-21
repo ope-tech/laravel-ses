@@ -1,9 +1,9 @@
 <?php
 
-namespace oliveready7\LaravelSes;
+namespace Juhasev\LaravelSes;
 
-use oliveready7\LaravelSes\Models\SentEmail;
-use oliveready7\LaravelSes\MailProcessor;
+use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\MailProcessor;
 
 trait TrackingTrait
 {

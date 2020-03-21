@@ -1,10 +1,9 @@
 <?php
 
-namespace oliveready7\LaravelSes\Tests\Feature;
+namespace Juhasev\LaravelSes\Tests\Feature;
 
-use oliveready7\LaravelSes\Models\SentEmail;
-use oliveready7\LaravelSes\Models\EmailBounce;
-use oliveready7\LaravelSes\Tests\Feature\FeatureTestCase;
+use Juhasev\LaravelSes\Models\EmailBounce;
+use Juhasev\LaravelSes\Models\SentEmail;
 
 class BounceTrackingTest extends FeatureTestCase
 {
@@ -17,25 +16,28 @@ class BounceTrackingTest extends FeatureTestCase
         ]);
 
         $fakeJson = json_decode($this->exampleSesResponse);
-        $res = $this->json(
+
+        $this->json(
             'POST',
             'laravel-ses/notification/bounce',
             (array)$fakeJson
         );
 
-        //check bounce is logged correctly, note email Amazon returns is set as email rather than email set in sent email
-        $this->assertArraySubset([
-            'type' => 'Permanent',
-            'message_id' => '84b8739d03d2245baed4999232916608@swift.generated',
-            'sent_email_id' => 1,
-            'email' => 'bounce@simulator.amazonses.com'
-        ], EmailBounce::first()->toArray());
+        $bounceRecord = EmailBounce::first()->toArray();
+
+        // Check bounce is logged correctly
+        // Note email Amazon returns is set as email rather than email set in sent email
+        $this->assertEquals('Permanent', $bounceRecord['type']);
+        $this->assertEquals('84b8739d03d2245baed4999232916608@swift.generated', $bounceRecord['message_id']);
+        $this->assertEquals(1, $bounceRecord['sent_email_id']);
+        $this->assertEquals('bounce@simulator.amazonses.com', $bounceRecord['email']);
     }
 
     public function testSubscriptionConfirmation()
     {
         $fakeJson = json_decode($this->exampleSubscriptionResponse);
-        $response = $this->json(
+
+        $this->json(
             'POST',
             '/laravel-ses/notification/bounce',
             (array)$fakeJson
@@ -49,13 +51,15 @@ class BounceTrackingTest extends FeatureTestCase
             'email' => 'eriksen23@gmail.com'
         ]);
 
-
         $fakeJson = json_decode($this->exampleSesResponse);
-        $res = $this->json(
+
+        $this->json(
             'POST',
             'laravel-ses/notification/bounce',
             (array)$fakeJson
         );
+
+        $this->assertNull(EmailBounce::first());
     }
 
     public function testThatBounceIsNotRecordedIfBounceTrackingIsNotSet()
@@ -66,7 +70,8 @@ class BounceTrackingTest extends FeatureTestCase
         ]);
 
         $fakeJson = json_decode($this->exampleSesResponse);
-        $res = $this->json(
+
+        $this->json(
             'POST',
             'laravel-ses/notification/bounce',
             (array)$fakeJson

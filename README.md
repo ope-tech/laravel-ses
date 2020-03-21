@@ -27,19 +27,19 @@ Make sure your mail driver located in app/config/mail.php is set to 'ses'
 Publish public assets
 
 ```
-php artisan vendor:publish --tag=public --force
+php artisan vendor:publish --tag=ses-assets --force
 ```
 
-Migrate the package's database tables
+Publish migrations
 
 ```
-php artisan migrate
+php artisan vendor:publish --tag=ses-migrations --force
 ```
 
 Optionally you can publish the package's config (laravelses.php)
 
 ```
-php artisan vendor:publish --tag=config
+php artisan vendor:publish --tag=ses-config
 ```
 
 Config Options

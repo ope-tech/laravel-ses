@@ -35,7 +35,8 @@
         "paquettg/php-html-parser": "^2.2",
         "aws/aws-php-sns-message-validator": "^1.4",
         "symfony/psr-http-message-bridge": "^2.0",
-        "nyholm/psr7": "^1.0"
+        "nyholm/psr7": "^1.0",
+      "ext-json": "*"
     },
     "require-dev": {
         "mockery/mockery": "^1.0",

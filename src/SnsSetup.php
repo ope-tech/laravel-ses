@@ -10,6 +10,9 @@ class SnsSetup
     protected $ses;
     protected $sns;
 
+    /**
+     * SnsSetup constructor.
+     */
     public function __construct()
     {
         $this->ses = new SesClient([
@@ -30,14 +33,27 @@ class SnsSetup
             'version' => 'latest'
         ]);
     }
-    public function init($protocol)
+
+    /**
+     * Init SNS setup
+     *
+     * @param $protocol
+     */
+    public function init(string $protocol)
     {
         $this->setupNotification('Bounce', $protocol);
         $this->setupNotification('Complaint', $protocol);
         $this->setupNotification('Delivery', $protocol);
     }
 
-    public function setupNotification($type, $protocol)
+    /**
+     * Setup notification
+     *
+     * @param $type
+     * @param $protocol
+     * @return bool
+     */
+    public function setupNotification(string $type, string $protocol)
     {
         $result = $this->sns->createTopic([
             'Name' => "laravel-ses-{$type}"
@@ -68,7 +84,14 @@ class SnsSetup
         return true;
     }
 
-    public function notificationIsSet($type)
+    /**
+     * Check if notification is set for type
+     *
+     * @param string $type
+     * @return bool
+     */
+
+    public function notificationIsSet(string $type): bool
     {
         $result = $this->ses->getIdentityNotificationAttributes(['Identities' => [config('services.ses.domain')]]);
         return isset($result['NotificationAttributes'][config('services.ses.domain')]["{$type}Topic"]);

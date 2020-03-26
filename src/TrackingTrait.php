@@ -3,7 +3,11 @@
 namespace Juhasev\LaravelSes;
 
 use Juhasev\LaravelSes\Models\SentEmail;
-use Juhasev\LaravelSes\MailProcessor;
+use PHPHtmlParser\Exceptions\ChildNotFoundException;
+use PHPHtmlParser\Exceptions\CircularException;
+use PHPHtmlParser\Exceptions\CurlException;
+use PHPHtmlParser\Exceptions\NotLoadedException;
+use PHPHtmlParser\Exceptions\StrictException;
 
 trait TrackingTrait
 {
@@ -14,7 +18,20 @@ trait TrackingTrait
     private $deliveryTracking = false;
     private $batch;
 
-
+    /**
+     * Set tracking
+     *
+     * @param $emailBody
+     * @param SentEmail $sentEmail
+     *
+     * @return string
+     *
+     * @throws ChildNotFoundException
+     * @throws CircularException
+     * @throws CurlException
+     * @throws NotLoadedException
+     * @throws StrictException
+     */
     public function setupTracking($emailBody, SentEmail $sentEmail)
     {
         $mailProcessor = new MailProcessor($sentEmail, $emailBody);
@@ -29,78 +46,144 @@ trait TrackingTrait
         return $mailProcessor->getEmailBody();
     }
 
-    public function setBatch($batch)
+    /**
+     * Set batch identifier
+     *
+     * @param string $batch
+     * @return TrackingTrait
+     */
+    public function setBatch(string $batch): TrackingTrait
     {
         $this->batch = $batch;
         return $this;
     }
 
-    public function getBatch()
+    /**
+     * Get batch identifier
+     *
+     * @return string
+     */
+    public function getBatch(): string
     {
         return $this->batch;
     }
 
-    public function enableOpenTracking()
+    /**
+     * Enable open tracking
+     *
+     * @return TrackingTrait
+     */
+    public function enableOpenTracking() : TrackingTrait
     {
         $this->openTracking = true;
         return $this;
     }
 
-    public function enableLinkTracking()
+    /**
+     * Enable link tracking
+     *
+     * @return TrackingTrait
+     */
+    public function enableLinkTracking(): TrackingTrait
     {
         $this->linkTracking = true;
         return $this;
     }
 
-    public function enableBounceTracking()
+    /**
+     * Enable bounce tracking
+     *
+     * @return TrackingTrait
+     */
+    public function enableBounceTracking(): TrackingTrait
     {
         $this->bounceTracking = true;
         return $this;
     }
 
-    public function enableComplaintTracking()
+    /**
+     * Enable complaint tracking
+     *
+     * @return TrackingTrait
+     */
+    public function enableComplaintTracking(): TrackingTrait
     {
         $this->complaintTracking = true;
         return $this;
     }
 
-    public function enableDeliveryTracking()
+    /**
+     * Enable delivery tracking
+     *
+     * @return TrackingTrait
+     */
+    public function enableDeliveryTracking(): TrackingTrait
     {
         $this->deliveryTracking = true;
         return $this;
     }
 
-    public function disableOpenTracking()
+    /**
+     * Disable open tracking
+     *
+     * @return TrackingTrait
+     */
+    public function disableOpenTracking(): TrackingTrait
     {
         $this->openTracking = false;
         return $this;
     }
 
-    public function disableLinkTracking()
+    /**
+     * Disable link tracking
+     *
+     * @return TrackingTrait
+     */
+    public function disableLinkTracking(): TrackingTrait
     {
         $this->linkTracking = false;
         return $this;
     }
 
-    public function disableBounceTracking()
+    /**
+     * Disable bounce tracking
+     *
+     * @return TrackingTrait
+     */
+    public function disableBounceTracking(): TrackingTrait
     {
         $this->bounceTracking = false;
         return $this;
     }
 
-    public function disableComplaintTracking()
+    /**
+     * Disable complaint tracking
+     *
+     * @return TrackingTrait
+     */
+    public function disableComplaintTracking(): TrackingTrait
     {
         $this->complaintTracking = false;
         return $this;
     }
 
-    public function disableDeliveryTracking()
+    /**
+     * Disable delivery tracking
+     *
+     * @return TrackingTrait
+     */
+    public function disableDeliveryTracking(): TrackingTrait
     {
         $this->deliveryTracking = false;
         return $this;
     }
 
-    public function enableAllTracking()
+    /**
+     * Enable all tracking
+     *
+     * @return TrackingTrait
+     */
+    public function enableAllTracking(): TrackingTrait
     {
         return $this->enableOpenTracking()
             ->enableLinkTracking()
@@ -109,7 +192,12 @@ trait TrackingTrait
             ->enableDeliveryTracking();
     }
 
-    public function disableAllTracking()
+    /**
+     * Disable all tracking
+     *
+     * @return TrackingTrait
+     */
+    public function disableAllTracking(): TrackingTrait
     {
         return $this->disableOpenTracking()
             ->disableLinkTracking()
@@ -118,9 +206,12 @@ trait TrackingTrait
             ->disableDeliveryTracking();
     }
 
-
-
-    public function trackingSettings()
+    /**
+     * Get tracking settings
+     *
+     * @return array
+     */
+    public function trackingSettings(): array
     {
         return [
             'openTracking' => $this->openTracking,

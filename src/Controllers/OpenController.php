@@ -2,14 +2,21 @@
 
 namespace Juhasev\LaravelSes\Controllers;
 
-use Illuminate\Http\Request;
-use Juhasev\LaravelSes\Models\EmailOpen;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Routing\Controller;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Juhasev\LaravelSes\Models\EmailOpen;
 
 class OpenController extends BaseController
 {
+    /**
+     * Tracking pixel fired
+     *
+     * @param $beaconIdentifier
+     * @return JsonResponse|RedirectResponse
+     */
+
     public function open($beaconIdentifier)
     {
         try {
@@ -21,6 +28,7 @@ class OpenController extends BaseController
         $open->opened_at = Carbon::now();
         $open->save();
 
+        // Server the actual image
         return redirect(config('app.url')."/laravel-ses/to.png");
     }
 }

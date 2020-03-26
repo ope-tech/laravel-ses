@@ -2,26 +2,34 @@
 
 namespace Juhasev\LaravelSes;
 
-use Illuminate\Mail\Mailer;
-use Juhasev\LaravelSes\Models\SentEmail;
-use Juhasev\LaravelSes\SesMailerInterface;
 use Carbon\Carbon;
-use Juhasev\LaravelSes\TrackingTrait;
-use Juhasev\LaravelSes\Services\Stats;
+use Illuminate\Mail\Mailer;
 use Juhasev\LaravelSes\Exceptions\TooManyEmails;
+use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Services\Stats;
+
+/**
+ * @method static array setupTracking($emailBody, SentEmail $sentEmail)
+ * @method static SesMailer setBatch($batch)
+ * @method static string getBatch($batch)
+ * @method static SesMailer enableOpenTracking()
+ * @method static SesMailer enableLinkTracking()
+ * @method static SesMailer enableBounceTracking()
+ * @method static SesMailer enableComplaintTracking()
+ * @method static SesMailer enableDeliveryTracking()
+ * @method static SesMailer disableOpenTracking()
+ * @method static SesMailer disableLinkTracking()
+ * @method static SesMailer disableBounceTracking()
+ * @method static SesMailer disableComplaintTracking()
+ * @method static SesMailer disableDeliveryTracking()
+ * @method static SesMailer enableAllTracking()
+ * @method static SesMailer disableAllTracking()
+ * @method static array trackingSettings()
+ */
 
 class SesMailer extends Mailer implements SesMailerInterface
 {
     use TrackingTrait;
-
-    protected function sendSwiftMessage($message)
-    {
-        $sentEmail = $this->initMessage($message); //adds database record for the email
-        $newBody = $this->setupTracking($message->getBody(), $sentEmail); //parses email body and adds tracking functionality
-        $message->setBody($newBody); //sets the new parsed body as email body
-
-        parent::sendSwiftMessage($message);
-    }
 
     //this will be called every time
     public function initMessage($message)
@@ -52,5 +60,14 @@ class SesMailer extends Mailer implements SesMailerInterface
     public function statsForEmail($email)
     {
         return Stats::statsForEmail($email);
+    }
+
+    protected function sendSwiftMessage($message)
+    {
+        $sentEmail = $this->initMessage($message); //adds database record for the email
+        $newBody = $this->setupTracking($message->getBody(), $sentEmail); //parses email body and adds tracking functionality
+        $message->setBody($newBody); //sets the new parsed body as email body
+
+        parent::sendSwiftMessage($message);
     }
 }

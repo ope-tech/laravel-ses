@@ -10,6 +10,11 @@ use Aws\Sns\Exception\InvalidSnsMessageException;
 
 class BaseController extends Controller
 {
+    /**
+     * Validate SNS requests from AWS
+     *
+     * @param ServerRequestInterface $request
+     */
     public function validateSns(ServerRequestInterface $request)
     {
         if (config('laravelses.aws_sns_validator')) {

@@ -2,12 +2,17 @@
 
 namespace Juhasev\LaravelSes\Controllers;
 
-use Illuminate\Routing\Controller;
-use Illuminate\Http\Request;
 use Juhasev\LaravelSes\Models\EmailLink;
 
 class LinkController extends BaseController
 {
+    /**
+     * Link clicked
+     *
+     * @param $linkIdentifier
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+
     public function click($linkIdentifier)
     {
         $link = EmailLink::whereLinkIdentifier($linkIdentifier)->firstOrFail();

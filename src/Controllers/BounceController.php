@@ -1,6 +1,7 @@
 <?php
 namespace Juhasev\LaravelSes\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Psr\Http\Message\ServerRequestInterface;
 use Juhasev\LaravelSes\Models\SentEmail;
@@ -11,24 +12,12 @@ use GuzzleHttp\Client;
 
 class BounceController extends BaseController
 {
-    public function hasBounced($email)
-    {
-        $emailBounces =  EmailBounce::whereEmail($email)->get();
-
-        if ($emailBounces->isEmpty()) {
-            return response()->json([
-                'success' => true,
-                'bounced' => false
-            ]);
-        }
-
-        return response()->json([
-            'success' => true,
-            'bounced' => true,
-            'bounces' => $emailBounces
-        ]);
-    }
-
+    /**
+     * Bounce controller
+     *
+     * @param ServerRequestInterface $request
+     * @return JsonResponse
+     */
 
     public function bounce(ServerRequestInterface $request)
     {
@@ -58,6 +47,7 @@ class BounceController extends BaseController
             $sentEmail = SentEmail::whereMessageId($messageId)
                 ->whereBounceTracking(true)
                 ->firstOrFail();
+
             EmailBounce::create([
                 'message_id' => $messageId,
                 'sent_email_id' => $sentEmail->id,

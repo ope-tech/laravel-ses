@@ -1,7 +1,8 @@
 <?php
+
 namespace Juhasev\LaravelSes\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Juhasev\LaravelSes\Models\SentEmail;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -10,6 +11,13 @@ use GuzzleHttp\Client;
 
 class DeliveryController extends BaseController
 {
+    /**
+     * Delivery request from SNS
+     *
+     * @param ServerRequestInterface $request
+     * @return JsonResponse
+     */
+
     public function delivery(ServerRequestInterface $request)
     {
         $this->validateSns($request);

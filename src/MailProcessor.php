@@ -2,11 +2,16 @@
 
 namespace Juhasev\LaravelSes;
 
-use Ramsey\Uuid\Uuid;
+use Juhasev\LaravelSes\Models\EmailLink;
 use Juhasev\LaravelSes\Models\EmailOpen;
 use Juhasev\LaravelSes\Models\SentEmail;
-use Juhasev\LaravelSes\Models\EmailLink;
 use PHPHtmlParser\Dom;
+use PHPHtmlParser\Exceptions\ChildNotFoundException;
+use PHPHtmlParser\Exceptions\CircularException;
+use PHPHtmlParser\Exceptions\CurlException;
+use PHPHtmlParser\Exceptions\NotLoadedException;
+use PHPHtmlParser\Exceptions\StrictException;
+use Ramsey\Uuid\Uuid;
 
 class MailProcessor
 {
@@ -14,28 +19,51 @@ class MailProcessor
     protected $batch;
     protected $sentEmail;
 
-    public function __construct(SentEmail $sentEmail, $emailBody)
+    /**
+     * MailProcessor constructor.
+     *
+     * @param SentEmail $sentEmail
+     * @param string $emailBody
+     */
+    public function __construct(SentEmail $sentEmail, string $emailBody)
     {
         $this->setEmailBody($emailBody);
         $this->setSentEmail($sentEmail);
     }
 
-    public function getEmailBody()
+    /**
+     * Get email body
+     * @return string
+     */
+    public function getEmailBody(): string
     {
         return $this->emailBody;
     }
 
-    private function setEmailBody($body)
+    /**
+     * Set email body
+     * @param string $body
+     */
+    private function setEmailBody(string $body): void
     {
         $this->emailBody = $body;
     }
 
+    /**
+     * Set email sent
+     * @param SentEmail $email
+     */
     private function setSentEmail(SentEmail $email)
     {
         $this->sentEmail = $email;
     }
 
-    public function openTracking()
+    /**
+     * Open tracking
+     * @return MailProcessor
+     * @throws \Exception
+     */
+    public function openTracking(): MailProcessor
     {
         $beaconIdentifier = Uuid::uuid4()->toString();
         $beaconUrl = config('app.url') . "/laravel-ses/beacon/$beaconIdentifier";
@@ -53,7 +81,17 @@ class MailProcessor
         return $this;
     }
 
-    public function linkTracking()
+    /**
+     * Link tracking
+     *
+     * @return MailProcessor
+     * @throws ChildNotFoundException
+     * @throws CircularException
+     * @throws CurlException
+     * @throws NotLoadedException
+     * @throws StrictException
+     */
+    public function linkTracking(): MailProcessor
     {
         $dom = new Dom;
         $dom->load($this->getEmailBody());
@@ -66,12 +104,18 @@ class MailProcessor
         return $this;
     }
 
-    private function createAppLink(string $originalUrl)
+    /**
+     * Create app link
+     *
+     * @param string $originalUrl
+     * @return string
+     * @throws \Exception
+     */
+    private function createAppLink(string $originalUrl): string
     {
         $linkIdentifier = Uuid::uuid4()->toString();
 
-        //first create the link
-        $link = EmailLink::create([
+        EmailLink::create([
             'sent_email_id' => $this->sentEmail->id,
             'batch' => $this->sentEmail->batch,
             'link_identifier' => $linkIdentifier,

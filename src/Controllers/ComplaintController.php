@@ -1,33 +1,22 @@
 <?php
+
 namespace Juhasev\LaravelSes\Controllers;
 
-use Illuminate\Http\Request;
-use Psr\Http\Message\ServerRequestInterface;
-use Juhasev\LaravelSes\Models\SentEmail;
-use Juhasev\LaravelSes\Models\EmailComplaint;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use Illuminate\Http\JsonResponse;
+use Juhasev\LaravelSes\Models\EmailComplaint;
+use Juhasev\LaravelSes\Models\SentEmail;
+use Psr\Http\Message\ServerRequestInterface;
 
 class ComplaintController extends BaseController
 {
-    public function hasComplained($email)
-    {
-        $emailComplaints =  EmailComplaint::whereEmail($email)->get();
-
-        if ($emailComplaints->isEmpty()) {
-            return response()->json([
-                'success' => true,
-                'complained' => false
-            ]);
-        }
-
-        return response()->json([
-            'success' => true,
-            'complained' => true,
-            'complaints' => $emailComplaints
-        ]);
-    }
-
+    /**
+     * Complaint from SNS
+     *
+     * @param ServerRequestInterface $request
+     * @return JsonResponse
+     */
     public function complaint(ServerRequestInterface $request)
     {
         $this->validateSns($request);

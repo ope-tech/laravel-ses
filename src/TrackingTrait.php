@@ -50,9 +50,9 @@ trait TrackingTrait
      * Set batch identifier
      *
      * @param string $batch
-     * @return TrackingTrait
+     * @return SesMailerInterface
      */
-    public function setBatch(string $batch): TrackingTrait
+    public function setBatch(string $batch): SesMailerInterface
     {
         $this->batch = $batch;
         return $this;
@@ -71,9 +71,9 @@ trait TrackingTrait
     /**
      * Enable open tracking
      *
-     * @return TrackingTrait
+     * @return SesMailerInterface
      */
-    public function enableOpenTracking() : TrackingTrait
+    public function enableOpenTracking(): SesMailerInterface
     {
         $this->openTracking = true;
         return $this;
@@ -82,9 +82,9 @@ trait TrackingTrait
     /**
      * Enable link tracking
      *
-     * @return TrackingTrait
+     * @return SesMailerInterface
      */
-    public function enableLinkTracking(): TrackingTrait
+    public function enableLinkTracking(): SesMailerInterface
     {
         $this->linkTracking = true;
         return $this;
@@ -93,9 +93,9 @@ trait TrackingTrait
     /**
      * Enable bounce tracking
      *
-     * @return TrackingTrait
+     * @return SesMailerInterface
      */
-    public function enableBounceTracking(): TrackingTrait
+    public function enableBounceTracking(): SesMailerInterface
     {
         $this->bounceTracking = true;
         return $this;
@@ -104,9 +104,9 @@ trait TrackingTrait
     /**
      * Enable complaint tracking
      *
-     * @return TrackingTrait
+     * @return SesMailerInterface
      */
-    public function enableComplaintTracking(): TrackingTrait
+    public function enableComplaintTracking(): SesMailerInterface
     {
         $this->complaintTracking = true;
         return $this;
@@ -115,9 +115,9 @@ trait TrackingTrait
     /**
      * Enable delivery tracking
      *
-     * @return TrackingTrait
+     * @return SesMailerInterface
      */
-    public function enableDeliveryTracking(): TrackingTrait
+    public function enableDeliveryTracking(): SesMailerInterface
     {
         $this->deliveryTracking = true;
         return $this;
@@ -126,9 +126,9 @@ trait TrackingTrait
     /**
      * Disable open tracking
      *
-     * @return TrackingTrait
+     * @return SesMailerInterface
      */
-    public function disableOpenTracking(): TrackingTrait
+    public function disableOpenTracking(): SesMailerInterface
     {
         $this->openTracking = false;
         return $this;
@@ -137,9 +137,9 @@ trait TrackingTrait
     /**
      * Disable link tracking
      *
-     * @return TrackingTrait
+     * @return SesMailerInterface
      */
-    public function disableLinkTracking(): TrackingTrait
+    public function disableLinkTracking(): SesMailerInterface
     {
         $this->linkTracking = false;
         return $this;
@@ -148,9 +148,9 @@ trait TrackingTrait
     /**
      * Disable bounce tracking
      *
-     * @return TrackingTrait
+     * @return SesMailerInterface
      */
-    public function disableBounceTracking(): TrackingTrait
+    public function disableBounceTracking(): SesMailerInterface
     {
         $this->bounceTracking = false;
         return $this;
@@ -159,9 +159,9 @@ trait TrackingTrait
     /**
      * Disable complaint tracking
      *
-     * @return TrackingTrait
+     * @return SesMailerInterface
      */
-    public function disableComplaintTracking(): TrackingTrait
+    public function disableComplaintTracking(): SesMailerInterface
     {
         $this->complaintTracking = false;
         return $this;
@@ -170,9 +170,9 @@ trait TrackingTrait
     /**
      * Disable delivery tracking
      *
-     * @return TrackingTrait
+     * @return SesMailerInterface
      */
-    public function disableDeliveryTracking(): TrackingTrait
+    public function disableDeliveryTracking(): SesMailerInterface
     {
         $this->deliveryTracking = false;
         return $this;
@@ -181,9 +181,9 @@ trait TrackingTrait
     /**
      * Enable all tracking
      *
-     * @return TrackingTrait
+     * @return SesMailerInterface
      */
-    public function enableAllTracking(): TrackingTrait
+    public function enableAllTracking(): SesMailerInterface
     {
         return $this->enableOpenTracking()
             ->enableLinkTracking()
@@ -195,9 +195,9 @@ trait TrackingTrait
     /**
      * Disable all tracking
      *
-     * @return TrackingTrait
+     * @return SesMailerInterface
      */
-    public function disableAllTracking(): TrackingTrait
+    public function disableAllTracking(): SesMailerInterface
     {
         return $this->disableOpenTracking()
             ->disableLinkTracking()

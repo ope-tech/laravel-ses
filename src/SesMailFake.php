@@ -2,8 +2,16 @@
 
 namespace Juhasev\LaravelSes;
 
+use Closure;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Contracts\Mail\Mailable;
+use Illuminate\Mail\PendingMail;
+use Illuminate\Support\Collection;
+use PHPHtmlParser\Exceptions\ChildNotFoundException;
+use PHPHtmlParser\Exceptions\CircularException;
+use PHPHtmlParser\Exceptions\CurlException;
+use PHPHtmlParser\Exceptions\NotLoadedException;
+use PHPHtmlParser\Exceptions\StrictException;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Juhasev\LaravelSes\SesMailerInterface;
@@ -17,6 +25,20 @@ use Juhasev\LaravelSes\Exceptions\TooManyEmails;
 class SesMailFake implements SesMailerInterface, Mailer
 {
     use TrackingTrait;
+
+    /**
+     * All of the mailables that have been sent.
+     *
+     * @var array
+     */
+
+    protected $mailables = [];
+    /**
+     * All of the mailables that have been queued.
+     *
+     * @var array
+     */
+    protected $queuedMailables = [];
 
     //this will be called every time
     public function initMessage($view)
@@ -39,30 +61,18 @@ class SesMailFake implements SesMailerInterface, Mailer
         return $sentEmail;
     }
 
-    public function statsForBatch($batchName)
+    public function statsForBatch(string $batchName): array
     {
         return Stats::statsForBatch($batchName);
     }
 
-    public function statsForEmail($email)
+    public function statsForEmail(string $email): array
     {
         return Stats::statsForEmail($email);
     }
 
     //COPY FAKE METHODS SO THINGS LIKE ASSERT SENT ETC WORK
 
-    /**
-     * All of the mailables that have been sent.
-     *
-     * @var array
-     */
-    protected $mailables = [];
-    /**
-     * All of the mailables that have been queued.
-     *
-     * @var array
-     */
-    protected $queuedMailables = [];
     /**
      * Assert if a mailable was sent based on a truth-test callback.
      *
@@ -176,7 +186,7 @@ class SesMailFake implements SesMailerInterface, Mailer
      *
      * @param  string  $mailable
      * @param  callable|null  $callback
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function sent($mailable, $callback = null)
     {
@@ -205,7 +215,7 @@ class SesMailFake implements SesMailerInterface, Mailer
      *
      * @param  string  $mailable
      * @param  callable|null  $callback
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function queued($mailable, $callback = null)
     {
@@ -233,7 +243,7 @@ class SesMailFake implements SesMailerInterface, Mailer
      * Get all of the mailed mailables for a given type.
      *
      * @param  string  $type
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     protected function mailablesOf($type)
     {
@@ -245,7 +255,7 @@ class SesMailFake implements SesMailerInterface, Mailer
      * Get all of the mailed mailables for a given type.
      *
      * @param  string  $type
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     protected function queuedMailablesOf($type)
     {
@@ -257,7 +267,7 @@ class SesMailFake implements SesMailerInterface, Mailer
      * Begin the process of mailing a mailable class instance.
      *
      * @param  mixed  $users
-     * @return \Illuminate\Mail\PendingMail
+     * @return PendingMail
      */
     public function to($users)
     {
@@ -267,7 +277,7 @@ class SesMailFake implements SesMailerInterface, Mailer
      * Begin the process of mailing a mailable class instance.
      *
      * @param  mixed  $users
-     * @return \Illuminate\Mail\PendingMail
+     * @return PendingMail
      */
     public function bcc($users)
     {
@@ -277,20 +287,26 @@ class SesMailFake implements SesMailerInterface, Mailer
      * Send a new message when only a raw text part.
      *
      * @param  string  $text
-     * @param  \Closure|string  $callback
+     * @param  Closure|string  $callback
      * @return int
      */
     public function raw($text, $callback)
     {
         //
     }
+
     /**
      * Send a new message using a view.
      *
-     * @param  string|array  $view
-     * @param  array  $data
-     * @param  \Closure|string  $callback
+     * @param string|array $view
+     * @param array $data
+     * @param Closure|string $callback
      * @return void
+     * @throws ChildNotFoundException
+     * @throws CircularException
+     * @throws CurlException
+     * @throws NotLoadedException
+     * @throws StrictException
      */
     public function send($view, array $data = [], $callback = null)
     {

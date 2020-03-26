@@ -8,25 +8,6 @@ use Juhasev\LaravelSes\Exceptions\TooManyEmails;
 use Juhasev\LaravelSes\Models\SentEmail;
 use Juhasev\LaravelSes\Services\Stats;
 
-/**
- * @method static array setupTracking($emailBody, SentEmail $sentEmail)
- * @method static SesMailer setBatch($batch)
- * @method static string getBatch($batch)
- * @method static SesMailer enableOpenTracking()
- * @method static SesMailer enableLinkTracking()
- * @method static SesMailer enableBounceTracking()
- * @method static SesMailer enableComplaintTracking()
- * @method static SesMailer enableDeliveryTracking()
- * @method static SesMailer disableOpenTracking()
- * @method static SesMailer disableLinkTracking()
- * @method static SesMailer disableBounceTracking()
- * @method static SesMailer disableComplaintTracking()
- * @method static SesMailer disableDeliveryTracking()
- * @method static SesMailer enableAllTracking()
- * @method static SesMailer disableAllTracking()
- * @method static array trackingSettings()
- */
-
 class SesMailer extends Mailer implements SesMailerInterface
 {
     use TrackingTrait;
@@ -52,12 +33,12 @@ class SesMailer extends Mailer implements SesMailerInterface
         return $sentEmail;
     }
 
-    public function statsForBatch($batchName)
+    public function statsForBatch(string $batchName): array
     {
         return Stats::statsForBatch($batchName);
     }
 
-    public function statsForEmail($email)
+    public function statsForEmail(string $email): array
     {
         return Stats::statsForEmail($email);
     }

@@ -3,7 +3,7 @@
 namespace Juhasev\LaravelSes\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Juhasev\LaravelSes\Models\EmailLink;
+use Illuminate\Support\Facades\DB;
 
 class SentEmail extends Model
 {
@@ -95,7 +95,7 @@ class SentEmail extends Model
                     ->where('laravel_ses_email_links.clicked', '=', true);
             })
             ->select('email')
-            ->count(\DB::raw('DISTINCT(email)'));
+            ->count(DB::raw('DISTINCT(email)'));
     }
 
     public static function getLinkPopularityOrder($batchName): array

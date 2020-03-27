@@ -117,24 +117,25 @@ SesMail::statsForBatch('welcome_emails');
     "bounces" => 1,
     "complaints" => 2,
     "click_throughs" => 3,
-    "link_popularity" => collect([
+    "link_popularity" => [
         "https://welcome.page" => [
             "clicks" => 3
         ],
         "https://facebook.com/brand" => [
             "clicks" => 1
         ]
-    ])
+    ]
 ]
 ```
 You can also use other facade methods as well:
 
+```
 $emailBounces =  EmailBounce::whereEmail($email)->get();
 $emailComplaints =  EmailComplaint::whereEmail($email)->get();
 SesMail::statsForEmail($email)];
 
 ```
-
+### Terminology
 Send count = number of emails that were attempted
 
 Deliveries = number of emails that were delivered

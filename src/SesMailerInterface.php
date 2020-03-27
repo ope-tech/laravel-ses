@@ -16,7 +16,7 @@ interface SesMailerInterface
 
     public function setBatch(string $batch): SesMailerInterface;
 
-    public function getBatch(): string;
+    public function getBatch();
 
     public function enableOpenTracking(): SesMailerInterface;
 

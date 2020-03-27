@@ -2,14 +2,12 @@
 
 namespace Juhasev\LaravelSes;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Mail\MailServiceProvider;
 use Illuminate\Support\Arr;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
 class LaravelSesServiceProvider extends ServiceProvider
 {
-
     /**
      * Bootstrap any application services.
      *
@@ -20,7 +18,7 @@ class LaravelSesServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/routes.php');
         $this->loadViewsFrom(__DIR__.'/Mocking/Views', 'LaravelSes');
 
-        //$this->loadMigrationsFrom(__DIR__.'/Migrations');
+        $this->loadMigrationsFrom(__DIR__.'/Migrations');
 
         $this->publishes([
            __DIR__.'/Assets' => public_path('laravel-ses'),
@@ -56,6 +54,10 @@ class LaravelSesServiceProvider extends ServiceProvider
         $this->registerIlluminateMailer();
     }
 
+    /**
+     * Register SesMailer facade
+     *
+     */
     protected function registerIlluminateMailer()
     {
         $this->app->singleton('SesMailer', function ($app) {
@@ -85,6 +87,13 @@ class LaravelSesServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Set global address
+     *
+     * @param $mailer
+     * @param array $config
+     * @param $type
+     */
     protected function setGlobalAddress($mailer, array $config, $type)
     {
         $address = Arr::get($config, $type);

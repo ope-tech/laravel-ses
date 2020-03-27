@@ -98,7 +98,7 @@ class SentEmail extends Model
             ->count(\DB::raw('DISTINCT(email)'));
     }
 
-    public static function getLinkPopularityOrder($batchName)
+    public static function getLinkPopularityOrder($batchName): array
     {
         return self::where('laravel_ses_sent_emails.batch', $batchName)
             ->join('laravel_ses_email_links', function ($join) {
@@ -111,6 +111,7 @@ class SentEmail extends Model
             ->map(function ($linkClicks) {
                 return ['clicks' => $linkClicks->count()];
             })
-            ->sortByDesc('clicks');
+            ->sortByDesc('clicks')
+            ->toArray();
     }
 }

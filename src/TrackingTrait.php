@@ -34,6 +34,8 @@ trait TrackingTrait
      */
     public function setupTracking($emailBody, SentEmail $sentEmail)
     {
+        $batch = null;
+
         $mailProcessor = new MailProcessor($sentEmail, $emailBody);
 
         if ($this->openTracking) {
@@ -63,7 +65,7 @@ trait TrackingTrait
      *
      * @return string
      */
-    public function getBatch(): string
+    public function getBatch()
     {
         return $this->batch;
     }

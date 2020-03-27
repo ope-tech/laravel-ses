@@ -121,14 +121,14 @@ class BatchEmailTest extends FeatureTestCase
             "bounces" => 1,
             "complaints" => 2,
             "click_throughs" => 3,
-            "link_popularity" => collect([
+            "link_popularity" => [
                 "https://google.com" => [
                     "clicks" => 3
                 ],
                 "https://superficial.io" => [
                     "clicks" => 1
                 ]
-            ])
+            ]
         ], $stats);
     }
 }

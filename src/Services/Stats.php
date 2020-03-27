@@ -20,28 +20,29 @@ class Stats
                 'bounces' => EmailBounce::whereEmail($email)->whereNotNull('bounced_at')->count(),
                 'complaints' => EmailComplaint::whereEmail($email)->whereNotNull('complained_at')->count(),
                 'click_throughs' => EmailLink::join(
-                        'laravel_ses_sent_emails',
-                        'laravel_ses_sent_emails.id',
-                        'laravel_ses_email_links.sent_email_id'
-                    )
+                    'laravel_ses_sent_emails',
+                    'laravel_ses_sent_emails.id',
+                    'laravel_ses_email_links.sent_email_id'
+                )
                     ->where('laravel_ses_sent_emails.email', '=', $email)
                     ->whereClicked(true)
                     ->count(\DB::raw('DISTINCT(laravel_ses_sent_emails.id)')) // if a user clicks two different links on one campaign, only one is counted
             ],
             'data' => [
-                'sent_emails' => SentEmail::whereEmail($email)->get(),
-                'deliveries' => SentEmail::whereEmail($email)->whereNotNull('delivered_at')->get(),
-                'opens' => EmailOpen::whereEmail($email)->whereNotNull('opened_at')->get(),
-                'bounces' => EmailComplaint::whereEmail($email)->whereNotNull('bounced_at')->get(),
-                'complaints' => EmailComplaint::whereEmail($email)->whereNotNull('complained_at')->get(),
+                'sent_emails' => SentEmail::whereEmail($email)->get()->toArray(),
+                'deliveries' => SentEmail::whereEmail($email)->whereNotNull('delivered_at')->get()->toArray(),
+                'opens' => EmailOpen::whereEmail($email)->whereNotNull('opened_at')->get()->toArray(),
+                'bounces' => EmailComplaint::whereEmail($email)->whereNotNull('bounced_at')->get()->toArray(),
+                'complaints' => EmailComplaint::whereEmail($email)->whereNotNull('complained_at')->get()->toArray(),
                 'click_throughs' => EmailLink::join(
                     'laravel_ses_sent_emails',
                     'laravel_ses_sent_emails.id',
                     'laravel_ses_email_links.sent_email_id'
                 )
-                ->where('laravel_ses_sent_emails.email', '=', $email)
-                ->whereClicked(true)
-                ->get()
+                    ->where('laravel_ses_sent_emails.email', '=', $email)
+                    ->whereClicked(true)
+                    ->get()
+                    ->toArray()
             ]
         ];
     }

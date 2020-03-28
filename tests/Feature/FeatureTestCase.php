@@ -1,6 +1,7 @@
 <?php
 namespace Juhasev\LaravelSes\Tests\Feature;
 
+use Illuminate\Foundation\Application;
 use Juhasev\LaravelSes\SesMail;
 use Juhasev\LaravelSes\LaravelSesServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
@@ -10,12 +11,15 @@ class FeatureTestCase extends OrchestraTestCase
     public function setUp(): void
     {
         parent::setUp();
+
         $this->artisan('migrate', ['--database' => 'testbench']);
     }
+
     /**
      * Load package service provider
-     * @param  \Illuminate\Foundation\Application $app
-     * @return lasselehtinen\MyPackage\MyPackageServiceProvider
+     *
+     * @param Application $app
+     * @return array
      */
     protected function getPackageProviders($app)
     {
@@ -23,7 +27,7 @@ class FeatureTestCase extends OrchestraTestCase
     }
     /**
      * Load package alias
-     * @param  \Illuminate\Foundation\Application $app
+     * @param  Application $app
      * @return array
      */
     protected function getPackageAliases($app)

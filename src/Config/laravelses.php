@@ -1,7 +1,14 @@
 <?php
 
 return [
-    'aws_sns_validator' => false,
+
+    /**
+     * Whether to use AWS SNS validator. This is probably a good idead
+     *
+     * https://github.com/aws/aws-php-sns-message-validator
+     */
+
+    'aws_sns_validator' => env('SES_SNS_VALIDATOR', false),
 
     /**
      * Enable debug mode. In this mode you can test incoming AWS routes
@@ -10,5 +17,5 @@ return [
      * NOTE: You cannot run package unit tests with this enabled!
      */
 
-    'debug' => false,
+    'debug' => env('DEBUG', false)
 ];

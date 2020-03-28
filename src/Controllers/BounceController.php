@@ -59,7 +59,7 @@ class BounceController extends BaseController
     {
         if ($this->debug()) return;
 
-        $messageId = $this->getMessageId();
+        $messageId = $this->parseMessageId($message);
 
         try {
             $sentEmail = SentEmail::whereMessageId($messageId)

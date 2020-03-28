@@ -61,8 +61,6 @@ class DeliveryController extends BaseController
     {
         if ($this->debug()) return;
 
-        Log::debug("Persisting delivery");
-
         $messageId = $this->parseMessageId($message);
 
         $deliveryTime = Carbon::parse($message->delivery

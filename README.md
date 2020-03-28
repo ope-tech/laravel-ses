@@ -48,14 +48,16 @@ Publish migrations
 php artisan vendor:publish --tag=ses-migrations --force
 ```
 
-Optionally you can publish the package's config (laravelses.php)
+Publish the package's config (laravelses.php)
 
 ```
 php artisan vendor:publish --tag=ses-config
 ```
 
 Config Options
+
 - aws_sns_validator - whether the package uses AWS's SNS validator for inbound SNS requests. Default = false
+- debug - Debug mode that logs requests and does not persist bounces
 
 https://github.com/aws/aws-php-sns-message-validator
 
@@ -211,3 +213,30 @@ Complaints = number of people that put email into spam
 Click throughs = number of people that clicked at least one link in your email
 
 Link Popularity = number of unique clicks on each link in the email, ordered by the most clicked.
+
+## Development
+
+Clone repo to your project under /packages
+
+Setup Composer.json to resolve classes from your dev folder:
+
+```json
+ "autoload": {
+    "psr-4": {
+      "App\\": "app/",
+      "Juhasev\\LaravelSes\\": "packages/juhasev/laravel-ses/src"
+    }
+  },
+```
+
+Require
+
+```
+composer require juhasev/laravel-ses:dev-master
+```
+
+To run unit tests execute
+```bash
+phpunit
+```
+

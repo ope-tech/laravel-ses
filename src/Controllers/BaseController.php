@@ -95,7 +95,7 @@ class BaseController extends Controller
     protected function logMessage($message): void
     {
         if ($this->debug()) {
-            Log::info("LARAVEL-SES: " . $message);
+            Log::debug(config('laravelses.log_prefix').": " . $message);
         }
     }
 
@@ -108,6 +108,7 @@ class BaseController extends Controller
     protected function logResult($result): void
     {
         if ($this->debug()) {
+            $this->logMessage('Result object:');
             Log::debug(print_r($result, true));
         }
     }

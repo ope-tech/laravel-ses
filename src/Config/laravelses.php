@@ -17,5 +17,11 @@ return [
      * NOTE: You cannot run package unit tests with this enabled!
      */
 
-    'debug' => env('DEBUG', false)
+    'debug' => env('SES_DEBUG', false),
+
+    /**
+     * Log prefix for all logged messages. Set to whatever you want for convenient debugging
+     */
+
+    'log_prefix' => 'LARAVEL-SES'
 ];

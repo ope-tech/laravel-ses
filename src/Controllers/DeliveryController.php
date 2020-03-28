@@ -3,11 +3,13 @@
 namespace Juhasev\LaravelSes\Controllers;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\ServerRequestInterface;
 use Juhasev\LaravelSes\Models\SentEmail;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use stdClass;
 
 class DeliveryController extends BaseController
 {
@@ -24,34 +26,60 @@ class DeliveryController extends BaseController
 
         $result = json_decode(request()->getContent());
 
-        //if amazon is trying to confirm the subscription
-        if (isset($result->Type) && $result->Type == 'SubscriptionConfirmation') {
-            $client = new Client;
-            $client->get($result->SubscribeURL);
+        $this->logResult($request);
 
-            return response()->json(['success' => true]);
+        if ($this->isSubscriptionConfirmation($result)) {
+
+            $this->confirmSubscription($result);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Delivery subscription confirmed'
+            ]);
         }
 
+        // TODO: This can fail
         $message = json_decode($result->Message);
 
-        $messageId = $message
-            ->mail
-            ->commonHeaders
-            ->messageId;
+        $this->persistDelivery($message);
 
-        $messageId  = str_replace('<', '', $messageId);
-        $messageId = str_replace('>', '', $messageId);
+        $this->logMessage("Complaint processed for: " . $message->mail->destination[0]);
 
-        $deliveryTime =  Carbon::parse($message->delivery
+        return response()->json([
+            'success' => true,
+            'message' => 'Delivery notification processed'
+        ]);
+    }
+
+    /**
+     * Persist delivery record to the database
+     *
+     * @param stdClass $message
+     */
+
+    protected function persistDelivery(stdClass $message): void
+    {
+        if ($this->debug()) {
+            Log::debug("Skipped persisting delivery");
+            return;
+        }
+
+        Log::debug("Persisting delivery");
+
+        $messageId = $this->parseMessageId($message);
+
+        $deliveryTime = Carbon::parse($message->delivery
             ->timestamp);
 
         try {
             $sentEmail = SentEmail::whereMessageId($messageId)
                 ->whereDeliveryTracking(true)
                 ->firstOrFail();
+
             $sentEmail->setDeliveredAt($deliveryTime);
+
         } catch (ModelNotFoundException $e) {
-            //delivery won't be logged if this hits
+            Log::error('Could not find laravel_ses_email_complaints table. Did you run migrations?');
         }
     }
 }

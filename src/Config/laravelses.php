@@ -10,5 +10,5 @@ return [
      * NOTE: You cannot run package unit tests with this enabled!
      */
 
-    'debug' => true,
+    'debug' => false,
 ];

@@ -9,12 +9,16 @@ package can be used with current versions of Laravel.
 All packages have been updated and all tests are currently passing. Please note that this package is still experimental 
 and going thru extensive testing with Laravel 6.x.
 
+## Installation
 Install via composer
 
 Add to composer.json
 ```
 composer require juhasev/laravel-ses
+composer require aws/aws-php-sns-message-validator (optional)
 ```
+
+## Laravel configuration
 Make sure your app/config/services.php has SES values set
 
 ```
@@ -23,6 +27,7 @@ Make sure your app/config/services.php has SES values set
     'secret' => your_ses_secret,
     'domain' => your_ses_domain,
     'region' => your_ses_region,
+    'end_point' => your laravel app domain
 ],
 ```
 
@@ -54,14 +59,73 @@ Config Options
 
 https://github.com/aws/aws-php-sns-message-validator
 
+## AWS Configuration
+If you are new to using SES Notification this article is a good starting point
+
+https://docs.aws.amazon.com/sns/latest/dg/sns-http-https-endpoint-as-subscriber.html
+
+At minimum you need to setup assign the IAM user you have selected access rights to send email via SES and to received
+SNS notifications.
+
+AWS CloudFormation policy example:
+```
+  ApplicationSNSPolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      Description: "Policy for sending subscribing to SNS bounce notifications"
+      Path: "/"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - sns:CreateTopic
+              - sns:DeleteTopic
+              - sns:Subscribe
+              - sns:Unsubscribe
+            Resource:
+              - 'arn:aws:sns:*'
+
+  ApplicationSESPolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      Description: "Policy for creating SES bounce notification"
+      Path: "/"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - ses:*
+            Resource:
+              - '*'
+
+```
+
+Once policies are defined they need to added to the configured IAM user. 
+
+```
+  # AWS PHP API User
+  APIUser:
+    Type: "AWS::IAM::User"
+    Properties:
+      ManagedPolicyArns:
+        - !Ref ApplicationSNSPolicy
+        - !Ref ApplicationSESPolicy
+      UserName: staging-user
+```
+
 Run command in **production** to setup Amazon email notifications to track bounces, complaints and deliveries. 
 Make sure in your configuration your app URL is set correctly.
 
-If your application uses the http protocol instead of https add the --http flag to this command
+If your application uses the http protocol instead of https add the --http flag to this command. 
 
 ```
 php artisan setup:sns
 ```
+
+This commands automatically configures SES domain to send SNS notifications that
+trigger call backs to your Laravel application.
 
 ## Usage
 

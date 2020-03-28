@@ -35,7 +35,7 @@ class ComplaintController extends BaseController
 
         if ($this->isSubscriptionConfirmation($result)) {
 
-           $this->confirmSubscription($result);
+            $this->confirmSubscription($result);
 
             return response()->json([
                 'success' => true,
@@ -65,28 +65,27 @@ class ComplaintController extends BaseController
      */
 
     private function persistComplaint($message)
-    {  
-        if (!$this->debug()) {
-            
-            $messageId = $this->parseMessageId($message);
+    {
+        if ($this->debug()) return;
 
-            try {
-                $sentEmail = SentEmail::whereMessageId($messageId)
-                    ->whereComplaintTracking(true)
-                    ->firstOrFail();
+        $messageId = $this->parseMessageId($message);
 
-                EmailComplaint::create([
-                    'message_id' => $messageId,
-                    'sent_email_id' => $sentEmail->id,
-                    'type' => $message->complaint->complaintFeedbackType,
-                    'email' => $message->mail->destination[0],
-                    'complained_at' => Carbon::parse($message->mail->timestamp)
-                ]);
-                
-            } catch (ModelNotFoundException $e) {
+        try {
+            $sentEmail = SentEmail::whereMessageId($messageId)
+                ->whereComplaintTracking(true)
+                ->firstOrFail();
 
-                Log::error('Could not find laravel_ses_email_complaints table. Did you run migrations?');
-            }
+            EmailComplaint::create([
+                'message_id' => $messageId,
+                'sent_email_id' => $sentEmail->id,
+                'type' => $message->complaint->complaintFeedbackType,
+                'email' => $message->mail->destination[0],
+                'complained_at' => Carbon::parse($message->mail->timestamp)
+            ]);
+
+        } catch (ModelNotFoundException $e) {
+
+            Log::error('Could not find laravel_ses_email_complaints table. Did you run migrations?');
         }
     }
 }

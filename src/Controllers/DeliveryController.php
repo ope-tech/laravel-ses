@@ -59,10 +59,7 @@ class DeliveryController extends BaseController
 
     protected function persistDelivery(stdClass $message): void
     {
-        if ($this->debug()) {
-            Log::debug("Skipped persisting delivery");
-            return;
-        }
+        if ($this->debug()) return;
 
         Log::debug("Persisting delivery");
 
@@ -79,7 +76,7 @@ class DeliveryController extends BaseController
             $sentEmail->setDeliveredAt($deliveryTime);
 
         } catch (ModelNotFoundException $e) {
-            Log::error('Could not find laravel_ses_email_complaints table. Did you run migrations?');
+            Log::error('Could not find laravel_ses_sent_emails table. Did you run migrations?');
         }
     }
 }

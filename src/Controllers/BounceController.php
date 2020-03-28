@@ -1,14 +1,14 @@
 <?php
+
 namespace Juhasev\LaravelSes\Controllers;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Psr\Http\Message\ServerRequestInterface;
-use Juhasev\LaravelSes\Models\SentEmail;
-use Juhasev\LaravelSes\Models\EmailBounce;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use Juhasev\LaravelSes\Models\EmailBounce;
+use Juhasev\LaravelSes\Models\SentEmail;
+use Psr\Http\Message\ServerRequestInterface;
 
 class BounceController extends BaseController
 {
@@ -25,23 +25,41 @@ class BounceController extends BaseController
 
         $result = json_decode(request()->getContent());
 
-        //if amazon is trying to confirm the subscription
-        if (isset($result->Type) && $result->Type == 'SubscriptionConfirmation') {
-            $client = new Client;
-            $client->get($result->SubscribeURL);
+        $this->logResult($request);
 
-            return response()->json(['success' => true]);
+        if ($this->isSubscriptionConfirmation($result)) {
+
+            $this->confirmSubscription($result);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Delivery subscription confirmed'
+            ]);
         }
 
         $message = json_decode($result->Message);
 
-        $messageId = $message
-            ->mail
-            ->commonHeaders
-            ->messageId;
+        $this->persistBounce($message);
 
-        $messageId  = str_replace('<', '', $messageId);
-        $messageId = str_replace('>', '', $messageId);
+        $this->logMessage("Bounce processed for: " . $message->mail->destination[0]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Delivery subscription confirmed'
+        ]);
+    }
+
+    /**
+     * Persis bounce
+     *
+     * @param $message
+     */
+
+    protected function persistBounce($message): void
+    {
+        if ($this->debug()) return;
+
+        $messageId = $this->getMessageId();
 
         try {
             $sentEmail = SentEmail::whereMessageId($messageId)
@@ -55,8 +73,10 @@ class BounceController extends BaseController
                 'email' => $message->mail->destination[0],
                 'bounced_at' => Carbon::parse($message->mail->timestamp)
             ]);
+
         } catch (ModelNotFoundException $e) {
-            //bounce won't be logged if this is hit
+
+            Log::error('Could not find laravel_ses_email_bounces table. Did you run migrations?');
         }
     }
 }

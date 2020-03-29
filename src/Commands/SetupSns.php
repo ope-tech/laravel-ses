@@ -1,8 +1,9 @@
 <?php
 
-namespace Juhasev\LaravelSes;
+namespace Juhasev\LaravelSes\Commands;
 
 use Illuminate\Console\Command;
+use Juhasev\LaravelSes\SnsSetup;
 
 class SetupSNS extends Command
 {
@@ -11,14 +12,14 @@ class SetupSNS extends Command
      *
      * @var string
      */
-    protected $signature = 'setup:sns {--http}';
+    protected $signature = 'sns:setup';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Sets up amazon SNS configuration';
+    protected $description = 'Sets up Amazon SNS configuration';
 
     /**
      * Create a new command instance.
@@ -37,8 +38,7 @@ class SetupSNS extends Command
      */
     public function handle()
     {
-        $protocol = $this->option('http') ? 'http' : 'https';
         $snsSetup = new SnsSetup;
-        $snsSetup->init($protocol);
+        $snsSetup->init('https');
     }
 }

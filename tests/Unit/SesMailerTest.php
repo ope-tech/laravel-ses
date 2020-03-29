@@ -2,10 +2,9 @@
 
 namespace Juhasev\LaravelSes\Tests\Unit;
 
-use SesMail;
-use Juhasev\LaravelSes\Mocking\TestMailable;
 use Juhasev\LaravelSes\Exceptions\TooManyEmails;
-use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Facades\SesMail;
+use Juhasev\LaravelSes\Mocking\TestMailable;
 
 class SesMailerTest extends UnitTestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Juhasev\LaravelSes;
+namespace Juhasev\LaravelSes\Facades;
 
 use Illuminate\Support\Testing\Fakes\MailFake;
 use Illuminate\Support\Facades\Facade;

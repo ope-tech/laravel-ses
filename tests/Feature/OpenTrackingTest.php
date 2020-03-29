@@ -2,11 +2,9 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
-use SesMail;
-use Juhasev\LaravelSes\Models\SentEmail;
-use Juhasev\LaravelSes\Models\EmailOpen;
-use Juhasev\LaravelSes\Tests\Feature\FeatureTestCase;
+use Juhasev\LaravelSes\Facades\SesMail;
 use Juhasev\LaravelSes\Mocking\TestMailable;
+use Juhasev\LaravelSes\Models\EmailOpen;
 
 class OpenTrackingTest extends FeatureTestCase
 {
@@ -18,7 +16,7 @@ class OpenTrackingTest extends FeatureTestCase
 
         //send a junk uuid and check error is thrown
         $this->get('laravel-ses/beacon/thisisjunk')
-            ->assertStatus(422)
+            ->assertStatus(404)
             ->assertJson([
                 'success' => false,
                 'errors' => [

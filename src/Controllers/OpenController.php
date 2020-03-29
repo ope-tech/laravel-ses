@@ -22,7 +22,10 @@ class OpenController extends BaseController
         try {
             $open = EmailOpen::whereBeaconIdentifier($beaconIdentifier)->firstOrFail();
         } catch (ModelNotFoundException $e) {
-            return response()->json(['success' => false, 'errors' => ['Invalid Beacon']], 422);
+            return response()->json([
+                'success' => false,
+                'errors' => ['Invalid Beacon']
+            ], 404);
         }
 
         $open->opened_at = Carbon::now();

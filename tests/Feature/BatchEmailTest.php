@@ -2,13 +2,10 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
-use Juhasev\LaravelSes\Tests\Feature\FeatureTestCase;
-use Juhasev\LaravelSes\SesMail;
-use Juhasev\LaravelSes\Models\SentEmail;
-use Juhasev\LaravelSes\Models\EmailOpen;
-use Juhasev\LaravelSes\Models\EmailLink;
+use Juhasev\LaravelSes\Facades\SesMail;
 use Juhasev\LaravelSes\Mocking\TestMailable;
-use Illuminate\Database\Eloquent\Collection;
+use Juhasev\LaravelSes\Models\EmailOpen;
+use Juhasev\LaravelSes\Models\SentEmail;
 
 class BatchEmailTest extends FeatureTestCase
 {

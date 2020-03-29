@@ -61,7 +61,7 @@
                 "Juhasev\\LaravelSes\\LaravelSesServiceProvider"
             ],
             "aliases": {
-                "SesMail": "Juhasev\\LaravelSes\\SesMail"
+                "SesMail": "Juhasev\\LaravelSes\\Facades\\SesMail"
             }
         }
     },

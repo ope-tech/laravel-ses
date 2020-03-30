@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Juhasev\LaravelSes\ModelResolver;
 
 class OpenController extends BaseController
@@ -23,16 +24,19 @@ class OpenController extends BaseController
     {
         try {
             $open = ModelResolver::get('EmailOpen')::whereBeaconIdentifier($beaconIdentifier)->firstOrFail();
+            $open->opened_at = Carbon::now();
+            $open->save();
+
         } catch (ModelNotFoundException $e) {
+
+            Log::error("Could not find sent email with beacon identifier ($beaconIdentifier). Email open could not be recoreded");
+
             return response()->json([
                 'success' => false,
                 'errors' => ['Invalid Beacon']
             ], 404);
         }
-
-        $open->opened_at = Carbon::now();
-        $open->save();
-
+        
         // Server the actual image
         return redirect(config('app.url')."/laravel-ses/to.png");
     }

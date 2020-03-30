@@ -87,7 +87,7 @@ class ComplaintController extends BaseController
 
         } catch (ModelNotFoundException $e) {
 
-            Log::error('Could not find laravel_ses_email_complaints table. Did you run migrations?');
+            Log::error("Could not find sent email ($messageId). Email complaint failed to record!");
         }
     }
 }

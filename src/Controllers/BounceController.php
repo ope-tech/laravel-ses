@@ -59,7 +59,6 @@ class BounceController extends BaseController
 
     protected function persistBounce($message): void
     {
-        
         if ($this->debug()) return;
         
         $messageId = $this->parseMessageId($message);
@@ -67,7 +66,7 @@ class BounceController extends BaseController
         try {
             $sentEmail = ModelResolver::get('SentEmail')::whereMessageId($messageId)
                 ->whereBounceTracking(true)
-                ->firstOrFail();
+                ->first();
 
             ModelResolver::get('EmailBounce')::create([
                 'message_id' => $messageId,
@@ -79,7 +78,7 @@ class BounceController extends BaseController
 
         } catch (ModelNotFoundException $e) {
 
-            Log::error('Could not find laravel_ses_email_bounces table. Did you run migrations?');
+            Log::error("Could not find sent email ($messageId). Email bounce failed to record!");
         }
     }
 }

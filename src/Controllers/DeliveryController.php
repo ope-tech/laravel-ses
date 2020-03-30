@@ -75,7 +75,7 @@ class DeliveryController extends BaseController
             $sentEmail->setDeliveredAt($deliveryTime);
 
         } catch (ModelNotFoundException $e) {
-            Log::error('Could not find laravel_ses_sent_emails table. Did you run migrations?');
+            Log::error("Could not find sent email ($messageId). Email delivery failed to record!");
         }
     }
 }

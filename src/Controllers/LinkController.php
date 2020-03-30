@@ -2,7 +2,10 @@
 
 namespace Juhasev\LaravelSes\Controllers;
 
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Juhasev\LaravelSes\ModelResolver;
 
 class LinkController extends BaseController
@@ -12,13 +15,21 @@ class LinkController extends BaseController
      *
      * @param $linkIdentifier
      * @return RedirectResponse
-     * @throws \Exception
+     * @throws Exception
      */
 
     public function click($linkIdentifier)
     {
-        $link = ModelResolver::get('EmailLink')::whereLinkIdentifier($linkIdentifier)->firstOrFail();
-        $link->setClicked(true)->incrementClickCount();
-        return redirect($link->original_url);
+        try {
+            $link = ModelResolver::get('EmailLink')::whereLinkIdentifier($linkIdentifier)->firstOrFail();
+
+            $link->setClicked(true)->incrementClickCount();
+
+            return redirect($link->original_url);
+
+        } catch (ModelNotFoundException $e) {
+
+            Log::error("Could not find link ($linkIdentifier). Email link click count not incremented!");
+        }
     }
 }

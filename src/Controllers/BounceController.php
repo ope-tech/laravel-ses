@@ -66,7 +66,7 @@ class BounceController extends BaseController
         try {
             $sentEmail = ModelResolver::get('SentEmail')::whereMessageId($messageId)
                 ->whereBounceTracking(true)
-                ->first();
+                ->firstOfFail();
 
             ModelResolver::get('EmailBounce')::create([
                 'message_id' => $messageId,

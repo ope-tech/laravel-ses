@@ -2,15 +2,13 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
-use Juhasev\LaravelSes\Models\SentEmail;
-use Juhasev\LaravelSes\Models\EmailComplaint;
-use Juhasev\LaravelSes\Tests\Feature\FeatureTestCase;
+use Juhasev\LaravelSes\ModelResolver;
 
 class ComplaintTrackingTest extends FeatureTestCase
 {
     public function testComplaintTracking()
     {
-        SentEmail::create([
+        ModelResolver::get('SentEmail')::create([
             'message_id' => '049c6b53557871a2a1fb77e117f60971@swift.generated',
             'email' => 'eriksen23@gmail.com',
             'complaint_tracking' => true
@@ -24,7 +22,7 @@ class ComplaintTrackingTest extends FeatureTestCase
             (array)$fakeJson
         );
 
-        $emailComplaint = EmailComplaint::first()->toArray();
+        $emailComplaint = ModelResolver::get('EmailComplaint')::first()->toArray();
 
         // Check bounce is logged correctly
         // Note email Amazon returns is set as email rather than email set in sent email
@@ -36,7 +34,7 @@ class ComplaintTrackingTest extends FeatureTestCase
 
     public function testAComplaintIsNotStoredWhenThereIsNoEquivalentMessageId()
     {
-        SentEmail::create([
+        ModelResolver::get('SentEmail')::create([
             'message_id' => 'abcaseasyas123@swift.generated',
             'email' => 'eriksen23@gmail.com',
             'complaint_tracking' => true
@@ -50,7 +48,7 @@ class ComplaintTrackingTest extends FeatureTestCase
             (array)$fakeJson
         );
 
-        $this->assertNull(EmailComplaint::first());
+        $this->assertNull(ModelResolver::get('EmailComplaint')::first());
     }
 
     public function testSubscriptionConfirmation()
@@ -66,7 +64,7 @@ class ComplaintTrackingTest extends FeatureTestCase
 
     public function testThatComplaintIsNotRecordedIfComplaintTrackingIsNotSet()
     {
-        SentEmail::create([
+        ModelResolver::get('SentEmail')::create([
             'message_id' => '049c6b53557871a2a1fb77e117f60971@swift.generated',
             'email' => 'eriksen23@gmail.com'
         ]);
@@ -79,7 +77,7 @@ class ComplaintTrackingTest extends FeatureTestCase
             (array)$fakeJson
         );
 
-        $this->assertNull(EmailComplaint::first());
+        $this->assertNull(ModelResolver::get('EmailComplaint')::first());
     }
 
     private $exampleSubscriptionResponse = '{

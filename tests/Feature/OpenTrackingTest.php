@@ -4,6 +4,7 @@ namespace Juhasev\LaravelSes\Tests\Feature;
 
 use Juhasev\LaravelSes\Facades\SesMail;
 use Juhasev\LaravelSes\Mocking\TestMailable;
+use Juhasev\LaravelSes\ModelResolver;
 use Juhasev\LaravelSes\Models\EmailOpen;
 
 class OpenTrackingTest extends FeatureTestCase
@@ -29,6 +30,6 @@ class OpenTrackingTest extends FeatureTestCase
             ->assertHeader('location', 'https://laravel-ses.com/laravel-ses/to.png');
 
         //check email open has been saved
-        $this->assertNotNull(EmailOpen::first()->opened_at);
+        $this->assertNotNull(ModelResolver::get('EmailOpen')::first()->opened_at);
     }
 }

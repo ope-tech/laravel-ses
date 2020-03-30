@@ -2,9 +2,7 @@
 
 namespace Juhasev\LaravelSes;
 
-use Juhasev\LaravelSes\Models\EmailLink;
-use Juhasev\LaravelSes\Models\EmailOpen;
-use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Contracts\SentEmailContract;
 use PHPHtmlParser\Dom;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
 use PHPHtmlParser\Exceptions\CircularException;
@@ -22,10 +20,10 @@ class MailProcessor
     /**
      * MailProcessor constructor.
      *
-     * @param SentEmail $sentEmail
+     * @param SentEmailContract $sentEmail
      * @param string $emailBody
      */
-    public function __construct(SentEmail $sentEmail, string $emailBody)
+    public function __construct(SentEmailContract $sentEmail, string $emailBody)
     {
         $this->setEmailBody($emailBody);
         $this->setSentEmail($sentEmail);
@@ -51,9 +49,10 @@ class MailProcessor
 
     /**
      * Set email sent
-     * @param SentEmail $email
+     *
+     * @param SentEmailContract $email
      */
-    private function setSentEmail(SentEmail $email)
+    private function setSentEmail(SentEmailContract $email)
     {
         $this->sentEmail = $email;
     }
@@ -68,7 +67,7 @@ class MailProcessor
         $beaconIdentifier = Uuid::uuid4()->toString();
         $beaconUrl = config('app.url') . "/laravel-ses/beacon/$beaconIdentifier";
 
-        EmailOpen::create([
+        ModelResolver::get('EmailOpen')::create([
             'sent_email_id' => $this->sentEmail->id,
             'email' => $this->sentEmail->email,
             'batch' => $this->sentEmail->batch,
@@ -115,7 +114,7 @@ class MailProcessor
     {
         $linkIdentifier = Uuid::uuid4()->toString();
 
-        EmailLink::create([
+        ModelResolver::get('EmailLink')::create([
             'sent_email_id' => $this->sentEmail->id,
             'batch' => $this->sentEmail->batch,
             'link_identifier' => $linkIdentifier,

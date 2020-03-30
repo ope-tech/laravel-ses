@@ -2,7 +2,8 @@
 
 namespace Juhasev\LaravelSes\Controllers;
 
-use Juhasev\LaravelSes\Models\EmailLink;
+use Illuminate\Http\RedirectResponse;
+use Juhasev\LaravelSes\ModelResolver;
 
 class LinkController extends BaseController
 {
@@ -10,12 +11,13 @@ class LinkController extends BaseController
      * Link clicked
      *
      * @param $linkIdentifier
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return RedirectResponse
+     * @throws \Exception
      */
 
     public function click($linkIdentifier)
     {
-        $link = EmailLink::whereLinkIdentifier($linkIdentifier)->firstOrFail();
+        $link = ModelResolver::get('EmailLink')::whereLinkIdentifier($linkIdentifier)->firstOrFail();
         $link->setClicked(true)->incrementClickCount();
         return redirect($link->original_url);
     }

@@ -2,13 +2,12 @@
 
 namespace Juhasev\LaravelSes\Controllers;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use Juhasev\LaravelSes\ModelResolver;
 use Psr\Http\Message\ServerRequestInterface;
-use Juhasev\LaravelSes\Models\SentEmail;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Carbon\Carbon;
-use GuzzleHttp\Client;
 use stdClass;
 
 class DeliveryController extends BaseController
@@ -18,6 +17,7 @@ class DeliveryController extends BaseController
      *
      * @param ServerRequestInterface $request
      * @return JsonResponse
+     * @throws \Exception
      */
 
     public function delivery(ServerRequestInterface $request)
@@ -55,6 +55,7 @@ class DeliveryController extends BaseController
      * Persist delivery record to the database
      *
      * @param stdClass $message
+     * @throws \Exception
      */
 
     protected function persistDelivery(stdClass $message): void
@@ -67,7 +68,7 @@ class DeliveryController extends BaseController
             ->timestamp);
 
         try {
-            $sentEmail = SentEmail::whereMessageId($messageId)
+            $sentEmail = ModelResolver::get('SentEmail')::whereMessageId($messageId)
                 ->whereDeliveryTracking(true)
                 ->firstOrFail();
 

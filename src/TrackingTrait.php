@@ -2,7 +2,7 @@
 
 namespace Juhasev\LaravelSes;
 
-use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Contracts\SentEmailContract;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
 use PHPHtmlParser\Exceptions\CircularException;
 use PHPHtmlParser\Exceptions\CurlException;
@@ -22,7 +22,7 @@ trait TrackingTrait
      * Set tracking
      *
      * @param $emailBody
-     * @param SentEmail $sentEmail
+     * @param SentEmailContract $sentEmail
      *
      * @return string
      *
@@ -32,7 +32,7 @@ trait TrackingTrait
      * @throws NotLoadedException
      * @throws StrictException
      */
-    public function setupTracking($emailBody, SentEmail $sentEmail)
+    public function setupTracking($emailBody, SentEmailContract $sentEmail)
     {
         $batch = null;
 

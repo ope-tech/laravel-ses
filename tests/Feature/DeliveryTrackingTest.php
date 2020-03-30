@@ -2,14 +2,13 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
-use Juhasev\LaravelSes\Models\SentEmail;
-use Juhasev\LaravelSes\Tests\Feature\FeatureTestCase;
+use Juhasev\LaravelSes\ModelResolver;
 
 class DeliveryTrackingTest extends FeatureTestCase
 {
     public function testDeliveryTracking()
     {
-        SentEmail::create([
+        ModelResolver::get('SentEmail')::create([
             'message_id' => 'a4947f1f3fdb397b3a7bf2d3b7d2f53e@swift.generated',
             'email' => 'eriksen23@gmail.com',
             'delivery_tracking' => true
@@ -22,7 +21,7 @@ class DeliveryTrackingTest extends FeatureTestCase
             (array)$fakeJson
         );
 
-        $this->assertNotNull(SentEmail::first()->delivered_at);
+        $this->assertNotNull(ModelResolver::get('SentEmail')::first()->delivered_at);
     }
 
     public function testConfirmSubscription()
@@ -37,7 +36,7 @@ class DeliveryTrackingTest extends FeatureTestCase
 
     public function testDeliveryTimeIsNotSetIfTrackingNotEnabled()
     {
-        SentEmail::create([
+        ModelResolver::get('SentEmail')::create([
             'message_id' => 'a4947f1f3fdb397b3a7bf2d3b7d2f53e@swift.generated',
             'email' => 'eriksen23@gmail.com'
         ]);
@@ -49,10 +48,8 @@ class DeliveryTrackingTest extends FeatureTestCase
             (array)$fakeJson
         );
 
-        $this->assertNull(SentEmail::first()->delivered_at);
+        $this->assertNull(ModelResolver::get('SentEmail')::first()->delivered_at);
     }
-
-
 
     private $exampleSubscriptionResponse = '{
           "Type" : "SubscriptionConfirmation",

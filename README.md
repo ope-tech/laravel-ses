@@ -12,10 +12,14 @@ and going thru extensive testing with Laravel 6.x.
 ## Installation
 Install via composer
 
-Add to composer.json
 ```
 composer require juhasev/laravel-ses
 composer require aws/aws-php-sns-message-validator (optional)
+```
+
+In config/app.php make sure you load up the service provider. This should happen automatically.
+```php
+Juhasev\LaravelSes\LaravelSesServiceProvider::class
 ```
 
 ## Laravel configuration

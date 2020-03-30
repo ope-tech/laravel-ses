@@ -3,10 +3,11 @@
 namespace Juhasev\LaravelSes\Controllers;
 
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Juhasev\LaravelSes\Models\EmailOpen;
+use Juhasev\LaravelSes\ModelResolver;
 
 class OpenController extends BaseController
 {
@@ -15,12 +16,13 @@ class OpenController extends BaseController
      *
      * @param $beaconIdentifier
      * @return JsonResponse|RedirectResponse
+     * @throws Exception
      */
 
     public function open($beaconIdentifier)
     {
         try {
-            $open = EmailOpen::whereBeaconIdentifier($beaconIdentifier)->firstOrFail();
+            $open = ModelResolver::get('EmailOpen')::whereBeaconIdentifier($beaconIdentifier)->firstOrFail();
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,

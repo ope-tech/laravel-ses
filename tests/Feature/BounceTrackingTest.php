@@ -2,14 +2,13 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
-use Juhasev\LaravelSes\Models\EmailBounce;
-use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\ModelResolver;
 
 class BounceTrackingTest extends FeatureTestCase
 {
     public function testBounceTracking()
     {
-        SentEmail::create([
+        ModelResolver::get('SentEmail')::create([
             'message_id' => '84b8739d03d2245baed4999232916608@swift.generated',
             'email' => 'eriksen23@gmail.com',
             'bounce_tracking' => true
@@ -23,7 +22,7 @@ class BounceTrackingTest extends FeatureTestCase
             (array)$fakeJson
         );
 
-        $bounceRecord = EmailBounce::first()->toArray();
+        $bounceRecord = ModelResolver::get('EmailBounce')::first()->toArray();
 
         // Check bounce is logged correctly
         // Note email Amazon returns is set as email rather than email set in sent email
@@ -46,7 +45,7 @@ class BounceTrackingTest extends FeatureTestCase
 
     public function testABounceIsNotStoredWhenThereIsNoEquivilantMessageId()
     {
-        SentEmail::create([
+        ModelResolver::get('SentEmail')::create([
             'message_id' => 'abcaseasyas123@swift.generated',
             'email' => 'eriksen23@gmail.com'
         ]);
@@ -59,12 +58,12 @@ class BounceTrackingTest extends FeatureTestCase
             (array)$fakeJson
         );
 
-        $this->assertNull(EmailBounce::first());
+        $this->assertNull(ModelResolver::get('EmailBounce')::first());
     }
 
     public function testThatBounceIsNotRecordedIfBounceTrackingIsNotSet()
     {
-        SentEmail::create([
+        ModelResolver::get('SentEmail')::create([
             'message_id' => '84b8739d03d2245baed4999232916608@swift.generated',
             'email' => 'eriksen23@gmail.com'
         ]);
@@ -77,7 +76,7 @@ class BounceTrackingTest extends FeatureTestCase
             (array)$fakeJson
         );
 
-        $this->assertNull(EmailBounce::first());
+        $this->assertNull(ModelResolver::get('EmailBounce')::first());
     }
 
 

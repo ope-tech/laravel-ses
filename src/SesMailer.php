@@ -5,22 +5,29 @@ namespace Juhasev\LaravelSes;
 use Carbon\Carbon;
 use Illuminate\Mail\Mailer;
 use Juhasev\LaravelSes\Exceptions\TooManyEmails;
-use Juhasev\LaravelSes\Models\SentEmail;
 use Juhasev\LaravelSes\Services\Stats;
+use PHPHtmlParser\Exceptions\ChildNotFoundException;
+use PHPHtmlParser\Exceptions\CircularException;
+use PHPHtmlParser\Exceptions\CurlException;
+use PHPHtmlParser\Exceptions\NotLoadedException;
+use PHPHtmlParser\Exceptions\StrictException;
 
 class SesMailer extends Mailer implements SesMailerInterface
 {
     use TrackingTrait;
 
-    //this will be called every time
+    /**
+     * Init message (this is always called)
+     *
+     * @param $message
+     * @return mixed
+     * @throws \Exception
+     */
     public function initMessage($message)
     {
-        //open tracking etc won't work if emails are sent to more than one recepient at a time
-        if (sizeOf($message->getTo()) > 1) {
-            throw new TooManyEmails("Tried to send to too many emails only one email may be set");
-        }
+        $this->checkNumberOfRecipients($message);
 
-        $sentEmail = SentEmail::create([
+        $sentEmail = ModelResolver::get('SentEmail')::create([
             'message_id' => $message->getId(),
             'email' => key($message->getTo()),
             'batch' => $this->getBatch(),
@@ -33,16 +40,51 @@ class SesMailer extends Mailer implements SesMailerInterface
         return $sentEmail;
     }
 
+    /**
+     * Check message recipient for tracking
+     * Open tracking etc won't work if emails are sent to more than one recipient at a time
+     * @param $message
+     */
+    protected function checkNumberOfRecipients($message)
+    {
+        if (sizeOf($message->getTo()) > 1) {
+            throw new TooManyEmails("Tried to send to too many emails only one email may be set");
+        }
+    }
+
+    /**
+     * Get stats for batch
+     *
+     * @param string $batchName
+     * @return array
+     */
     public function statsForBatch(string $batchName): array
     {
         return Stats::statsForBatch($batchName);
     }
 
+    /**
+     * Get email for batch
+     *
+     * @param string $email
+     * @return array
+     */
     public function statsForEmail(string $email): array
     {
         return Stats::statsForEmail($email);
     }
 
+    /**
+     * Send swift message
+     *
+     * @param $message
+     * @return int|void|null
+     * @throws ChildNotFoundException
+     * @throws CircularException
+     * @throws CurlException
+     * @throws NotLoadedException
+     * @throws StrictException
+     */
     protected function sendSwiftMessage($message)
     {
         $sentEmail = $this->initMessage($message); //adds database record for the email

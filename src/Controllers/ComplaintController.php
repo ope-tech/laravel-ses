@@ -3,12 +3,11 @@
 namespace Juhasev\LaravelSes\Controllers;
 
 use Carbon\Carbon;
-use GuzzleHttp\Client;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
-use Juhasev\LaravelSes\Models\EmailComplaint;
-use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\ModelResolver;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
 
@@ -19,7 +18,9 @@ class ComplaintController extends BaseController
      *
      * @param ServerRequestInterface $request
      * @return JsonResponse
+     * @throws Exception
      */
+
     public function complaint(ServerRequestInterface $request)
     {
         $this->validateSns($request);
@@ -61,21 +62,22 @@ class ComplaintController extends BaseController
     /**
      * Persist complaint to the database
      *
-     * @param $message
+     * @param stdClass $message
+     * @throws Exception
      */
 
-    private function persistComplaint($message)
+    private function persistComplaint(stdClass $message)
     {
         if ($this->debug()) return;
 
         $messageId = $this->parseMessageId($message);
 
         try {
-            $sentEmail = SentEmail::whereMessageId($messageId)
+            $sentEmail = ModelResolver::get('SentEmail')::whereMessageId($messageId)
                 ->whereComplaintTracking(true)
                 ->firstOrFail();
 
-            EmailComplaint::create([
+            ModelResolver::get('EmailComplaint')::create([
                 'message_id' => $messageId,
                 'sent_email_id' => $sentEmail->id,
                 'type' => $message->complaint->complaintFeedbackType,

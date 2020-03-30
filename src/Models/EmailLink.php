@@ -3,8 +3,9 @@
 namespace Juhasev\LaravelSes\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Juhasev\LaravelSes\Contracts\EmailLinkContract;
 
-class EmailLink extends Model
+class EmailLink extends Model implements EmailLinkContract
 {
     protected $table = 'laravel_ses_email_links';
 
@@ -16,7 +17,9 @@ class EmailLink extends Model
 
     public function sentEmail()
     {
-        return $this->belongsTo(SentEmail::class);
+        $sentEmailModel = config('laravelses.models.sent_emails');
+
+        return $this->belongsTo($sentEmailModel);
     }
 
     public function setClicked($clicked)

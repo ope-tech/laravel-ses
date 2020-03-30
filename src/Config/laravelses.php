@@ -1,5 +1,11 @@
 <?php
 
+use Juhasev\LaravelSes\Models\EmailBounce;
+use Juhasev\LaravelSes\Models\EmailComplaint;
+use Juhasev\LaravelSes\Models\EmailLink;
+use Juhasev\LaravelSes\Models\EmailOpen;
+use Juhasev\LaravelSes\Models\SentEmail;
+
 return [
 
     /**
@@ -23,5 +29,18 @@ return [
      * Log prefix for all logged messages. Set to whatever you want for convenient debugging
      */
 
-    'log_prefix' => 'LARAVEL-SES'
+    'log_prefix' => 'LARAVEL-SES',
+
+    /**
+     * Model that the Laravel SES uses. You can override or implement your own custom
+     * models by changing the settings here
+     */
+    
+    'models' => [
+        'SentEmail' => SentEmail::class,
+        'EmailBounce' => EmailBounce::class,
+        'EmailComplaint' => EmailComplaint::class,
+        'EmailLink' => EmailLink::class,
+        'EmailOpen' => EmailOpen::class
+    ]
 ];

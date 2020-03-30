@@ -3,11 +3,11 @@
 namespace Juhasev\LaravelSes\Controllers;
 
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
-use Juhasev\LaravelSes\Models\EmailBounce;
-use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\ModelResolver;
 use Psr\Http\Message\ServerRequestInterface;
 
 class BounceController extends BaseController
@@ -17,6 +17,7 @@ class BounceController extends BaseController
      *
      * @param ServerRequestInterface $request
      * @return JsonResponse
+     * @throws Exception
      */
 
     public function bounce(ServerRequestInterface $request)
@@ -33,7 +34,7 @@ class BounceController extends BaseController
 
             return response()->json([
                 'success' => true,
-                'message' => 'Delivery subscription confirmed'
+                'message' => 'Bounce subscription confirmed'
             ]);
         }
 
@@ -45,7 +46,7 @@ class BounceController extends BaseController
 
         return response()->json([
             'success' => true,
-            'message' => 'Delivery subscription confirmed'
+            'message' => 'Bounce processed'
         ]);
     }
 
@@ -53,20 +54,22 @@ class BounceController extends BaseController
      * Persis bounce
      *
      * @param $message
+     * @throws Exception
      */
 
     protected function persistBounce($message): void
     {
+        
         if ($this->debug()) return;
-
+        
         $messageId = $this->parseMessageId($message);
 
         try {
-            $sentEmail = SentEmail::whereMessageId($messageId)
+            $sentEmail = ModelResolver::get('SentEmail')::whereMessageId($messageId)
                 ->whereBounceTracking(true)
                 ->firstOrFail();
 
-            EmailBounce::create([
+            ModelResolver::get('EmailBounce')::create([
                 'message_id' => $messageId,
                 'sent_email_id' => $sentEmail->id,
                 'type' => $message->bounce->bounceType,

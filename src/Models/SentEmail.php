@@ -4,8 +4,9 @@ namespace Juhasev\LaravelSes\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Juhasev\LaravelSes\Contracts\SentEmailContract;
 
-class SentEmail extends Model
+class SentEmail extends Model implements SentEmailContract
 {
     protected $table = 'laravel_ses_sent_emails';
 
@@ -37,13 +38,13 @@ class SentEmail extends Model
         return $this->hasOne(EmailComplaint::class);
     }
 
-    public static function numberSentForBatch($batchName)
+    public static function numberSentForBatch(string $batchName)
     {
         return self::whereBatch($batchName)
             ->count();
     }
 
-    public static function opensForBatch($batchName)
+    public static function opensForBatch(string $batchName)
     {
         return self::join(
                 'laravel_ses_email_opens',
@@ -55,7 +56,7 @@ class SentEmail extends Model
             ->count();
     }
 
-    public static function bouncesForBatch($batchName)
+    public static function bouncesForBatch(string $batchName)
     {
         return self::join(
                 'laravel_ses_email_bounces',
@@ -67,7 +68,7 @@ class SentEmail extends Model
             ->count();
     }
 
-    public static function complaintsForBatch($batchName)
+    public static function complaintsForBatch(string $batchName)
     {
         return self::join(
                 'laravel_ses_email_complaints',
@@ -79,14 +80,14 @@ class SentEmail extends Model
             ->count();
     }
 
-    public static function deliveriesForBatch($batchName)
+    public static function deliveriesForBatch(string $batchName)
     {
         return self::whereBatch($batchName)
             ->whereNotNull('delivered_at')
             ->count();
     }
 
-    public static function getAmountOfUsersThatClickedAtLeastOneLink($batchName)
+    public static function getAmountOfUsersThatClickedAtLeastOneLink(string $batchName)
     {
         return self::where('laravel_ses_sent_emails.batch', $batchName)
             ->join('laravel_ses_email_links', function ($join) {
@@ -98,7 +99,7 @@ class SentEmail extends Model
             ->count(DB::raw('DISTINCT(email)'));
     }
 
-    public static function getLinkPopularityOrder($batchName): array
+    public static function getLinkPopularityOrder(string $batchName): array
     {
         return self::where('laravel_ses_sent_emails.batch', $batchName)
             ->join('laravel_ses_email_links', function ($join) {

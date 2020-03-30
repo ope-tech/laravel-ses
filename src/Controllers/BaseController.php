@@ -123,5 +123,4 @@ class BaseController extends Controller
     {
         return config('laravelses.debug');
     }
-    
 }

@@ -2,24 +2,21 @@
 
 namespace Juhasev\LaravelSes\Services;
 
-use Juhasev\LaravelSes\Models\SentEmail;
-use Juhasev\LaravelSes\Models\EmailLink;
-use Juhasev\LaravelSes\Models\EmailBounce;
-use Juhasev\LaravelSes\Models\EmailComplaint;
-use Juhasev\LaravelSes\Models\EmailOpen;
+use Juhasev\LaravelSes\ModelResolver;
 
 class Stats
 {
     public static function statsForEmail($email)
     {
+
         return [
             'counts' => [
-                'sent_emails' => SentEmail::whereEmail($email)->count(),
-                'deliveries' => SentEmail::whereEmail($email)->whereNotNull('delivered_at')->count(),
-                'opens' => EmailOpen::whereEmail($email)->whereNotNull('opened_at')->count(),
-                'bounces' => EmailBounce::whereEmail($email)->whereNotNull('bounced_at')->count(),
-                'complaints' => EmailComplaint::whereEmail($email)->whereNotNull('complained_at')->count(),
-                'click_throughs' => EmailLink::join(
+                'sent_emails' => ModelResolver::get('SentEmail')::whereEmail($email)->count(),
+                'deliveries' => ModelResolver::get('SentEmail')::whereEmail($email)->whereNotNull('delivered_at')->count(),
+                'opens' => ModelResolver::get('EmailOpen')::whereEmail($email)->whereNotNull('opened_at')->count(),
+                'bounces' => ModelResolver::get('EmailBounce')::whereEmail($email)->whereNotNull('bounced_at')->count(),
+                'complaints' => ModelResolver::get('EmailComplaint')::whereEmail($email)->whereNotNull('complained_at')->count(),
+                'click_throughs' => ModelResolver::get('EmailLink')::join(
                     'laravel_ses_sent_emails',
                     'laravel_ses_sent_emails.id',
                     'laravel_ses_email_links.sent_email_id'
@@ -29,12 +26,12 @@ class Stats
                     ->count(\DB::raw('DISTINCT(laravel_ses_sent_emails.id)')) // if a user clicks two different links on one campaign, only one is counted
             ],
             'data' => [
-                'sent_emails' => SentEmail::whereEmail($email)->get()->toArray(),
-                'deliveries' => SentEmail::whereEmail($email)->whereNotNull('delivered_at')->get()->toArray(),
-                'opens' => EmailOpen::whereEmail($email)->whereNotNull('opened_at')->get()->toArray(),
-                'bounces' => EmailComplaint::whereEmail($email)->whereNotNull('bounced_at')->get()->toArray(),
-                'complaints' => EmailComplaint::whereEmail($email)->whereNotNull('complained_at')->get()->toArray(),
-                'click_throughs' => EmailLink::join(
+                'sent_emails' => ModelResolver::get('SentEmail')::whereEmail($email)->get()->toArray(),
+                'deliveries' => ModelResolver::get('SentEmail')::whereEmail($email)->whereNotNull('delivered_at')->get()->toArray(),
+                'opens' => ModelResolver::get('EmailOpen')::whereEmail($email)->whereNotNull('opened_at')->get()->toArray(),
+                'bounces' => ModelResolver::get('EmailComplaint')::whereEmail($email)->whereNotNull('bounced_at')->get()->toArray(),
+                'complaints' => ModelResolver::get('EmailComplaint')::whereEmail($email)->whereNotNull('complained_at')->get()->toArray(),
+                'click_throughs' => ModelResolver::get('EmailLink')::join(
                     'laravel_ses_sent_emails',
                     'laravel_ses_sent_emails.id',
                     'laravel_ses_email_links.sent_email_id'
@@ -50,13 +47,13 @@ class Stats
     public static function statsForBatch($batchName)
     {
         return [
-            'send_count' => SentEmail::numberSentForBatch($batchName),
-            'deliveries' => SentEmail::deliveriesForBatch($batchName),
-            'opens' => SentEmail::opensForBatch($batchName),
-            'bounces' => SentEmail::bouncesForBatch($batchName),
-            'complaints' => SentEmail::complaintsForBatch($batchName),
-            'click_throughs' => SentEmail::getAmountOfUsersThatClickedAtLeastOneLink($batchName),
-            'link_popularity' => SentEmail::getLinkPopularityOrder($batchName)
+            'send_count' => ModelResolver::get('SentEmail')::numberSentForBatch($batchName),
+            'deliveries' => ModelResolver::get('SentEmail')::deliveriesForBatch($batchName),
+            'opens' => ModelResolver::get('SentEmail')::opensForBatch($batchName),
+            'bounces' => ModelResolver::get('SentEmail')::bouncesForBatch($batchName),
+            'complaints' => ModelResolver::get('SentEmail')::complaintsForBatch($batchName),
+            'click_throughs' => ModelResolver::get('SentEmail')::getAmountOfUsersThatClickedAtLeastOneLink($batchName),
+            'link_popularity' => ModelResolver::get('SentEmail')::getLinkPopularityOrder($batchName)
         ];
     }
 }

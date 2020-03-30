@@ -2,7 +2,7 @@
 
 namespace Juhasev\LaravelSes;
 
-use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Contracts\SentEmailContract;
 
 interface SesMailerInterface
 {
@@ -12,7 +12,7 @@ interface SesMailerInterface
 
     public function statsForEmail(string $batchName): array;
 
-    public function setupTracking($setupTracking, SentEmail $sentEmail);
+    public function setupTracking($setupTracking, SentEmailContract $sentEmail);
 
     public function setBatch(string $batch): SesMailerInterface;
 

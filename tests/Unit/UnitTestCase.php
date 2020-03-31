@@ -1,29 +1,37 @@
 <?php
 namespace Juhasev\LaravelSes\Tests\Unit;
 
-use Juhasev\LaravelSes\SesMail;
+use Illuminate\Foundation\Application;
+use Juhasev\LaravelSes\Facades\SesMail;
 use Juhasev\LaravelSes\LaravelSesServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class UnitTestCase extends OrchestraTestCase
 {
+    /**
+     * Setup test case
+     */
     public function setUp(): void
     {
         parent::setUp();
+
         $this->artisan('migrate', ['--database' => 'testbench']);
     }
+
     /**
      * Load package service provider
-     * @param  \Illuminate\Foundation\Application $app
-     * @return lasselehtinen\MyPackage\MyPackageServiceProvider
+     *
+     * @param Application $app
+     * @return array
      */
     protected function getPackageProviders($app)
     {
         return [LaravelSesServiceProvider::class];
     }
+
     /**
      * Load package alias
-     * @param  \Illuminate\Foundation\Application $app
+     * @param  Application $app
      * @return array
      */
     protected function getPackageAliases($app)
@@ -33,6 +41,11 @@ class UnitTestCase extends OrchestraTestCase
         ];
     }
 
+    /**
+     * Set up test bench environment
+     *
+     * @param Application $app
+     */
     protected function getEnvironmentSetUp($app)
     {
         // Setup default database to use sqlite :memory:

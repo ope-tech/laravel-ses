@@ -2,10 +2,10 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
+use Juhasev\LaravelSes\Facades\SesMail;
 use Juhasev\LaravelSes\Mocking\TestMailable;
 use Juhasev\LaravelSes\ModelResolver;
-use Juhasev\LaravelSes\Facades\SesMail;
-use Juhasev\LaravelSes\Repositories\EmailStatRepository;
+use Juhasev\LaravelSes\Repositories\EmailRepository;
 use Juhasev\LaravelSes\Services\Stats;
 
 class StatsTest extends FeatureTestCase
@@ -43,7 +43,7 @@ class StatsTest extends FeatureTestCase
         $fakeJson = json_decode($this->generateComplaintJson($messageId, 'something@gmail.com'));
         $this->json('POST', 'laravel-ses/notification/complaint', (array)$fakeJson);
 
-        $l = $this->get('laravel-ses/api/stats/email/something@gmail.com');
+        $this->get('laravel-ses/api/stats/email/something@gmail.com');
 
         $links = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')
             ->whereBatch('win_back')
@@ -68,6 +68,31 @@ class StatsTest extends FeatureTestCase
 
         $this->assertEquals($expectedCounts, $stats);
 
+
+        // Test email repository data agrees with stats
+        $sent = EmailRepository::getSent('something@gmail.com');
+        $this->assertCount(3, $sent);
+
+        $deliveries = EmailRepository::getDeliveries('something@gmail.com');
+        $this->assertCount(2, $deliveries);
+
+        $opens = EmailRepository::getOpens('something@gmail.com');
+        $this->assertCount(1, $opens);
+
+        $bounces = EmailRepository::getBounces('something@gmail.com');
+        $this->assertCount(1, $bounces);
+
+        $complaints = EmailRepository::getComplaints('something@gmail.com');
+        $this->assertCount(1, $complaints);
+
+        $rejects = EmailRepository::getRejects('something@gmail.com');
+        $this->assertCount(0, $rejects);
+
+        $clicks = EmailRepository::getClicks('something@gmail.com');
+
+        $this->assertCount(2, $clicks);
+
+        // Test data for email
         $stats = Stats::dataForEmail('something@gmail.com');
 
         // Check sent emails
@@ -88,22 +113,22 @@ class StatsTest extends FeatureTestCase
         $this->assertEquals("win_back", $stats['deliveries'][1]['batch']);
 
         // Check click through
-        $this->assertEquals(1, $stats['clicks'][0]['sent_email_id']);
-        $this->assertEquals('https://google.com', $stats['clicks'][0]['original_url']);
+        $this->assertEquals(1, $stats['clicks'][0]->emailLinks[0]->sent_email_id);
+        $this->assertEquals('https://google.com', $stats['clicks'][0]->emailLinks[0]->original_url);
+        $this->assertEquals('welcome_emails', $stats['clicks'][0]->batch);
+
+        $this->assertEquals(1, $stats['clicks'][0]->emailLinks[1]->sent_email_id);
+        $this->assertEquals('https://superficial.io', $stats['clicks'][0]->emailLinks[1]->original_url);
         $this->assertEquals('welcome_emails', $stats['clicks'][0]['batch']);
 
-        $this->assertEquals(1, $stats['clicks'][1]['sent_email_id']);
-        $this->assertEquals('https://superficial.io', $stats['clicks'][1]['original_url']);
-        $this->assertEquals('welcome_emails', $stats['clicks'][1]['batch']);
-
-        $this->assertEquals(9, $stats['clicks'][2]['sent_email_id']);
-        $this->assertEquals('https://google.com', $stats['clicks'][2]['original_url']);
-        $this->assertEquals('win_back', $stats['clicks'][2]['batch']);
+        $this->assertEquals(9, $stats['clicks'][1]->emailLinks[0]->sent_email_id);
+        $this->assertEquals('https://google.com', $stats['clicks'][1]->emailLinks[0]->original_url);
+        $this->assertEquals('win_back', $stats['clicks'][1]['batch']);
     }
 
     public function testStatsForBatchEndPoint()
     {
-        $stats = SesMail::statsForBatch('welcome_emails');
+        $stats = Stats::statsForBatch('welcome_emails');
 
         $this->assertEquals([
             "sent" => 8,

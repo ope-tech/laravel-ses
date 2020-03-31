@@ -183,23 +183,23 @@ SesMail::enableAllTracking()
     ->send(new Mailable);
 ```
 
-You can manipulate the results manually by querying the database. Or you can use functions that come with the package.
+You can also get aggregate stats:
 
 ```
 
-SesMail::statsForEmail($email);
+Stats::statsForEmail($email);
 
-SesMail::statsForBatch('welcome_emails');
+Stats::statsForBatch('welcome_emails');
 
 // Example result
 [
-    "send_count" => 8,
+    "sent" => 8,
     "deliveries" => 7,
     "opens" => 4,
     "bounces" => 1,
     "complaints" => 2,
     "rejects" => 1,
-    "click_throughs" => 3,
+    "clicks" => 3,
     "link_popularity" => [
         "https://welcome.page" => [
             "clicks" => 3
@@ -209,6 +209,17 @@ SesMail::statsForBatch('welcome_emails');
         ]
     ]
 ]
+```
+To get individual stats via Repositories
+```
+
+EmailStatRepository::getBouncedCount($email);
+EmailRepository::getBounces($email);
+
+BatchStatRepository::getBouncedCount($batch);
+BatchStatRepository::getDeliveredCount($batch);
+BatchStatRepository::getComplaintsCount($batch);
+
 ```
 You can also use the models directly as you would any other Eloquent model:
 
@@ -228,7 +239,7 @@ $sentEmail = ModelResolver::get('SentEmail')::take(100)->get();
 ```
 
 ### Terminology
-Send count = number of emails that were attempted
+Sent = number of emails that were attempted
 
 Deliveries = number of emails that were delivered
 
@@ -238,7 +249,7 @@ Complaints = number of people that put email into spam
 
 Rejects = number of emails AWS rejected to deliver i.e. attached virus
 
-Click throughs = number of people that clicked at least one link in your email
+Clicks = number of people that clicked at least one link in your email
 
 Link Popularity = number of unique clicks on each link in the email, ordered by the most clicked.
 

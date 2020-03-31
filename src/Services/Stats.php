@@ -35,6 +35,7 @@ class Stats
      *
      * @param $email
      * @return array
+     * @throws Exception
      */
     public static function dataForEmail($email): array
     {

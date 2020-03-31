@@ -17,11 +17,16 @@ class CreateEmailOpensTable extends Migration
             $table->increments('id');
             $table->integer('sent_email_id');
             $table->string('email');
-            $table->string('batch')->nullable();
-            $table->uuid('beacon_identifier');
+            $table->string('batch')->nullable(); // TODO This seems out of place here
+            $table->uuid('beacon_identifier')->index();
             $table->string('url');
             $table->dateTime('opened_at')->nullable();
             $table->timestamps();
+
+            $table->foreign('sent_email_id')
+                ->references('id')
+                ->on('laravel_ses_sent_emails')
+                ->onDelete('cascade');
         });
     }
 

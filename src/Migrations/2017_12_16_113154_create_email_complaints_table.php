@@ -21,6 +21,11 @@ class CreateEmailComplaintsTable extends Migration
             $table->string('email');
             $table->dateTime('complained_at');
             $table->timestamps();
+
+            $table->foreign('sent_email_id')
+                ->references('id')
+                ->on('laravel_ses_sent_emails')
+                ->onDelete('cascade');
         });
     }
 

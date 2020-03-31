@@ -16,13 +16,14 @@ class CreateSentEmailsTable extends Migration
         Schema::create('laravel_ses_sent_emails', function (Blueprint $table) {
             $table->increments('id');
             $table->string('message_id');
-            $table->string('email');
-            $table->string('batch')->nullable();
+            $table->string('email')->index();
+            $table->string('batch')->nullable()->index();
             $table->dateTime('sent_at')->nullable();
             $table->dateTime('delivered_at')->nullable();
             $table->boolean('complaint_tracking')->default(false);
             $table->boolean('delivery_tracking')->default(false);
             $table->boolean('bounce_tracking')->default(false);
+            $table->boolean('reject_tracking')->default(false);
             $table->timestamps();
         });
     }

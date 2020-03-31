@@ -21,6 +21,11 @@ class CreateBouncesTable extends Migration
             $table->string('email');
             $table->dateTime('bounced_at');
             $table->timestamps();
+
+            $table->foreign('sent_email_id')
+                ->references('id')
+                ->on('laravel_ses_sent_emails')
+                ->onDelete('cascade');
         });
     }
 

@@ -9,6 +9,7 @@ interface SentEmailContract
     public function emailLinks();
     public function emailBounce();
     public function emailComplaint();
+    public function emailReject();
     public static function numberSentForBatch(string $batchName);
     public static function opensForBatch(string $batchName);
     public static function bouncesForBatch(string $batchName);

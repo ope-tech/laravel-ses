@@ -16,6 +16,7 @@ trait TrackingTrait
     private $bounceTracking = false;
     private $complaintTracking = false;
     private $deliveryTracking = false;
+    private $rejectTracking = false;
     private $batch;
 
     /**
@@ -126,6 +127,17 @@ trait TrackingTrait
     }
 
     /**
+     * Enable reject tracking
+     *
+     * @return SesMailerInterface
+     */
+    public function enableRejectTracking(): SesMailerInterface
+    {
+        $this->rejectTracking = true;
+        return $this;
+    }
+
+    /**
      * Disable open tracking
      *
      * @return SesMailerInterface
@@ -181,6 +193,17 @@ trait TrackingTrait
     }
 
     /**
+     * Disable reject tracking
+     *
+     * @return SesMailerInterface
+     */
+    public function disableRejectTracking(): SesMailerInterface
+    {
+        $this->rejectTracking = false;
+        return $this;
+    }
+
+    /**
      * Enable all tracking
      *
      * @return SesMailerInterface
@@ -191,7 +214,8 @@ trait TrackingTrait
             ->enableLinkTracking()
             ->enableBounceTracking()
             ->enableComplaintTracking()
-            ->enableDeliveryTracking();
+            ->enableDeliveryTracking()
+            ->enableRejectTracking();
     }
 
     /**
@@ -205,7 +229,8 @@ trait TrackingTrait
             ->disableLinkTracking()
             ->disableBounceTracking()
             ->disableComplaintTracking()
-            ->disableDeliveryTracking();
+            ->disableDeliveryTracking()
+            ->disableRejectTracking();
     }
 
     /**
@@ -220,7 +245,8 @@ trait TrackingTrait
             'linkTracking' => $this->linkTracking,
             'bounceTracking' => $this->bounceTracking,
             'complaintTracking' => $this->complaintTracking,
-            'deliveryTracking' => $this->deliveryTracking
+            'deliveryTracking' => $this->deliveryTracking,
+            'rejectTracking' => $this->rejectTracking
          ];
     }
 }

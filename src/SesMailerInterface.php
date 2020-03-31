@@ -28,6 +28,8 @@ interface SesMailerInterface
 
     public function enableDeliveryTracking(): SesMailerInterface;
 
+    public function enableRejectTracking(): SesMailerInterface;
+
     public function disableOpenTracking(): SesMailerInterface;
 
     public function disableLinkTracking(): SesMailerInterface;
@@ -37,6 +39,8 @@ interface SesMailerInterface
     public function disableComplaintTracking(): SesMailerInterface;
 
     public function disableDeliveryTracking(): SesMailerInterface;
+
+    public function disableRejectTracking(): SesMailerInterface;
 
     public function enableAllTracking(): SesMailerInterface;
 

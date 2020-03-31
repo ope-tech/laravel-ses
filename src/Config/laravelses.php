@@ -5,6 +5,7 @@ use Juhasev\LaravelSes\Models\EmailComplaint;
 use Juhasev\LaravelSes\Models\EmailLink;
 use Juhasev\LaravelSes\Models\EmailOpen;
 use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Models\EmailReject;
 
 return [
 
@@ -23,7 +24,7 @@ return [
      * NOTE: You cannot run package unit tests with this enabled!
      */
 
-    'debug' => env('SES_DEBUG', false),
+    'debug' => env('SES_DEBUG', true),
 
     /**
      * Log prefix for all logged messages. Set to whatever you want for convenient debugging
@@ -41,6 +42,7 @@ return [
         'EmailBounce' => EmailBounce::class,
         'EmailComplaint' => EmailComplaint::class,
         'EmailLink' => EmailLink::class,
-        'EmailOpen' => EmailOpen::class
+        'EmailOpen' => EmailOpen::class,
+        'EmailReject' => EmailReject::class
     ]
 ];

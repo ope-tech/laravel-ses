@@ -5,6 +5,7 @@ namespace Juhasev\LaravelSes\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Juhasev\LaravelSes\Contracts\SentEmailContract;
+use Juhasev\LaravelSes\ModelResolver;
 
 class SentEmail extends Model implements SentEmailContract
 {
@@ -20,22 +21,27 @@ class SentEmail extends Model implements SentEmailContract
 
     public function emailOpen()
     {
-        return $this->hasOne(EmailOpen::class);
+        return $this->hasOne(ModelResolver::get('EmailOpen'));
     }
 
     public function emailLinks()
     {
-        return $this->hasMany(EmailLink::class);
+        return $this->hasMany(ModelResolver::get('EmailLink'));
     }
 
     public function emailBounce()
     {
-        return $this->hasOne(EmailBounce::class);
+        return $this->hasOne(ModelResolver::get('EmailBounce'));
     }
 
     public function emailComplaint()
     {
-        return $this->hasOne(EmailComplaint::class);
+        return $this->hasOne(ModelResolver::get('EmailComplaint'));
+    }
+
+    public function emailReject()
+    {
+        return $this->hasOne(ModelResolver::get('EmailReject'));
     }
 
     public static function numberSentForBatch(string $batchName)

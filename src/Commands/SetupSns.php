@@ -12,7 +12,7 @@ class SetupSNS extends Command
      *
      * @var string
      */
-    protected $signature = 'sns:setup {domain}';
+    protected $signature = 'sns:setup {domain : Your email domain}';
 
     /**
      * The console command description.

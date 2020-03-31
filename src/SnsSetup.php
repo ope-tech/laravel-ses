@@ -57,6 +57,7 @@ class SnsSetup
      */
     public function init()
     {
+        $this->setupNotification('Reject');
         $this->setupNotification('Bounce');
         $this->setupNotification('Complaint');
         $this->setupNotification('Delivery');

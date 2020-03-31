@@ -34,7 +34,8 @@ class SesMailer extends Mailer implements SesMailerInterface
             'sent_at' => Carbon::now(),
             'delivery_tracking' => $this->deliveryTracking,
             'complaint_tracking' => $this->complaintTracking,
-            'bounce_tracking' => $this->bounceTracking
+            'bounce_tracking' => $this->bounceTracking,
+            'reject_tracking' => $this->rejectTracking
         ]);
 
         return $sentEmail;

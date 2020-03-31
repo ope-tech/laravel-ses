@@ -45,7 +45,8 @@ class SesMailerTest extends UnitTestCase
             'linkTracking' => true,
             'bounceTracking' => true,
             'deliveryTracking' => false,
-            'complaintTracking' => false
+            'complaintTracking' => false,
+            'rejectTracking' => false,
         ], SesMail::trackingSettings());
 
         //check that disabling works
@@ -58,7 +59,8 @@ class SesMailerTest extends UnitTestCase
             'linkTracking' => false,
             'bounceTracking' => false,
             'deliveryTracking' => false,
-            'complaintTracking' => false
+            'complaintTracking' => false,
+            'rejectTracking' => false,
         ], SesMail::trackingSettings());
 
         //check all tracking methods work
@@ -69,7 +71,8 @@ class SesMailerTest extends UnitTestCase
             'linkTracking' => true,
             'bounceTracking' => true,
             'deliveryTracking' => true,
-            'complaintTracking' => true
+            'complaintTracking' => true,
+            'rejectTracking' => true,
         ], SesMail::trackingSettings());
 
         SesMail::disableAllTracking();
@@ -79,7 +82,8 @@ class SesMailerTest extends UnitTestCase
             'linkTracking' => false,
             'bounceTracking' => false,
             'deliveryTracking' => false,
-            'complaintTracking' => false
+            'complaintTracking' => false,
+            'rejectTracking' => false,
         ], SesMail::trackingSettings());
     }
 }

@@ -238,6 +238,8 @@ Setup Composer.json to resolve classes from your dev folder:
   },
 ```
 
+Composer
+
 Require
 
 ```

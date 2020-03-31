@@ -3,7 +3,6 @@
 namespace Juhasev\LaravelSes;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Juhasev\LaravelSes\Commands\SetupSNS;

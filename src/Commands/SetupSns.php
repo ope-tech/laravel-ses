@@ -12,14 +12,14 @@ class SetupSNS extends Command
      *
      * @var string
      */
-    protected $signature = 'sns:setup';
+    protected $signature = 'sns:setup {domain}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Sets up Amazon SNS configuration';
+    protected $description = 'Sets up Amazon SNS configuration for given domain';
 
     /**
      * Create a new command instance.
@@ -38,7 +38,6 @@ class SetupSNS extends Command
      */
     public function handle()
     {
-        $snsSetup = new SnsSetup;
-        $snsSetup->init('https');
+        SnsSetup::create($this->argument('domain'));
     }
 }

@@ -9,12 +9,17 @@ class SnsSetup
 {
     protected $ses;
     protected $sns;
+    protected $domain;
 
     /**
      * SnsSetup constructor.
+     *
+     * @param string $domain
      */
-    public function __construct()
+    public function __construct(string $domain)
     {
+        $this->domain = $domain;
+
         $this->ses = new SesClient([
             'credentials' => [
                 'key' => config('services.ses.key'),
@@ -32,28 +37,40 @@ class SnsSetup
             'region' => config('services.ses.region'),
             'version' => 'latest'
         ]);
+
+        $this->setupNotification('Bounce');
+        $this->setupNotification('Complaint');
+        $this->setupNotification('Delivery');
+    }
+
+    /**
+     * Fluent systax method
+     *
+     * @param string $domain
+     * @return SnsSetup
+     */
+    public static function create(string $domain)
+    {
+        return new self($domain);
     }
 
     /**
      * Init SNS setup
-     *
-     * @param $protocol
      */
-    public function init(string $protocol)
+    public function init()
     {
-        $this->setupNotification('Bounce', $protocol);
-        $this->setupNotification('Complaint', $protocol);
-        $this->setupNotification('Delivery', $protocol);
+        $this->setupNotification('Bounce');
+        $this->setupNotification('Complaint');
+        $this->setupNotification('Delivery');
     }
 
     /**
      * Setup notification
      *
      * @param $type
-     * @param $protocol
      * @return bool
      */
-    public function setupNotification(string $type, string $protocol)
+    public function setupNotification(string $type)
     {
         $result = $this->sns->createTopic([
             'Name' => "laravel-ses-{$type}"
@@ -63,21 +80,21 @@ class SnsSetup
 
         $urlSlug = strtolower($type);
 
-        $result = $this->sns->subscribe([
+        $this->sns->subscribe([
             'Endpoint' => config('app.url') . "/laravel-ses/notification/{$urlSlug}",
-            'Protocol' => $protocol,
+            'Protocol' => 'https',
             'TopicArn' => $topicArn
         ]);
 
-        $result = $this->ses->setIdentityNotificationTopic([
-            'Identity' => config('services.ses.domain'),
+        $this->ses->setIdentityNotificationTopic([
+            'Identity' => $this->domain,
             'NotificationType' => $type,
             'SnsTopic' => $topicArn
         ]);
 
-        $result = $this->ses->setIdentityHeadersInNotificationsEnabled([
+        $this->ses->setIdentityHeadersInNotificationsEnabled([
             'Enabled' => true,
-            'Identity' => config('services.ses.domain'),
+            'Identity' => $this->domain,
             'NotificationType' => $type
         ]);
 
@@ -93,7 +110,11 @@ class SnsSetup
 
     public function notificationIsSet(string $type): bool
     {
-        $result = $this->ses->getIdentityNotificationAttributes(['Identities' => [config('services.ses.domain')]]);
+        $result = $this->ses->getIdentityNotificationAttributes([
+            'Identities' => [config('services.ses.domain')
+            ]
+        ]);
+
         return isset($result['NotificationAttributes'][config('services.ses.domain')]["{$type}Topic"]);
     }
 }

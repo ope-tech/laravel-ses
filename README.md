@@ -125,13 +125,14 @@ Once policies are defined they need to added to the configured IAM user.
       UserName: staging-user
 ```
 
-Run command in **production** to setup Amazon email notifications to track bounces, complaints and deliveries. 
-Make sure in your configuration your app URL is set correctly.
-
-If your application uses the http protocol instead of https add the --http flag to this command. 
+Run command in **production** to setup Amazon email notifications to track opens, bounces, complaints and deliveries. 
+Make sure in your configuration your app URL is set correctly and routes setup by this package are working. Next figure
+out what is the name of the domain your emails come out from. If it is same as primary app domain no worries just enter
+that address. If you do send email for multiple domains (i.e. multi tenant application) you can set multiple domain 
+using this command.
 
 ```
-php artisan setup:sns
+php artisan setup:sns mydomain.com
 ```
 
 This commands automatically configures SES domain to send SNS notifications that

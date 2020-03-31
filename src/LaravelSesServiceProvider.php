@@ -20,9 +20,7 @@ class LaravelSesServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/routes.php');
         $this->loadViewsFrom(__DIR__.'/Mocking/Views', 'LaravelSes');
 
-        if (App::environment(['build','testing'])) {
-            $this->loadMigrationsFrom(__DIR__.'/Migrations');
-        }
+        //$this->loadMigrationsFrom(__DIR__.'/Migrations');
 
         $this->publishes([
            __DIR__.'/Assets' => public_path('laravel-ses'),

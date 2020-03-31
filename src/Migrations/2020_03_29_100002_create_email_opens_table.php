@@ -19,7 +19,6 @@ class CreateEmailOpensTable extends Migration
             $table->uuid('beacon_identifier')->index();
             $table->string('url');
             $table->dateTime('opened_at')->nullable();
-            $table->timestamps();
 
             $table->foreign('sent_email_id')
                 ->references('id')

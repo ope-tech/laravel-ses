@@ -9,6 +9,8 @@ class EmailLink extends Model implements EmailLinkContract
 {
     protected $table = 'laravel_ses_email_links';
 
+    public $timestamps = false;
+
     protected $guarded = [];
 
     protected $casts = [

@@ -8,6 +8,8 @@ use Juhasev\LaravelSes\Contracts\EmailOpenContract;
 class EmailOpen extends Model implements EmailOpenContract
 {
     protected $table = 'laravel_ses_email_opens';
+    
+    public $timestamps = false;
 
     protected $guarded = [];
 }

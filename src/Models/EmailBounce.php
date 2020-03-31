@@ -7,7 +7,9 @@ use Juhasev\LaravelSes\Contracts\EmailBounceContract;
 
 class EmailBounce extends Model implements EmailBounceContract
 {
+    public $timestamps = false;
+    
     protected $table = 'laravel_ses_email_bounces';
-
+    
     protected $guarded = [];
 }

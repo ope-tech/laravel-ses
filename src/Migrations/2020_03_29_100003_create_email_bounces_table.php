@@ -18,7 +18,6 @@ class CreateEmailBouncesTable extends Migration
             $table->unsignedBigInteger('sent_email_id');
             $table->string('type');
             $table->dateTime('bounced_at');
-            $table->timestamps();
 
             $table->foreign('sent_email_id')
                 ->references('id')

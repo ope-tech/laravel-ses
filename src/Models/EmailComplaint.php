@@ -9,5 +9,7 @@ class EmailComplaint extends Model implements EmailComplaintContract
 {
     protected $table = 'laravel_ses_email_complaints';
 
+    public $timestamps = false;
+    
     protected $guarded = [];
 }

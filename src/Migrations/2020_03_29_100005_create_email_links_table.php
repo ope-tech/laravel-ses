@@ -20,7 +20,6 @@ class CreateEmailLinksTable extends Migration
             $table->string('original_url');
             $table->boolean('clicked')->default(false);
             $table->unsignedSmallInteger('click_count')->default(0);
-            $table->timestamps();
 
             $table->foreign('sent_email_id')
                 ->references('id')

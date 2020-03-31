@@ -9,5 +9,7 @@ class EmailReject extends Model implements EmailRejectContract
 {
     protected $table = 'laravel_ses_email_rejects';
 
+    public $timestamps = false;
+    
     protected $guarded = [];
 }

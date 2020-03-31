@@ -18,7 +18,6 @@ class CreateEmailRejectsTable extends Migration
             $table->unsignedBigInteger('sent_email_id');
             $table->string('type');
             $table->dateTime('rejected_at');
-            $table->timestamps();
 
             $table->foreign('sent_email_id')
                 ->references('id')

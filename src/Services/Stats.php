@@ -3,6 +3,8 @@
 namespace Juhasev\LaravelSes\Services;
 
 use Exception;
+use Juhasev\LaravelSes\Contracts\BatchContract;
+use Juhasev\LaravelSes\Models\Batch;
 use Juhasev\LaravelSes\Repositories\BatchStatRepository;
 use Juhasev\LaravelSes\Repositories\EmailRepository;
 use Juhasev\LaravelSes\Repositories\EmailStatRepository;
@@ -53,21 +55,21 @@ class Stats
     /**
      * Get stats for batch
      *
-     * @param $batchName
+     * @param Batch $batch
      * @return array
      * @throws Exception
      */
-    public static function statsForBatch($batchName): array
+    public static function statsForBatch(BatchContract $batch): array
     {
         return [
-            'sent' => BatchStatRepository::getSentCount($batchName),
-            'deliveries' => BatchStatRepository::getDeliveriesCount($batchName),
-            'opens' => BatchStatRepository::getOpenedCount($batchName),
-            'bounces' => BatchStatRepository::getBouncedCount($batchName),
-            'complaints' => BatchStatRepository::getComplaintsCount($batchName),
-            'rejects' => BatchStatRepository::getRejectsCount($batchName),
-            'clicks' => BatchStatRepository::getClicksCount($batchName),
-            'link_popularity' => BatchStatRepository::getLinkPopularity($batchName)
+            'sent' => BatchStatRepository::getSentCount($batch),
+            'deliveries' => BatchStatRepository::getDeliveriesCount($batch),
+            'opens' => BatchStatRepository::getOpenedCount($batch),
+            'bounces' => BatchStatRepository::getBouncedCount($batch),
+            'complaints' => BatchStatRepository::getComplaintsCount($batch),
+            'rejects' => BatchStatRepository::getRejectsCount($batch),
+            'clicks' => BatchStatRepository::getClicksCount($batch),
+            'link_popularity' => BatchStatRepository::getLinkPopularity($batch)
         ];
     }
 }

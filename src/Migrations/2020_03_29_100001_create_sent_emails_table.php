@@ -15,9 +15,9 @@ class CreateSentEmailsTable extends Migration
     {
         Schema::create('laravel_ses_sent_emails', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedInteger('batch_id')->nullable();
             $table->string('message_id');
             $table->string('email')->index();
-            $table->string('batch')->nullable()->index();
             $table->dateTime('sent_at')->nullable();
             $table->dateTime('delivered_at')->nullable();
             $table->boolean('complaint_tracking')->default(false);
@@ -25,6 +25,11 @@ class CreateSentEmailsTable extends Migration
             $table->boolean('bounce_tracking')->default(false);
             $table->boolean('reject_tracking')->default(false);
             $table->timestamps();
+
+            $table->foreign('batch_id')
+                ->references('id')
+                ->on('laravel_ses_batches')
+                ->onDelete('cascade');
         });
     }
 

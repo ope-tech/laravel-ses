@@ -11,7 +11,6 @@ use Illuminate\Mail\PendingMail;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Testing\Fakes\PendingMailFake;
 use Juhasev\LaravelSes\Exceptions\TooManyEmails;
-use Juhasev\LaravelSes\Services\Stats;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
 use PHPHtmlParser\Exceptions\CircularException;
 use PHPHtmlParser\Exceptions\CurlException;
@@ -31,21 +30,19 @@ class SesMailFake implements SesMailerInterface, Mailer
 
     /**
      * Init message this will be called everytime
-     * @param $view
+     *
+     * @param $message
      * @return mixed
      * @throws \Exception
      */
-    public function initMessage($view)
+    public function initMessage(Mailable $message)
     {
-        //open tracking etc won't work if emails are sent to more than one recepient at a time
-        if (sizeOf($view->to) > 1) {
-            throw new TooManyEmails("Tried to send to too many emails only one email may be set");
-        }
+        $this->checkNumberOfRecipients($message);
 
         return ModelResolver::get('SentEmail')::create([
             'message_id' => rand(1, 999999),
-            'email' => $view->to[0]['address'],
-            'batch' => $this->getBatch(),
+            'email' => $message->to[0]['address'],
+            'batch_id' => $this->getBatchId(),
             'sent_at' => Carbon::now(),
             'delivery_tracking' => $this->deliveryTracking,
             'complaint_tracking' => $this->complaintTracking,
@@ -54,17 +51,20 @@ class SesMailFake implements SesMailerInterface, Mailer
         ]);
     }
 
-    public function statsForBatch(string $batchName): array
+    /**
+     * Check message recipient for tracking
+     * Open tracking etc won't work if emails are sent to more than one recipient at a time
+     * @param $message
+     */
+    protected function checkNumberOfRecipients($message)
     {
-        return Stats::statsForBatch($batchName);
+        if (count($message->to) > 1) {
+            throw new TooManyEmails("Tried to send to too many emails only one email may be set");
+        }
     }
 
-    public function statsForEmail(string $email): array
-    {
-        return Stats::statsForEmail($email);
-    }
 
-    //COPY FAKE METHODS SO THINGS LIKE ASSERT SENT ETC WORK
+    // COPY FAKE METHODS SO THINGS LIKE ASSERT SENT ETC WORK
 
     /**
      * Assert if a mailable was sent based on a truth-test callback.

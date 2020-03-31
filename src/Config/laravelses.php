@@ -1,5 +1,6 @@
 <?php
 
+use Juhasev\LaravelSes\Models\Batch;
 use Juhasev\LaravelSes\Models\EmailBounce;
 use Juhasev\LaravelSes\Models\EmailComplaint;
 use Juhasev\LaravelSes\Models\EmailLink;
@@ -38,6 +39,7 @@ return [
      */
     
     'models' => [
+        'Batch' => Batch::class,
         'SentEmail' => SentEmail::class,
         'EmailBounce' => EmailBounce::class,
         'EmailComplaint' => EmailComplaint::class,

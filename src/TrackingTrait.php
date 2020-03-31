@@ -2,7 +2,9 @@
 
 namespace Juhasev\LaravelSes;
 
+use Juhasev\LaravelSes\Contracts\BatchContract;
 use Juhasev\LaravelSes\Contracts\SentEmailContract;
+use Juhasev\LaravelSes\Models\Batch;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
 use PHPHtmlParser\Exceptions\CircularException;
 use PHPHtmlParser\Exceptions\CurlException;
@@ -52,11 +54,17 @@ trait TrackingTrait
     /**
      * Set batch identifier
      *
-     * @param string $batch
+     * @param string $batchName
      * @return SesMailerInterface
      */
-    public function setBatch(string $batch): SesMailerInterface
+    public function setBatch(string $batchName): SesMailerInterface
     {
+        $batch = Batch::whereName($batchName)->first();
+
+        if (!$batch) {
+            $batch = Batch::create(['name' => $batchName]);
+        }
+
         $this->batch = $batch;
         return $this;
     }
@@ -64,13 +72,23 @@ trait TrackingTrait
     /**
      * Get batch identifier
      *
-     * @return string
+     * @return Batch|null
      */
-    public function getBatch()
+    public function getBatch(): ?BatchContract
     {
         return $this->batch;
     }
 
+    /**
+     * Get batch ID
+     * 
+     * @return int|null
+     */
+    public function getBatchId(): ?int 
+    {
+        return $this->batch ? $this->batch->id : null;
+    }
+    
     /**
      * Enable open tracking
      *
@@ -247,6 +265,6 @@ trait TrackingTrait
             'complaintTracking' => $this->complaintTracking,
             'deliveryTracking' => $this->deliveryTracking,
             'rejectTracking' => $this->rejectTracking
-         ];
+        ];
     }
 }

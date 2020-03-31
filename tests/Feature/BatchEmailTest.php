@@ -5,6 +5,9 @@ namespace Juhasev\LaravelSes\Tests\Feature;
 use Juhasev\LaravelSes\Facades\SesMail;
 use Juhasev\LaravelSes\Mocking\TestMailable;
 use Juhasev\LaravelSes\ModelResolver;
+use Juhasev\LaravelSes\Models\Batch;
+use Juhasev\LaravelSes\Models\SentEmail;
+use Juhasev\LaravelSes\Services\Stats;
 
 class BatchEmailTest extends FeatureTestCase
 {
@@ -30,7 +33,9 @@ class BatchEmailTest extends FeatureTestCase
                 ->send(new TestMailable());
         }
 
-        $stats = SesMail::statsForBatch('welcome_emails');
+        $batch = Batch::resolve('welcome_emails');
+
+        $stats = Stats::statsForBatch($batch);
 
         // Make sure all stats are 0 apart except sent emails
         $this->assertEquals(8, $stats['sent']);
@@ -109,7 +114,7 @@ class BatchEmailTest extends FeatureTestCase
 
         //check that stats are now correct, click throughs = amount of users that clicked at least one link
         //link popularity is amount of unique clicks on a link in the email body, ordered by most popular
-        $stats = SesMail::statsForBatch('welcome_emails');
+        $stats = Stats::statsForBatch(Batch::resolve('welcome_emails'));
 
         $this->assertEquals([
             "sent" => 8,

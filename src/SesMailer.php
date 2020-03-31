@@ -3,6 +3,7 @@
 namespace Juhasev\LaravelSes;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Mail\Mailable;
 use Illuminate\Mail\Mailer;
 use Juhasev\LaravelSes\Exceptions\TooManyEmails;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
@@ -22,14 +23,14 @@ class SesMailer extends Mailer implements SesMailerInterface
      * @return mixed
      * @throws \Exception
      */
-    public function initMessage($message)
+    public function initMessage(Mailable $message)
     {
         $this->checkNumberOfRecipients($message);
 
         return ModelResolver::get('SentEmail')::create([
             'message_id' => $message->getId(),
             'email' => key($message->getTo()),
-            'batch' => $this->getBatch(),
+            'batch_id' => $this->getBatchId(),
             'sent_at' => Carbon::now(),
             'delivery_tracking' => $this->deliveryTracking,
             'complaint_tracking' => $this->complaintTracking,
@@ -45,7 +46,7 @@ class SesMailer extends Mailer implements SesMailerInterface
      */
     protected function checkNumberOfRecipients($message)
     {
-        if (sizeOf($message->getTo()) > 1) {
+        if (count($message->to) > 1) {
             throw new TooManyEmails("Tried to send to too many emails only one email may be set");
         }
     }

@@ -31,6 +31,6 @@ class CreateEmailComplaintsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('email_complaints');
+        Schema::dropIfExists('laravel_ses_email_complaints');
     }
 }

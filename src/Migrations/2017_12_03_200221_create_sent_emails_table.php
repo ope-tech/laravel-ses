@@ -34,6 +34,6 @@ class CreateSentEmailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sent_emails');
+        Schema::dropIfExists('laravel_ses_sent_emails');
     }
 }

@@ -32,6 +32,6 @@ class CreateEmailLinksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('email_links');
+        Schema::dropIfExists('laravel_ses_email_links');
     }
 }

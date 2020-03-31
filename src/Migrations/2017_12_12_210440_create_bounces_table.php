@@ -31,6 +31,6 @@ class CreateBouncesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bounces');
+        Schema::dropIfExists('laravel_ses_email_bounces');
     }
 }

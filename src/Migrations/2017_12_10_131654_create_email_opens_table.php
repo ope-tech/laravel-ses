@@ -32,6 +32,6 @@ class CreateEmailOpensTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('campaign_opens');
+        Schema::dropIfExists('laravel_ses_email_opens');
     }
 }

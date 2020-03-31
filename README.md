@@ -34,9 +34,9 @@ Make sure your app/config/services.php has SES values set
 ],
 ```
 
-Next verify config/mail.php is using SES
-```angular2
-
+Next verify config/mail.php is using SES or add MAIL_MAILER to your .env
+```
+    'default' => env('MAIL_MAILER', 'ses')
 ```
 
 Important to note that if you're using an IAM, it needs access to
@@ -132,7 +132,7 @@ that address. If you do send email for multiple domains (i.e. multi tenant appli
 using this command.
 
 ```
-php artisan setup:sns mydomain.com
+php artisan sns:setup mydomain.com
 ```
 
 This commands automatically configures SES domain to send SNS notifications that
@@ -148,8 +148,7 @@ SesMail::enableAllTracking()
     ->send(new Mailable);
 ```
 
-All tracking allows you to track opens, bounces, deliveries, complaints and links
-
+Calling enableAllTracking() enables open, reject, bounce, delivery, complaint and link tracking.
 
 You can, of course, disable and enable all the tracking options
 
@@ -193,7 +192,7 @@ SesMail::statsForBatch('welcome_emails');
     "opens" => 4,
     "bounces" => 1,
     "complaints" => 2,
-    "reject" => 1,
+    "rejects" => 1,
     "click_throughs" => 3,
     "link_popularity" => [
         "https://welcome.page" => [
@@ -208,11 +207,16 @@ SesMail::statsForBatch('welcome_emails');
 You can also use other facade methods as well:
 
 ```
-$emailBounces =  EmailBounce::whereEmail($email)->get();
-$emailComplaints =  EmailComplaint::whereEmail($email)->get();
+$emailBounces = EmailBounce::whereEmail($email)->get();
+$emailComplaints = EmailComplaint::whereEmail($email)->get();
 SesMail::statsForEmail($email)];
 
 ```
+If you are using custom models then you can use ModelResolver() helper like so
+```
+$sentEmail = ModelResolver::get('SentEmail')::take(100)->get();
+```
+
 ### Terminology
 Send count = number of emails that were attempted
 
@@ -242,8 +246,6 @@ Setup Composer.json to resolve classes from your dev folder:
     }
   },
 ```
-
-Composer
 
 Require
 

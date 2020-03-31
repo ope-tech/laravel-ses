@@ -6,8 +6,8 @@ including deliveries, opens, rejects, bounces, complaints and link tracking. Thi
 Unfortunately the original author had stopped maintaining this package so I decided to create this fork so that this 
 package can be used with current versions of Laravel.
 
-All packages have been updated and all tests are currently passing. Please note that this package is still experimental 
-and going thru extensive testing with Laravel 6.x.
+All packages have been updated to modern versions. Also added Reject tracking and optimized the original database
+storage. Please note that this package is still experimental and currently going thru extensive testing with Laravel 6.x.
 
 ## Installation
 Install via composer
@@ -183,9 +183,12 @@ SesMail::enableAllTracking()
 You can manipulate the results manually by querying the database. Or you can use functions that come with the package.
 
 ```
+
+SesMail::statsForEmail($email);
+
 SesMail::statsForBatch('welcome_emails');
 
-//example result
+// Example result
 [
     "send_count" => 8,
     "deliveries" => 7,
@@ -204,12 +207,16 @@ SesMail::statsForBatch('welcome_emails');
     ]
 ]
 ```
-You can also use other facade methods as well:
+You can also use the models directly as you would any other Eloquent model:
 
 ```
+$sentEmails = SentEmail::whereEmail($email)->get();
+
 $emailBounces = EmailBounce::whereEmail($email)->get();
 $emailComplaints = EmailComplaint::whereEmail($email)->get();
-SesMail::statsForEmail($email)];
+$emailLink = EmailLink::whereEmail($email)->get();
+$emailOpen = EmailOpen::whereEmail($email)->get();
+$emailReject = EmailReject::whereEmail($email)->get();
 
 ```
 If you are using custom models then you can use ModelResolver() helper like so
@@ -249,7 +256,7 @@ Setup Composer.json to resolve classes from your dev folder:
 
 Require
 
-```
+```bash
 composer require juhasev/laravel-ses:dev-master
 ```
 

@@ -38,9 +38,7 @@ class SnsSetup
             'version' => 'latest'
         ]);
 
-        $this->setupNotification('Bounce');
-        $this->setupNotification('Complaint');
-        $this->setupNotification('Delivery');
+        $this->init();
     }
 
     /**

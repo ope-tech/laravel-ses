@@ -60,6 +60,7 @@ class StatsTest extends FeatureTestCase
             "opens" => 1,
             "bounces" => 1,
             "complaints" => 1,
+            "rejects" => 0,
             "click_throughs" => 2
         ];
 
@@ -106,6 +107,7 @@ class StatsTest extends FeatureTestCase
             "opens" => 4,
             "bounces" => 1,
             "complaints" => 2,
+            "rejects" => 0,
             "click_throughs" => 3,
             "link_popularity" => [
                 "https://google.com" => [
@@ -128,6 +130,7 @@ class StatsTest extends FeatureTestCase
             "opens" => 0,
             "bounces" => 0,
             "complaints" => 0,
+            "rejects" => 0,
             "click_throughs" => 0,
             "link_popularity" => [
             ]
@@ -163,6 +166,7 @@ class StatsTest extends FeatureTestCase
         $this->assertEquals(0, $statsForBatch['deliveries']);
         $this->assertEquals(0, $statsForBatch['opens']);
         $this->assertEquals(0, $statsForBatch['complaints']);
+        $this->assertEquals(0, $statsForBatch['rejects']);
         $this->assertEquals(0, $statsForBatch['click_throughs']);
         $this->assertEquals([], $statsForBatch['link_popularity']);
 

@@ -37,6 +37,7 @@ class BatchEmailTest extends FeatureTestCase
         $this->assertEquals(0, $stats['deliveries']);
         $this->assertEquals(0, $stats['opens']);
         $this->assertEquals(0, $stats['complaints']);
+        $this->assertEquals(0, $stats['rejects']);
         $this->assertEquals(0, $stats['click_throughs']);
 
         //deliver all emails apart from bounced email
@@ -116,6 +117,7 @@ class BatchEmailTest extends FeatureTestCase
             "opens" => 4,
             "bounces" => 1,
             "complaints" => 2,
+            "rejects" => 0,
             "click_throughs" => 3,
             "link_popularity" => [
                 "https://google.com" => [

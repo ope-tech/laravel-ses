@@ -86,6 +86,18 @@ class SentEmail extends Model implements SentEmailContract
             ->count();
     }
 
+    public static function rejectsForBatch(string $batchName)
+    {
+        return self::join(
+            'laravel_ses_email_rejects',
+            'laravel_ses_sent_emails.id',
+            'laravel_ses_email_rejects.sent_email_id'
+        )
+            ->where('laravel_ses_sent_emails.batch', $batchName)
+            ->whereNotNull('laravel_ses_email_rejects.rejected_at')
+            ->count();
+    }
+
     public static function deliveriesForBatch(string $batchName)
     {
         return self::whereBatch($batchName)

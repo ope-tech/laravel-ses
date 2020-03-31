@@ -15,6 +15,7 @@ interface SentEmailContract
     public static function bouncesForBatch(string $batchName);
     public static function complaintsForBatch(string $batchName);
     public static function deliveriesForBatch(string $batchName);
+    public static function rejectsForBatch(string $batchName);
     public static function getAmountOfUsersThatClickedAtLeastOneLink(string $batchName);
     public static function getLinkPopularityOrder(string $batchName): array;
 }

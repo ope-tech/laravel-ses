@@ -23,21 +23,18 @@ class SesMailFake implements SesMailerInterface, Mailer
 {
     use TrackingTrait;
 
-    /**
-     * All of the mailables that have been sent.
-     *
-     * @var array
-     */
-
+    /** All of the mailables that have been sent */
     protected $mailables = [];
-    /**
-     * All of the mailables that have been queued.
-     *
-     * @var array
-     */
+
+    /** All of the mailables that have been queued */
     protected $queuedMailables = [];
 
-    //this will be called every time
+    /**
+     * Init message this will be called everytime
+     * @param $view
+     * @return mixed
+     * @throws \Exception
+     */
     public function initMessage($view)
     {
         //open tracking etc won't work if emails are sent to more than one recepient at a time
@@ -45,17 +42,16 @@ class SesMailFake implements SesMailerInterface, Mailer
             throw new TooManyEmails("Tried to send to too many emails only one email may be set");
         }
 
-        $sentEmail = ModelResolver::get('SentEmail')::create([
+        return ModelResolver::get('SentEmail')::create([
             'message_id' => rand(1, 999999),
             'email' => $view->to[0]['address'],
             'batch' => $this->getBatch(),
             'sent_at' => Carbon::now(),
             'delivery_tracking' => $this->deliveryTracking,
             'complaint_tracking' => $this->complaintTracking,
-            'bounce_tracking' => $this->bounceTracking
+            'bounce_tracking' => $this->bounceTracking,
+            'reject_tracking' => $this->rejectTracking
         ]);
-
-        return $sentEmail;
     }
 
     public function statsForBatch(string $batchName): array

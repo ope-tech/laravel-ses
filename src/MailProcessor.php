@@ -66,11 +66,9 @@ class MailProcessor
     {
         $beaconIdentifier = Uuid::uuid4()->toString();
         $beaconUrl = config('app.url') . "/laravel-ses/beacon/$beaconIdentifier";
-
+        
         ModelResolver::get('EmailOpen')::create([
             'sent_email_id' => $this->sentEmail->id,
-            'email' => $this->sentEmail->email,
-            'batch' => $this->sentEmail->batch,
             'beacon_identifier' => $beaconIdentifier,
             'url' => $beaconUrl,
         ]);
@@ -116,7 +114,6 @@ class MailProcessor
 
         ModelResolver::get('EmailLink')::create([
             'sent_email_id' => $this->sentEmail->id,
-            'batch' => $this->sentEmail->batch,
             'link_identifier' => $linkIdentifier,
             'original_url' => $originalUrl
         ]);

@@ -27,9 +27,7 @@ class BounceTrackingTest extends FeatureTestCase
         // Check bounce is logged correctly
         // Note email Amazon returns is set as email rather than email set in sent email
         $this->assertEquals('Permanent', $bounceRecord['type']);
-        $this->assertEquals('84b8739d03d2245baed4999232916608@swift.generated', $bounceRecord['message_id']);
         $this->assertEquals(1, $bounceRecord['sent_email_id']);
-        $this->assertEquals('bounce@simulator.amazonses.com', $bounceRecord['email']);
     }
 
     public function testSubscriptionConfirmation()

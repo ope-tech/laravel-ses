@@ -5,6 +5,7 @@ namespace Juhasev\LaravelSes\Controllers;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Juhasev\LaravelSes\ModelResolver;
@@ -75,17 +76,19 @@ class ComplaintController extends BaseController
                 ->whereComplaintTracking(true)
                 ->firstOrFail();
 
+        } catch (ModelNotFoundException $e) {
+            Log::error("Could not find sent email ($messageId). Email complaint failed to record!");
+        }
+
+        try {
             ModelResolver::get('EmailComplaint')::create([
-                'message_id' => $messageId,
                 'sent_email_id' => $sentEmail->id,
                 'type' => $message->complaint->complaintFeedbackType,
-                'email' => $message->mail->destination[0],
                 'complained_at' => Carbon::parse($message->mail->timestamp)
             ]);
 
-        } catch (ModelNotFoundException $e) {
-
-            Log::error("Could not find sent email ($messageId). Email complaint failed to record!");
+        } catch (QueryException $e) {
+            Log::error("Failed inserting EmailComplaint, got error: " . $e->getMessage());
         }
     }
 }

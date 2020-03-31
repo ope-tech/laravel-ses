@@ -15,9 +15,7 @@ class CreateEmailOpensTable extends Migration
     {
         Schema::create('laravel_ses_email_opens', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('sent_email_id');
-            $table->string('email');
-            $table->string('batch')->nullable(); // TODO This seems out of place here
+            $table->unsignedBigInteger('sent_email_id');
             $table->uuid('beacon_identifier')->index();
             $table->string('url');
             $table->dateTime('opened_at')->nullable();

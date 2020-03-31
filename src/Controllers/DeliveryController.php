@@ -4,6 +4,7 @@ namespace Juhasev\LaravelSes\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Juhasev\LaravelSes\ModelResolver;
@@ -70,10 +71,15 @@ class DeliveryController extends BaseController
                 ->whereDeliveryTracking(true)
                 ->firstOrFail();
 
-            $sentEmail->setDeliveredAt($deliveryTime);
-
         } catch (ModelNotFoundException $e) {
             Log::error("Could not find sent email ($messageId). Email delivery failed to record!");
+        }
+
+        try {
+            $sentEmail->setDeliveredAt($deliveryTime);
+            
+        } catch (QueryException $e) {
+            Log::error("Failed updating delivered timestamp, got error: " . $e->getMessage());
         }
     }
 }

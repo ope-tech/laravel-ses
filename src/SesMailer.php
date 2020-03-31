@@ -5,7 +5,6 @@ namespace Juhasev\LaravelSes;
 use Carbon\Carbon;
 use Illuminate\Mail\Mailer;
 use Juhasev\LaravelSes\Exceptions\TooManyEmails;
-use Juhasev\LaravelSes\Services\Stats;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
 use PHPHtmlParser\Exceptions\CircularException;
 use PHPHtmlParser\Exceptions\CurlException;
@@ -27,7 +26,7 @@ class SesMailer extends Mailer implements SesMailerInterface
     {
         $this->checkNumberOfRecipients($message);
 
-        $sentEmail = ModelResolver::get('SentEmail')::create([
+        return ModelResolver::get('SentEmail')::create([
             'message_id' => $message->getId(),
             'email' => key($message->getTo()),
             'batch' => $this->getBatch(),
@@ -37,8 +36,6 @@ class SesMailer extends Mailer implements SesMailerInterface
             'bounce_tracking' => $this->bounceTracking,
             'reject_tracking' => $this->rejectTracking
         ]);
-
-        return $sentEmail;
     }
 
     /**
@@ -52,29 +49,7 @@ class SesMailer extends Mailer implements SesMailerInterface
             throw new TooManyEmails("Tried to send to too many emails only one email may be set");
         }
     }
-
-    /**
-     * Get stats for batch
-     *
-     * @param string $batchName
-     * @return array
-     */
-    public function statsForBatch(string $batchName): array
-    {
-        return Stats::statsForBatch($batchName);
-    }
-
-    /**
-     * Get email for batch
-     *
-     * @param string $email
-     * @return array
-     */
-    public function statsForEmail(string $email): array
-    {
-        return Stats::statsForEmail($email);
-    }
-
+    
     /**
      * Send swift message
      *

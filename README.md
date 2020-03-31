@@ -257,7 +257,14 @@ Setup Composer.json to resolve classes from your dev folder:
   },
 ```
 
-Require
+Composer require
+```json5
+require: {
+    "juhasev/laravel-ses": "dev-master"
+}
+```
+
+Or run require
 
 ```bash
 composer require juhasev/laravel-ses:dev-master

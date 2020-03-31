@@ -13,12 +13,6 @@ class SentEmail extends Model implements SentEmailContract
 
     protected $guarded = [];
 
-    public function setDeliveredAt($time)
-    {
-        $this->delivered_at = $time;
-        $this->save();
-    }
-
     public function emailOpen()
     {
         return $this->hasOne(ModelResolver::get('EmailOpen'));
@@ -44,93 +38,16 @@ class SentEmail extends Model implements SentEmailContract
         return $this->hasOne(ModelResolver::get('EmailReject'));
     }
 
-    public static function numberSentForBatch(string $batchName)
+   
+    /**
+     * Set delivery time for the email
+     *
+     * @param $time
+     */
+    public function setDeliveredAt($time)
     {
-        return self::whereBatch($batchName)
-            ->count();
+        $this->delivered_at = $time;
+        $this->save();
     }
 
-    public static function opensForBatch(string $batchName)
-    {
-        return self::join(
-                'laravel_ses_email_opens',
-                'laravel_ses_sent_emails.id',
-                'laravel_ses_email_opens.sent_email_id'
-            )
-            ->where('laravel_ses_sent_emails.batch', $batchName)
-            ->whereNotNull('laravel_ses_email_opens.opened_at')
-            ->count();
-    }
-
-    public static function bouncesForBatch(string $batchName)
-    {
-        return self::join(
-                'laravel_ses_email_bounces',
-                'laravel_ses_sent_emails.id',
-                'laravel_ses_email_bounces.sent_email_id'
-            )
-            ->where('laravel_ses_sent_emails.batch', $batchName)
-            ->whereNotNull('laravel_ses_email_bounces.bounced_at')
-            ->count();
-    }
-
-    public static function complaintsForBatch(string $batchName)
-    {
-        return self::join(
-                'laravel_ses_email_complaints',
-                'laravel_ses_sent_emails.id',
-                'laravel_ses_email_complaints.sent_email_id'
-            )
-            ->where('laravel_ses_sent_emails.batch', $batchName)
-            ->whereNotNull('laravel_ses_email_complaints.complained_at')
-            ->count();
-    }
-
-    public static function rejectsForBatch(string $batchName)
-    {
-        return self::join(
-            'laravel_ses_email_rejects',
-            'laravel_ses_sent_emails.id',
-            'laravel_ses_email_rejects.sent_email_id'
-        )
-            ->where('laravel_ses_sent_emails.batch', $batchName)
-            ->whereNotNull('laravel_ses_email_rejects.rejected_at')
-            ->count();
-    }
-
-    public static function deliveriesForBatch(string $batchName)
-    {
-        return self::whereBatch($batchName)
-            ->whereNotNull('delivered_at')
-            ->count();
-    }
-
-    public static function getAmountOfUsersThatClickedAtLeastOneLink(string $batchName)
-    {
-        return self::where('laravel_ses_sent_emails.batch', $batchName)
-            ->join('laravel_ses_email_links', function ($join) {
-                $join
-                    ->on('laravel_ses_sent_emails.id', '=', 'sent_email_id')
-                    ->where('laravel_ses_email_links.clicked', '=', true);
-            })
-            ->select('email')
-            ->count(DB::raw('DISTINCT(email)'));
-    }
-
-    public static function getLinkPopularityOrder(string $batchName): array
-    {
-        return self::where('laravel_ses_sent_emails.batch', $batchName)
-            ->join('laravel_ses_email_links', function ($join) {
-                $join
-                    ->on('laravel_ses_sent_emails.id', '=', 'sent_email_id')
-                    ->where('laravel_ses_email_links.clicked', '=', true);
-            })
-            ->get()
-            ->groupBy('original_url')
-            ->map(function ($linkClicks) {
-                return ['clicks' => $linkClicks->count()];
-            })
-            ->sortByDesc('clicks')
-            ->toArray();
-    }
 }

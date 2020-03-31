@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEmailComplaintsTable extends Migration
+class CreateEmailBouncesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateEmailComplaintsTable extends Migration
      */
     public function up()
     {
-        Schema::create('laravel_ses_email_complaints', function (Blueprint $table) {
+        Schema::create('laravel_ses_email_bounces', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('message_id');
-            $table->unsignedInteger('sent_email_id');
+            $table->unsignedBigInteger('sent_email_id');
             $table->string('type');
-            $table->string('email');
-            $table->dateTime('complained_at');
+            $table->dateTime('bounced_at');
             $table->timestamps();
 
             $table->foreign('sent_email_id')
@@ -36,6 +34,6 @@ class CreateEmailComplaintsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('laravel_ses_email_complaints');
+        Schema::dropIfExists('laravel_ses_email_bounces');
     }
 }

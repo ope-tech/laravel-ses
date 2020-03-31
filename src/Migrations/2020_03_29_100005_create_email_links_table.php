@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBouncesTable extends Migration
+class CreateEmailLinksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateBouncesTable extends Migration
      */
     public function up()
     {
-        Schema::create('laravel_ses_email_bounces', function (Blueprint $table) {
+        Schema::create('laravel_ses_email_links', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('message_id');
-            $table->unsignedInteger('sent_email_id');
-            $table->string('type');
-            $table->string('email');
-            $table->dateTime('bounced_at');
+            $table->uuid('link_identifier')->index();
+            $table->unsignedBigInteger('sent_email_id');
+            $table->string('original_url');
+            $table->boolean('clicked')->default(false);
+            $table->unsignedSmallInteger('click_count')->default(0);
             $table->timestamps();
 
             $table->foreign('sent_email_id')
@@ -36,6 +36,6 @@ class CreateBouncesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('laravel_ses_email_bounces');
+        Schema::dropIfExists('laravel_ses_email_links');
     }
 }

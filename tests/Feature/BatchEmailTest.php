@@ -33,18 +33,18 @@ class BatchEmailTest extends FeatureTestCase
         $stats = SesMail::statsForBatch('welcome_emails');
 
         // Make sure all stats are 0 apart except sent emails
-        $this->assertEquals(8, $stats['send_count']);
+        $this->assertEquals(8, $stats['sent']);
         $this->assertEquals(0, $stats['deliveries']);
         $this->assertEquals(0, $stats['opens']);
         $this->assertEquals(0, $stats['complaints']);
         $this->assertEquals(0, $stats['rejects']);
-        $this->assertEquals(0, $stats['click_throughs']);
+        $this->assertEquals(0, $stats['clicks']);
 
         //deliver all emails apart from bounced email
         foreach ($emails as $email) {
             if ($email != 'bounce@ses.com') {
-                $messageId = ModelResolver::get('SentEmail')::whereEmail($email)->first()->message_id;
-                $fakeJson = json_decode($this->generateDeliveryJson($messageId));
+                $sentEmailId = ModelResolver::get('SentEmail')::whereEmail($email)->first()->message_id;
+                $fakeJson = json_decode($this->generateDeliveryJson($sentEmailId));
                 $this->json(
                     'POST',
                     '/laravel-ses/notification/delivery',
@@ -54,17 +54,17 @@ class BatchEmailTest extends FeatureTestCase
         }
 
         // Bounce an email
-        $messageId  = ModelResolver::get('SentEmail')::whereEmail('bounce@ses.com')->first()->message_id;
-        $fakeJson = json_decode($this->generateBounceJson($messageId));
+        $sentEmailId  = ModelResolver::get('SentEmail')::whereEmail('bounce@ses.com')->first()->message_id;
+        $fakeJson = json_decode($this->generateBounceJson($sentEmailId));
         $this->json('POST', 'laravel-ses/notification/bounce', (array)$fakeJson);
 
         // Two complaints
-        $messageId  = ModelResolver::get('SentEmail')::whereEmail('complaint@yes.com')->first()->message_id;
-        $fakeJson = json_decode($this->generateComplaintJson($messageId));
+        $sentEmailId  = ModelResolver::get('SentEmail')::whereEmail('complaint@yes.com')->first()->message_id;
+        $fakeJson = json_decode($this->generateComplaintJson($sentEmailId));
         $this->json('POST', 'laravel-ses/notification/complaint', (array)$fakeJson);
 
-        $messageId  = ModelResolver::get('SentEmail')::whereEmail('ay@yahoo.com')->first()->message_id;
-        $fakeJson = json_decode($this->generateComplaintJson($messageId));
+        $sentEmailId  = ModelResolver::get('SentEmail')::whereEmail('ay@yahoo.com')->first()->message_id;
+        $fakeJson = json_decode($this->generateComplaintJson($sentEmailId));
         $this->json('POST', 'laravel-ses/notification/complaint', (array)$fakeJson);
 
         //register 4 opens
@@ -77,9 +77,9 @@ class BatchEmailTest extends FeatureTestCase
 
         foreach ($emails as $email) {
             if (in_array($email, $openedEmails)) {
-                //get the open identifier
-                $id = ModelResolver::get('EmailOpen')::whereEmail($email)->first()->beacon_identifier;
-                $this->get("laravel-ses/beacon/{$id}");
+                $sentEmailId  = ModelResolver::get('SentEmail')::where('email', $email)->first()->id;
+                $beaconIdentifier = ModelResolver::get('EmailOpen')::whereSentEmailId($sentEmailId)->first()->beacon_identifier;
+                $this->get("laravel-ses/beacon/{$beaconIdentifier}");
             }
         }
 
@@ -112,13 +112,13 @@ class BatchEmailTest extends FeatureTestCase
         $stats = SesMail::statsForBatch('welcome_emails');
 
         $this->assertEquals([
-            "send_count" => 8,
+            "sent" => 8,
             "deliveries" => 7,
             "opens" => 4,
             "bounces" => 1,
             "complaints" => 2,
             "rejects" => 0,
-            "click_throughs" => 3,
+            "clicks" => 3,
             "link_popularity" => [
                 "https://google.com" => [
                     "clicks" => 3

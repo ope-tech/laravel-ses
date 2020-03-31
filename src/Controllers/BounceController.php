@@ -5,6 +5,7 @@ namespace Juhasev\LaravelSes\Controllers;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Juhasev\LaravelSes\ModelResolver;
@@ -66,17 +67,19 @@ class BounceController extends BaseController
                 ->whereBounceTracking(true)
                 ->firstOrFail();
 
+        } catch (ModelNotFoundException $e) {
+            Log::error("Could not find sent email ($messageId). Email bounce failed to record!");
+        }
+
+        try {
             ModelResolver::get('EmailBounce')::create([
-                'message_id' => $messageId,
                 'sent_email_id' => $sentEmail->id,
                 'type' => $message->bounce->bounceType,
-                'email' => $message->mail->destination[0],
                 'bounced_at' => Carbon::parse($message->mail->timestamp)
             ]);
 
-        } catch (ModelNotFoundException $e) {
-
-            Log::error("Could not find sent email ($messageId). Email bounce failed to record!");
+        } catch (QueryException $e) {
+            Log::error("Failed inserting EmailBounce, got error: ".$e->getMessage());
         }
     }
 }

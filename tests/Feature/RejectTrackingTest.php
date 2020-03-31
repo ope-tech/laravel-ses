@@ -27,9 +27,7 @@ class RejectTrackingTest extends FeatureTestCase
         // Check bounce is logged correctly
         // Note email Amazon returns is set as email rather than email set in sent email
         $this->assertEquals('Reject', $emailReject['type']);
-        $this->assertEquals('949c6b53557871a2a1fb77e117f60971@swift.generated', $emailReject['message_id']);
         $this->assertEquals(1, $emailReject['sent_email_id']);
-        $this->assertEquals('complaint@simulator.amazonses.com', $emailReject['email']);
     }
 
     public function testAComplaintIsNotStoredWhenThereIsNoEquivalentMessageId()

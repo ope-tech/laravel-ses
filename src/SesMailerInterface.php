@@ -8,10 +8,6 @@ interface SesMailerInterface
 {
     public function initMessage($message);
 
-    public function statsForBatch(string $batchName): array;
-
-    public function statsForEmail(string $batchName): array;
-
     public function setupTracking($setupTracking, SentEmailContract $sentEmail);
 
     public function setBatch(string $batch): SesMailerInterface;

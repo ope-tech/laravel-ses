@@ -5,6 +5,8 @@ namespace Juhasev\LaravelSes\Tests\Feature;
 use Juhasev\LaravelSes\Mocking\TestMailable;
 use Juhasev\LaravelSes\ModelResolver;
 use Juhasev\LaravelSes\Facades\SesMail;
+use Juhasev\LaravelSes\Repositories\EmailStatRepository;
+use Juhasev\LaravelSes\Services\Stats;
 
 class StatsTest extends FeatureTestCase
 {
@@ -52,49 +54,51 @@ class StatsTest extends FeatureTestCase
         $linkId = $links->first()->link_identifier;
         $this->get("https://laravel-ses.com/laravel-ses/link/$linkId");
 
-        $stats = SesMail::statsForEmail('something@gmail.com');
+        $stats = Stats::statsForEmail('something@gmail.com');
 
         $expectedCounts = [
-            "sent_emails" => 3,
+            "sent" => 3,
             "deliveries" => 2,
             "opens" => 1,
             "bounces" => 1,
             "complaints" => 1,
             "rejects" => 0,
-            "click_throughs" => 2
+            "clicks" => 2
         ];
 
-        $this->assertEquals($expectedCounts, $stats['counts']);
+        $this->assertEquals($expectedCounts, $stats);
+
+        $stats = Stats::dataForEmail('something@gmail.com');
 
         // Check sent emails
-        $this->assertEquals("something@gmail.com", $stats['data']['sent_emails'][0]['email']);
-        $this->assertEquals("welcome_emails", $stats['data']['sent_emails'][0]['batch']);
+        $this->assertEquals("something@gmail.com", $stats['sent'][0]['email']);
+        $this->assertEquals("welcome_emails", $stats['sent'][0]['batch']);
 
-        $this->assertEquals("something@gmail.com", $stats['data']['sent_emails'][1]['email']);
-        $this->assertEquals("win_back", $stats['data']['sent_emails'][1]['batch']);
+        $this->assertEquals("something@gmail.com", $stats['sent'][1]['email']);
+        $this->assertEquals("win_back", $stats['sent'][1]['batch']);
 
-        $this->assertEquals("something@gmail.com", $stats['data']['sent_emails'][2]['email']);
-        $this->assertEquals("june_newsletter", $stats['data']['sent_emails'][2]['batch']);
+        $this->assertEquals("something@gmail.com", $stats['sent'][2]['email']);
+        $this->assertEquals("june_newsletter", $stats['sent'][2]['batch']);
 
         // Check deliveries
-        $this->assertEquals("something@gmail.com", $stats['data']['deliveries'][0]['email']);
-        $this->assertEquals("welcome_emails", $stats['data']['deliveries'][0]['batch']);
+        $this->assertEquals("something@gmail.com", $stats['deliveries'][0]['email']);
+        $this->assertEquals("welcome_emails", $stats['deliveries'][0]['batch']);
 
-        $this->assertEquals("something@gmail.com", $stats['data']['deliveries'][1]['email']);
-        $this->assertEquals("win_back", $stats['data']['deliveries'][1]['batch']);
+        $this->assertEquals("something@gmail.com", $stats['deliveries'][1]['email']);
+        $this->assertEquals("win_back", $stats['deliveries'][1]['batch']);
 
         // Check click through
-        $this->assertEquals(1, $stats['data']['click_throughs'][0]['sent_email_id']);
-        $this->assertEquals('https://google.com', $stats['data']['click_throughs'][0]['original_url']);
-        $this->assertEquals('welcome_emails', $stats['data']['click_throughs'][0]['batch']);
+        $this->assertEquals(1, $stats['clicks'][0]['sent_email_id']);
+        $this->assertEquals('https://google.com', $stats['clicks'][0]['original_url']);
+        $this->assertEquals('welcome_emails', $stats['clicks'][0]['batch']);
 
-        $this->assertEquals(1, $stats['data']['click_throughs'][1]['sent_email_id']);
-        $this->assertEquals('https://superficial.io', $stats['data']['click_throughs'][1]['original_url']);
-        $this->assertEquals('welcome_emails', $stats['data']['click_throughs'][1]['batch']);
+        $this->assertEquals(1, $stats['clicks'][1]['sent_email_id']);
+        $this->assertEquals('https://superficial.io', $stats['clicks'][1]['original_url']);
+        $this->assertEquals('welcome_emails', $stats['clicks'][1]['batch']);
 
-        $this->assertEquals(9, $stats['data']['click_throughs'][2]['sent_email_id']);
-        $this->assertEquals('https://google.com', $stats['data']['click_throughs'][2]['original_url']);
-        $this->assertEquals('win_back', $stats['data']['click_throughs'][2]['batch']);
+        $this->assertEquals(9, $stats['clicks'][2]['sent_email_id']);
+        $this->assertEquals('https://google.com', $stats['clicks'][2]['original_url']);
+        $this->assertEquals('win_back', $stats['clicks'][2]['batch']);
     }
 
     public function testStatsForBatchEndPoint()
@@ -102,13 +106,13 @@ class StatsTest extends FeatureTestCase
         $stats = SesMail::statsForBatch('welcome_emails');
 
         $this->assertEquals([
-            "send_count" => 8,
+            "sent" => 8,
             "deliveries" => 7,
             "opens" => 4,
             "bounces" => 1,
             "complaints" => 2,
             "rejects" => 0,
-            "click_throughs" => 3,
+            "clicks" => 3,
             "link_popularity" => [
                 "https://google.com" => [
                     "clicks" => 3
@@ -125,13 +129,13 @@ class StatsTest extends FeatureTestCase
         $stats = SesMail::statsForBatch('lukaku');
 
         $this->assertEquals([
-            "send_count" => 0,
+            "sent" => 0,
             "deliveries" => 0,
             "opens" => 0,
             "bounces" => 0,
             "complaints" => 0,
             "rejects" => 0,
-            "click_throughs" => 0,
+            "clicks" => 0,
             "link_popularity" => [
             ]
         ], $stats);
@@ -162,12 +166,12 @@ class StatsTest extends FeatureTestCase
         $statsForBatch = SesMail::statsForBatch('welcome_emails');
 
         // Make sure all stats are 0 apart except sent_emails
-        $this->assertEquals(8, $statsForBatch['send_count']);
+        $this->assertEquals(8, $statsForBatch['sent']);
         $this->assertEquals(0, $statsForBatch['deliveries']);
         $this->assertEquals(0, $statsForBatch['opens']);
         $this->assertEquals(0, $statsForBatch['complaints']);
         $this->assertEquals(0, $statsForBatch['rejects']);
-        $this->assertEquals(0, $statsForBatch['click_throughs']);
+        $this->assertEquals(0, $statsForBatch['clicks']);
         $this->assertEquals([], $statsForBatch['link_popularity']);
 
         //deliver all emails apart from bounced email
@@ -207,8 +211,8 @@ class StatsTest extends FeatureTestCase
 
         foreach ($emails as $email) {
             if (in_array($email, $openedEmails)) {
-                //get the open identifier
-                $id = ModelResolver::get('EmailOpen')::whereEmail($email)->first()->beacon_identifier;
+                $sentEmailId = ModelResolver::get('SentEmail')::whereEmail($email)->first()->id;
+                $id = ModelResolver::get('EmailOpen')::whereSentEmailId($sentEmailId)->first()->beacon_identifier;
                 $this->get("laravel-ses/beacon/{$id}");
             }
         }

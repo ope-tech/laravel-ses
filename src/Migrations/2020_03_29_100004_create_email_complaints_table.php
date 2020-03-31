@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEmailLinksTable extends Migration
+class CreateEmailComplaintsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateEmailLinksTable extends Migration
      */
     public function up()
     {
-        Schema::create('laravel_ses_email_links', function (Blueprint $table) {
+        Schema::create('laravel_ses_email_complaints', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('link_identifier')->index();
-            $table->integer('sent_email_id');
-            $table->string('original_url');
-            $table->string('batch')->nullable();
-            $table->boolean('clicked')->default(false);
-            $table->integer('click_count')->default(0);
+            $table->unsignedBigInteger('sent_email_id');
+            $table->string('type');
+            $table->dateTime('complained_at');
             $table->timestamps();
 
             $table->foreign('sent_email_id')
@@ -37,6 +34,6 @@ class CreateEmailLinksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('laravel_ses_email_links');
+        Schema::dropIfExists('laravel_ses_email_complaints');
     }
 }

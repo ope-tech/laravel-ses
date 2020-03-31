@@ -30,9 +30,13 @@ Make sure your app/config/services.php has SES values set
     'key' => your_ses_key,
     'secret' => your_ses_secret,
     'domain' => your_ses_domain,
-    'region' => your_ses_region,
-    'end_point' => your laravel app domain
+    'region' => your_ses_region
 ],
+```
+
+Next verify config/mail.php is using SES
+```angular2
+
 ```
 
 Important to note that if you're using an IAM, it needs access to
@@ -61,7 +65,7 @@ php artisan vendor:publish --tag=ses-config
 Config Options
 
 - aws_sns_validator - whether the package uses AWS's SNS validator for inbound SNS requests. Default = false
-- debug - Debug mode that logs requests and does not persist bounces
+- debug - Debug mode that logs all SNS call back requests
 
 https://github.com/aws/aws-php-sns-message-validator
 

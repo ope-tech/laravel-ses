@@ -29,14 +29,14 @@ class OpenController extends BaseController
 
         } catch (ModelNotFoundException $e) {
 
-            Log::error("Could not find sent email with beacon identifier ($beaconIdentifier). Email open could not be recoreded");
+            Log::error("Could not find sent email with beacon identifier ($beaconIdentifier). Email open could not be recorded!");
 
             return response()->json([
                 'success' => false,
                 'errors' => ['Invalid Beacon']
             ], 404);
         }
-        
+
         // Server the actual image
         return redirect(config('app.url')."/laravel-ses/to.png");
     }

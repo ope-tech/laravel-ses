@@ -59,8 +59,6 @@ class BounceController extends BaseController
 
     protected function persistBounce($message): void
     {
-        if ($this->debug()) return;
-        
         $messageId = $this->parseMessageId($message);
 
         try {

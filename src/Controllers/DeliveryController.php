@@ -60,8 +60,6 @@ class DeliveryController extends BaseController
 
     protected function persistDelivery(stdClass $message): void
     {
-        if ($this->debug()) return;
-
         $messageId = $this->parseMessageId($message);
 
         $deliveryTime = Carbon::parse($message->delivery

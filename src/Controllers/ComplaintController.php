@@ -68,8 +68,6 @@ class ComplaintController extends BaseController
 
     private function persistComplaint(stdClass $message)
     {
-        if ($this->debug()) return;
-
         $messageId = $this->parseMessageId($message);
 
         try {

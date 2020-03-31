@@ -2,7 +2,7 @@
 
 # Laravel AWS Simple Email Service
 A Laravel 6+ Package that allows you to get sending statistics for emails you send through AWS SES (Simple Email Service), 
-including deliveries, opens, bounces, complaints and link tracking. This package was originally written by Oliveready7.
+including deliveries, opens, rejects, bounces, complaints and link tracking. This package was originally written by Oliveready7.
 Unfortunately the original author had stopped maintaining this package so I decided to create this fork so that this 
 package can be used with current versions of Laravel.
 
@@ -125,7 +125,7 @@ Once policies are defined they need to added to the configured IAM user.
       UserName: staging-user
 ```
 
-Run command in **production** to setup Amazon email notifications to track opens, bounces, complaints and deliveries. 
+Run command in **production** to setup Amazon email notifications to track opens, bounces, rejects, complaints and deliveries. 
 Make sure in your configuration your app URL is set correctly and routes setup by this package are working. Next figure
 out what is the name of the domain your emails come out from. If it is same as primary app domain no worries just enter
 that address. If you do send email for multiple domains (i.e. multi tenant application) you can set multiple domain 
@@ -160,6 +160,7 @@ SesMail::disableLinkTracking();
 SesMail::disableBounceTracking();
 SesMail::disableComplaintTracking();
 SesMail::disableDeliveryTracking();
+SesMail::disableRejectTracking();
 
 
 SesMail::enableAllTracking();
@@ -168,6 +169,7 @@ SesMail::enableLinkTracking();
 SesMail::enableBounceTracking();
 SesMail::enableComplaintTracking();
 SesMail::enableDeliveryTracking();
+SesMail::enableRejectTracking();
 ```
 
 The batching option gives you the chance to group emails, so you can get the results for a specific group
@@ -191,6 +193,7 @@ SesMail::statsForBatch('welcome_emails');
     "opens" => 4,
     "bounces" => 1,
     "complaints" => 2,
+    "reject" => 1,
     "click_throughs" => 3,
     "link_popularity" => [
         "https://welcome.page" => [
@@ -218,6 +221,8 @@ Deliveries = number of emails that were delivered
 Opens = number of emails that were opened
 
 Complaints = number of people that put email into spam
+
+Rejects = number of emails AWS rejected to deliver i.e. attached virus
 
 Click throughs = number of people that clicked at least one link in your email
 

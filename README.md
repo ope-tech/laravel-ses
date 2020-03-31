@@ -65,12 +65,16 @@ Config Options
 https://github.com/aws/aws-php-sns-message-validator
 
 ## AWS Configuration
+
+### Pre-reading
 If you are new to using SES Notification this article is a good starting point
 
 https://docs.aws.amazon.com/sns/latest/dg/sns-http-https-endpoint-as-subscriber.html
 
-At minimum you need to setup assign the IAM user you have selected access rights to send email via SES and to receive
-SNS notifications.
+### IAM User and policies
+Your application IAM user needs to be send email via SES and subscribe to
+SNS notifications. This can be done in the AWS Control Panel as the article above suggests or
+AWS CloudFormation template like one below:
 
 AWS CloudFormation policy example:
 ```
@@ -121,15 +125,13 @@ Once policies are defined they need to added to the configured IAM user.
 ```
 
 ### Running setup
-Run command in **production** to setup Amazon email notifications to track opens, bounces, rejects, complaints and deliveries. 
-Make sure in your configuration your app URL is set correctly and routes setup by this package are working. Next figure
-out what is the name of the domain your emails come out from. If it is same as primary app domain no worries just enter
-that address. If you do send email for multiple domains (i.e. multi tenant application) you can set multiple domain 
+Make sure in your APP_URL (in .env) is set correctly, matching your sending domain. 
+If you do send email for multiple domains (i.e. multi tenant application) you can set multiple domains 
 using this command.
 
 > You need to have SES domain ready before continuing
 
-This command automatically configures your SES domain to send SNS notifications that
+The setup command automatically configures your SES domain to send SNS notifications that
 trigger call backs to your Laravel application.
 
 ```

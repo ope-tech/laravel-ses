@@ -34,15 +34,10 @@ Make sure your app/config/services.php has SES values set
 ],
 ```
 
-Next verify config/mail.php is using SES or add MAIL_MAILER to your .env
+Make sure your mail driver located in app/config/mail.php is set to 'ses'
 ```
     'default' => env('MAIL_MAILER', 'ses')
 ```
-
-Important to note that if you're using an IAM, it needs access to
-SNS (for deliveries, bounces and complaints) as well as SES
-
-Make sure your mail driver located in app/config/mail.php is set to 'ses'
 
 Publish public assets
 
@@ -74,7 +69,7 @@ If you are new to using SES Notification this article is a good starting point
 
 https://docs.aws.amazon.com/sns/latest/dg/sns-http-https-endpoint-as-subscriber.html
 
-At minimum you need to setup assign the IAM user you have selected access rights to send email via SES and to received
+At minimum you need to setup assign the IAM user you have selected access rights to send email via SES and to receive
 SNS notifications.
 
 AWS CloudFormation policy example:
@@ -125,18 +120,22 @@ Once policies are defined they need to added to the configured IAM user.
       UserName: staging-user
 ```
 
+### Running setup
 Run command in **production** to setup Amazon email notifications to track opens, bounces, rejects, complaints and deliveries. 
 Make sure in your configuration your app URL is set correctly and routes setup by this package are working. Next figure
 out what is the name of the domain your emails come out from. If it is same as primary app domain no worries just enter
 that address. If you do send email for multiple domains (i.e. multi tenant application) you can set multiple domain 
 using this command.
 
+> You need to have SES domain ready before continuing
+
+This command automatically configures your SES domain to send SNS notifications that
+trigger call backs to your Laravel application.
+
 ```
 php artisan sns:setup mydomain.com
 ```
-
-This commands automatically configures SES domain to send SNS notifications that
-trigger call backs to your Laravel application.
+> NOTE: You should not attempt to use sub domains client.mydomain.com, this is not currently supported by AWS.
 
 ## Usage
 
@@ -150,7 +149,7 @@ SesMail::enableAllTracking()
 
 Calling enableAllTracking() enables open, reject, bounce, delivery, complaint and link tracking.
 
-> Please note that an exception is thrown if you attempt send Mailable that contains multiple recipients when Open -tracking enabled 
+> Please note that an exception is thrown if you attempt send a Mailable that contains multiple recipients when Open -tracking is enabled.
 
 You can, of course, disable and enable all the tracking options
 

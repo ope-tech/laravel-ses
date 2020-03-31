@@ -150,6 +150,8 @@ SesMail::enableAllTracking()
 
 Calling enableAllTracking() enables open, reject, bounce, delivery, complaint and link tracking.
 
+> Please note that an exception is thrown if you attempt send Mailable that contains multiple recipients when Open -tracking enabled 
+
 You can, of course, disable and enable all the tracking options
 
 ```

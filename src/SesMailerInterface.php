@@ -2,14 +2,12 @@
 
 namespace Juhasev\LaravelSes;
 
-use Illuminate\Contracts\Mail\Mailable;
 use Juhasev\LaravelSes\Contracts\BatchContract;
 use Juhasev\LaravelSes\Contracts\SentEmailContract;
-use Juhasev\LaravelSes\Models\Batch;
 
 interface SesMailerInterface
 {
-    public function initMessage(Mailable $message);
+    public function initMessage($message);
 
     public function setupTracking($setupTracking, SentEmailContract $sentEmail);
 

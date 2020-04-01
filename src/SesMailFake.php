@@ -17,6 +17,7 @@ use PHPHtmlParser\Exceptions\CurlException;
 use PHPHtmlParser\Exceptions\NotLoadedException;
 use PHPHtmlParser\Exceptions\StrictException;
 use PHPUnit\Framework\Assert as PHPUnit;
+use Swift_Message;
 
 class SesMailFake implements SesMailerInterface, Mailer
 {
@@ -35,7 +36,7 @@ class SesMailFake implements SesMailerInterface, Mailer
      * @return mixed
      * @throws \Exception
      */
-    public function initMessage(Mailable $message)
+    public function initMessage($message)
     {
         $this->checkNumberOfRecipients($message);
 
@@ -50,7 +51,7 @@ class SesMailFake implements SesMailerInterface, Mailer
             'reject_tracking' => $this->rejectTracking
         ]);
     }
-
+    
     /**
      * Check message recipient for tracking
      * Open tracking etc won't work if emails are sent to more than one recipient at a time
@@ -62,7 +63,6 @@ class SesMailFake implements SesMailerInterface, Mailer
             throw new TooManyEmails("Tried to send to too many emails only one email may be set");
         }
     }
-
 
     // COPY FAKE METHODS SO THINGS LIKE ASSERT SENT ETC WORK
 

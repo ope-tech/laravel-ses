@@ -2,9 +2,9 @@
 
 namespace Juhasev\LaravelSes;
 
+use Exception;
 use Juhasev\LaravelSes\Contracts\BatchContract;
 use Juhasev\LaravelSes\Contracts\SentEmailContract;
-use Juhasev\LaravelSes\Models\Batch;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
 use PHPHtmlParser\Exceptions\CircularException;
 use PHPHtmlParser\Exceptions\CurlException;
@@ -56,13 +56,14 @@ trait TrackingTrait
      *
      * @param string $batchName
      * @return SesMailerInterface
+     * @throws Exception
      */
     public function setBatch(string $batchName): SesMailerInterface
     {
-        $batch = Batch::whereName($batchName)->first();
+        $batch = ModelResolver::get('Batch')::whereName($batchName)->first();
 
         if (!$batch) {
-            $batch = Batch::create(['name' => $batchName]);
+            $batch = ModelResolver::get('Batch')::create(['name' => $batchName]);
         }
 
         $this->batch = $batch;
@@ -72,7 +73,7 @@ trait TrackingTrait
     /**
      * Get batch identifier
      *
-     * @return Batch|null
+     * @return BatchContract|null
      */
     public function getBatch(): ?BatchContract
     {

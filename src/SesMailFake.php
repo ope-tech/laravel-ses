@@ -10,7 +10,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\PendingMail;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Testing\Fakes\PendingMailFake;
+use Juhasev\LaravelSes\Contracts\SentEmailContract;
 use Juhasev\LaravelSes\Exceptions\TooManyEmails;
+use Juhasev\LaravelSes\Factories\EventFactory;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
 use PHPHtmlParser\Exceptions\CircularException;
 use PHPHtmlParser\Exceptions\CurlException;
@@ -330,6 +332,8 @@ class SesMailFake implements SesMailerInterface, Mailer
             return $this->queue($view, $data, $callback);
         }
         $this->mailables[] = $view;
+
+        $this->sendEvent($sentEmail);
     }
 
     /**
@@ -355,5 +359,15 @@ class SesMailFake implements SesMailerInterface, Mailer
     public function failures()
     {
         //
+    }
+
+    /**
+     * Send event
+     *
+     * @param SentEmailContract $sentEmail
+     */
+    protected function sendEvent(SentEmailContract $sentEmail)
+    {
+        event(EventFactory::create('Sent', 'SentEmail', $sentEmail->id));
     }
 }

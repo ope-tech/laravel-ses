@@ -24,8 +24,6 @@ class SesSentEvent extends BaseEvent
     {
         $this->data = ModelResolver::get($modelName)::select([
                 'id','message_id','email','batch_id','sent_at','delivered_at']
-        )->with([
-            'sentEmail.batch'
-        ])->find($modelId)->toArray();
+        )->with('batch')->find($modelId)->toArray();
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Mail\Mailer;
 use Juhasev\LaravelSes\Contracts\SentEmailContract;
 use Juhasev\LaravelSes\Events\SesSentEmailEvent;
 use Juhasev\LaravelSes\Exceptions\TooManyEmails;
+use Juhasev\LaravelSes\Factories\EventFactory;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
 use PHPHtmlParser\Exceptions\CircularException;
 use PHPHtmlParser\Exceptions\CurlException;
@@ -83,6 +84,6 @@ class SesMailer extends Mailer implements SesMailerInterface
      */
     protected function sendEvent(SentEmailContract $sentEmail)
     {
-        event(new SesSentEmailEvent($sentEmail->toArray()));
+        event(EventFactory::create('Sent', 'SentEmails', $sentEmail->id));
     }
 }

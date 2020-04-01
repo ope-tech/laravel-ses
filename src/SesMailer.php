@@ -84,6 +84,6 @@ class SesMailer extends Mailer implements SesMailerInterface
      */
     protected function sendEvent(SentEmailContract $sentEmail)
     {
-        event(EventFactory::create('Sent', 'SentEmails', $sentEmail->id));
+        event(EventFactory::create('Sent', 'SentEmail', $sentEmail->id));
     }
 }

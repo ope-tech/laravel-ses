@@ -1,0 +1,68 @@
+{
+  "notificationType": "Complaint",
+  "complaint": {
+    "complaintSubType": null,
+    "complainedRecipients": [
+      {
+        "emailAddress": "complaint@simulator.amazonses.com"
+      }
+    ],
+    "timestamp": "2020-04-01T18:07:49.000Z",
+    "feedbackId": "0101017136ed8fb9-dd7d3a9e-2158-4696-8f96-9d31c5b98c89-000000",
+    "userAgent": "Amazon SES Mailbox Simulator",
+    "complaintFeedbackType": "abuse"
+  },
+  "mail": {
+    "timestamp": "2020-04-01T18:07:48.000Z",
+    "source": "info@sampleninja.io",
+    "sourceArn": "arn:aws:ses:us-west-2:635608510762:identity/sampleninja.io",
+    "sourceIp": "52.88.49.154",
+    "sendingAccountId": "635608510762",
+    "messageId": "0101017136ed862b-90f34d8e-1d84-4f58-9dd2-63285665099c-000000",
+    "destination": [
+      "complaint@simulator.amazonses.com"
+    ],
+    "headersTruncated": false,
+    "headers": [
+      {
+        "name": "Message-ID",
+        "value": "<07d38addf1b9ccbf18ecaaa2c2793773@localhost>"
+      },
+      {
+        "name": "Date",
+        "value": "Wed, 01 Apr 2020 18:07:48 +0000"
+      },
+      {
+        "name": "Subject",
+        "value": "Test email"
+      },
+      {
+        "name": "From",
+        "value": "Sample Ninja <info@sampleninja.io>"
+      },
+      {
+        "name": "To",
+        "value": "complaint@simulator.amazonses.com"
+      },
+      {
+        "name": "MIME-Version",
+        "value": "1.0"
+      },
+      {
+        "name": "Content-Type",
+        "value": "multipart/alternative; boundary=\"_=_swift_1585764468_18e3cc9ea7eefadd38a5ec0ffe6bf100_=_\""
+      }
+    ],
+    "commonHeaders": {
+      "from": [
+        "Sample Ninja <info@sampleninja.io>"
+      ],
+      "date": "Wed, 01 Apr 2020 18:07:48 +0000",
+      "to": [
+        "complaint@simulator.amazonses.com"
+      ],
+      "messageId": "<07d38addf1b9ccbf18ecaaa2c2793773@localhost>",
+      "subject": "Test email"
+    }
+  }
+}

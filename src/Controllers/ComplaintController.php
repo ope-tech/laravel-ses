@@ -9,7 +9,6 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Juhasev\LaravelSes\Contracts\EmailComplaintContract;
-use Juhasev\LaravelSes\Events\SesMailBounceEvent;
 use Juhasev\LaravelSes\Factories\EventFactory;
 use Juhasev\LaravelSes\ModelResolver;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,14 +28,16 @@ class ComplaintController extends BaseController
     {
         $this->validateSns($request);
 
-        $result = json_decode(request()->getContent());
+        $content = request()->getContent();
+
+        $this->logResult($content);
+
+        $result = json_decode($content);
 
         if (!$result) {
             Log::warning("Request contained no JSON");
             return response()->json(['success' => true]);
         }
-
-        $this->logResult($result);
 
         if ($this->isSubscriptionConfirmation($result)) {
 
@@ -47,8 +48,6 @@ class ComplaintController extends BaseController
                 'message' => 'Complaint subscription confirmed'
             ]);
         }
-
-        $this->logResult($result);
 
         // TODO: This can fail
         $message = json_decode($result->Message);

@@ -27,9 +27,11 @@ class RejectController extends BaseController
     {
         $this->validateSns($request);
 
-        $result = json_decode(request()->getContent());
+        $content = request()->getContent();
 
-        $this->logResult($request);
+        $this->logResult($content);
+
+        $result = json_decode($content);
 
         if ($this->isSubscriptionConfirmation($result)) {
 

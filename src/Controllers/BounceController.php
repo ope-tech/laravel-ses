@@ -9,7 +9,6 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Juhasev\LaravelSes\Contracts\EmailBounceContract;
-use Juhasev\LaravelSes\Events\SesMailBounceEvent;
 use Juhasev\LaravelSes\Factories\EventFactory;
 use Juhasev\LaravelSes\ModelResolver;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,9 +27,11 @@ class BounceController extends BaseController
     {
         $this->validateSns($request);
 
-        $result = json_decode(request()->getContent());
+        $content = request()->getContent();
 
-        $this->logResult($request);
+        $this->logResult($content);
+
+        $result = json_decode($content);
 
         if ($this->isSubscriptionConfirmation($result)) {
 
@@ -43,7 +44,7 @@ class BounceController extends BaseController
         }
 
         $message = json_decode($result->Message);
-
+        
         $this->persistBounce($message);
 
         $this->logMessage("Bounce processed for: " . $message->mail->destination[0]);

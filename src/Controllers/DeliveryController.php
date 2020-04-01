@@ -27,9 +27,11 @@ class DeliveryController extends BaseController
     {
         $this->validateSns($request);
 
-        $result = json_decode(request()->getContent());
+        $content = request()->getContent();
+        
+        $this->logResult($content);
 
-        $this->logResult($request);
+        $result = json_decode($content);
 
         if ($this->isSubscriptionConfirmation($result)) {
 

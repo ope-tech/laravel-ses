@@ -5,7 +5,7 @@ namespace Juhasev\LaravelSes\Commands;
 use Illuminate\Console\Command;
 use Juhasev\LaravelSes\SnsSetup;
 
-class SetupSNS extends Command
+class SetupSns extends Command
 {
     /**
      * The name and signature of the console command.

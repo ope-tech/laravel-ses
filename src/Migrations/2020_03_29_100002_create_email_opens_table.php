@@ -17,7 +17,6 @@ class CreateEmailOpensTable extends Migration
             $table->increments('id');
             $table->unsignedBigInteger('sent_email_id');
             $table->uuid('beacon_identifier')->index();
-            $table->string('url');
             $table->dateTime('opened_at')->nullable();
 
             $table->foreign('sent_email_id')

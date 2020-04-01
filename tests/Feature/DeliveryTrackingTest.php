@@ -23,7 +23,7 @@ class DeliveryTrackingTest extends FeatureTestCase
 
         $this->json(
             'POST',
-            'laravel-ses/notification/delivery',
+            '/ses/notification/delivery',
             (array)$fakeJson
         );
 
@@ -37,7 +37,7 @@ class DeliveryTrackingTest extends FeatureTestCase
         $fakeJson = json_decode($this->exampleSubscriptionResponse);
         $response = $this->json(
             'POST',
-            '/laravel-ses/notification/delivery',
+            '/ses/notification/delivery',
             (array)$fakeJson
         )->assertJson(['success' => true]);
     }
@@ -52,7 +52,7 @@ class DeliveryTrackingTest extends FeatureTestCase
         $fakeJson = json_decode($this->exampleSesResponse);
         $res = $this->json(
             'POST',
-            'laravel-ses/notification/delivery',
+            '/ses/notification/delivery',
             (array)$fakeJson
         );
 

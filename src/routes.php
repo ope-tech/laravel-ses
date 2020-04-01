@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('/laravel-ses')->group(function () {
+Route::prefix('/ses')->group(function () {
 
     //receive SNS notifications
     Route::post('notification/bounce', 'Juhasev\LaravelSes\Controllers\BounceController@bounce');

@@ -22,7 +22,7 @@ class EmailLinkTest extends FeatureTestCase
 
         Event::fake();
         
-        $res = $this->get("https://laravel-ses.com/laravel-ses/link/$linkId")
+        $res = $this->get("https://laravel-ses.com/ses/link/$linkId")
             ->assertStatus(302);
 
         Event::assertDispatched(SesLinkEvent::class);
@@ -34,7 +34,7 @@ class EmailLinkTest extends FeatureTestCase
         $this->assertTrue($emailLink['clicked']);
         $this->assertEquals(1, $emailLink['click_count']);
 
-        $this->get("https://laravel-ses.com/laravel-ses/link/$linkId");
+        $this->get("https://laravel-ses.com/ses/link/$linkId");
 
         $emailLink = ModelResolver::get('EmailLink')::first()->toArray();
 

@@ -23,7 +23,7 @@ class ComplaintTrackingTest extends FeatureTestCase
 
         $this->json(
             'POST',
-            'laravel-ses/notification/complaint',
+            '/ses/notification/complaint',
             (array)$fakeJson
         );
 
@@ -49,7 +49,7 @@ class ComplaintTrackingTest extends FeatureTestCase
 
         $this->json(
             'POST',
-            'laravel-ses/notification/bounce',
+            '/ses/notification/bounce',
             (array)$fakeJson
         );
 
@@ -62,7 +62,7 @@ class ComplaintTrackingTest extends FeatureTestCase
 
         $this->json(
             'POST',
-            '/laravel-ses/notification/complaint',
+            '/ses/notification/complaint',
             (array)$fakeJson
         )->assertJson(['success' => true]);
     }
@@ -78,7 +78,7 @@ class ComplaintTrackingTest extends FeatureTestCase
 
         $this->json(
             'POST',
-            'laravel-ses/notification/complaint',
+            '/ses/notification/complaint',
             (array)$fakeJson
         );
 

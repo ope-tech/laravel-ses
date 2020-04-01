@@ -27,6 +27,7 @@ class FeatureTestCase extends OrchestraTestCase
     {
         return [LaravelSesServiceProvider::class];
     }
+
     /**
      * Load package alias
      * @param  Application $app

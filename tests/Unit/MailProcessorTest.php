@@ -20,7 +20,7 @@ class MailProcessorTest extends UnitTestCase
 
         $this->assertEquals(
             'this is a test email body<img src="'.
-            'https://laravel-ses.com/laravel-ses/beacon/' . ModelResolver::get('EmailOpen')::first()->beacon_identifier .
+            'https://laravel-ses.com/ses/beacon/' . ModelResolver::get('EmailOpen')::first()->beacon_identifier .
             '" alt="" style="width:1px;height:1px;"/>',
             $parsedBody
         );
@@ -45,7 +45,7 @@ class MailProcessorTest extends UnitTestCase
         // Make sure body of email is now correct
         $this->assertEquals(
             'This is a test body of text, <a href="'.
-            'https://laravel-ses.com/laravel-ses/link/' . $linkId .
+            'https://laravel-ses.com/ses/link/' . $linkId .
             '">Click Me</a>',
             $parsedBody
         );
@@ -64,13 +64,13 @@ class MailProcessorTest extends UnitTestCase
         // e.g https://link.dev?link=1 and https://link.dev?link=2
         $this->assertEquals(
             '<a href="'.
-            'https://laravel-ses.com/laravel-ses/link/' . ModelResolver::get('EmailLink')::find(2)->link_identifier .
+            'https://laravel-ses.com/ses/link/' . ModelResolver::get('EmailLink')::find(2)->link_identifier .
             '">do not open me</a>' .
             '<a href="'.
-            'https://laravel-ses.com/laravel-ses/link/' . ModelResolver::get('EmailLink')::find(3)->link_identifier .
+            'https://laravel-ses.com/ses/link/' . ModelResolver::get('EmailLink')::find(3)->link_identifier .
             '">open me</a>' .
             '<a href="' .
-            'https://laravel-ses.com/laravel-ses/link/' . ModelResolver::get('EmailLink')::find(4)->link_identifier .
+            'https://laravel-ses.com/ses/link/' . ModelResolver::get('EmailLink')::find(4)->link_identifier .
             '">google link</a>',
             $threeLinksParsed
         );

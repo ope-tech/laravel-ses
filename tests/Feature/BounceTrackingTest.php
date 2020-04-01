@@ -23,7 +23,7 @@ class BounceTrackingTest extends FeatureTestCase
 
         $this->json(
             'POST',
-            'laravel-ses/notification/bounce',
+            '/ses/notification/bounce',
             (array)$fakeJson
         );
 
@@ -43,7 +43,7 @@ class BounceTrackingTest extends FeatureTestCase
 
         $this->json(
             'POST',
-            '/laravel-ses/notification/bounce',
+            '/ses/notification/bounce',
             (array)$fakeJson
         )->assertJson(['success' => true]);
     }
@@ -59,7 +59,7 @@ class BounceTrackingTest extends FeatureTestCase
 
         $this->json(
             'POST',
-            'laravel-ses/notification/bounce',
+            '/ses/notification/bounce',
             (array)$fakeJson
         );
 
@@ -77,7 +77,7 @@ class BounceTrackingTest extends FeatureTestCase
 
         $this->json(
             'POST',
-            'laravel-ses/notification/bounce',
+            '/ses/notification/bounce',
             (array)$fakeJson
         );
 

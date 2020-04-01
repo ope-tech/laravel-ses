@@ -52,7 +52,7 @@ class BatchEmailTest extends FeatureTestCase
                 $fakeJson = json_decode($this->generateDeliveryJson($sentEmailId));
                 $this->json(
                     'POST',
-                    '/laravel-ses/notification/delivery',
+                    '/ses/notification/delivery',
                     (array)$fakeJson
                 );
             }
@@ -61,16 +61,16 @@ class BatchEmailTest extends FeatureTestCase
         // Bounce an email
         $sentEmailId  = ModelResolver::get('SentEmail')::whereEmail('bounce@ses.com')->first()->message_id;
         $fakeJson = json_decode($this->generateBounceJson($sentEmailId));
-        $this->json('POST', 'laravel-ses/notification/bounce', (array)$fakeJson);
+        $this->json('POST', 'ses/notification/bounce', (array)$fakeJson);
 
         // Two complaints
         $sentEmailId  = ModelResolver::get('SentEmail')::whereEmail('complaint@yes.com')->first()->message_id;
         $fakeJson = json_decode($this->generateComplaintJson($sentEmailId));
-        $this->json('POST', 'laravel-ses/notification/complaint', (array)$fakeJson);
+        $this->json('POST', 'ses/notification/complaint', (array)$fakeJson);
 
         $sentEmailId  = ModelResolver::get('SentEmail')::whereEmail('ay@yahoo.com')->first()->message_id;
         $fakeJson = json_decode($this->generateComplaintJson($sentEmailId));
-        $this->json('POST', 'laravel-ses/notification/complaint', (array)$fakeJson);
+        $this->json('POST', 'ses/notification/complaint', (array)$fakeJson);
 
         //register 4 opens
         $openedEmails = [
@@ -84,7 +84,7 @@ class BatchEmailTest extends FeatureTestCase
             if (in_array($email, $openedEmails)) {
                 $sentEmailId  = ModelResolver::get('SentEmail')::where('email', $email)->first()->id;
                 $beaconIdentifier = ModelResolver::get('EmailOpen')::whereSentEmailId($sentEmailId)->first()->beacon_identifier;
-                $this->get("laravel-ses/beacon/{$beaconIdentifier}");
+                $this->get("ses/beacon/{$beaconIdentifier}");
             }
         }
 
@@ -92,25 +92,24 @@ class BatchEmailTest extends FeatureTestCase
         $links = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->first()->emailLinks;
 
         $linkId = $links->where('original_url', 'https://google.com')->first()->link_identifier;
-        $this->get("https://laravel-ses.com/laravel-ses/link/$linkId");
+        $this->get("https://laravel-ses.com/ses/link/$linkId");
 
         $linkId = $links->where('original_url', 'https://superficial.io')->first()->link_identifier;
-        $this->get("https://laravel-ses.com/laravel-ses/link/$linkId");
+        $this->get("https://laravel-ses.com/ses/link/$linkId");
 
 
         //one user clicks one link three times
         $links = ModelResolver::get('SentEmail')::whereEmail('hey@google.com')->first()->emailLinks;
 
         $linkId = $links->where('original_url', 'https://google.com')->first()->link_identifier;
-        $this->get("https://laravel-ses.com/laravel-ses/link/$linkId");
-        $this->get("https://laravel-ses.com/laravel-ses/link/$linkId");
-        $this->get("https://laravel-ses.com/laravel-ses/link/$linkId");
+        $this->get("https://laravel-ses.com/ses/link/$linkId");
+        $this->get("https://laravel-ses.com/ses/link/$linkId");
+        $this->get("https://laravel-ses.com/ses/link/$linkId");
 
         //one user clicks one link only
         $links = ModelResolver::get('SentEmail')::whereEmail('no@gmail.com')->first()->emailLinks;
         $linkId = $links->where('original_url', 'https://google.com')->first()->link_identifier;
-        $this->get("https://laravel-ses.com/laravel-ses/link/$linkId");
-
+        $this->get("https://laravel-ses.com/ses/link/$linkId");
 
         //check that stats are now correct, click throughs = amount of users that clicked at least one link
         //link popularity is amount of unique clicks on a link in the email body, ordered by most popular

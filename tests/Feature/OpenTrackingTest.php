@@ -19,7 +19,7 @@ class OpenTrackingTest extends FeatureTestCase
         SesMail::to('harrykane9@gmail.com')->send(new TestMailable());
 
         //send a junk uuid and check error is thrown
-        $this->get('laravel-ses/beacon/thisisjunk')
+        $this->get('/ses/beacon/thisisjunk')
             ->assertStatus(404)
             ->assertJson([
                 'success' => false,
@@ -30,9 +30,9 @@ class OpenTrackingTest extends FeatureTestCase
 
         Event::fake();
 
-        $this->get('laravel-ses/beacon/' . EmailOpen::first()->beacon_identifier)
+        $this->get('/ses/beacon/' . EmailOpen::first()->beacon_identifier)
             ->assertStatus(302)
-            ->assertHeader('location', 'https://laravel-ses.com/laravel-ses/to.png');
+            ->assertHeader('location', 'https://laravel-ses.com/ses/to.png');
 
         Event::assertDispatched(SesOpenEvent::class);
 

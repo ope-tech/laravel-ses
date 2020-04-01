@@ -23,7 +23,7 @@ class RejectTrackingTest extends FeatureTestCase
 
         $this->json(
             'POST',
-            'laravel-ses/notification/reject',
+            'ses/notification/reject',
             (array)$fakeJson
         );
 
@@ -49,7 +49,7 @@ class RejectTrackingTest extends FeatureTestCase
 
         $this->json(
             'POST',
-            'laravel-ses/notification/reject',
+            'ses/notification/reject',
             (array)$fakeJson
         );
 
@@ -62,7 +62,7 @@ class RejectTrackingTest extends FeatureTestCase
 
         $this->json(
             'POST',
-            '/laravel-ses/notification/reject',
+            '/ses/notification/reject',
             (array)$fakeJson
         )->assertJson(['success' => true]);
     }
@@ -78,7 +78,7 @@ class RejectTrackingTest extends FeatureTestCase
 
         $this->json(
             'POST',
-            'laravel-ses/notification/reject',
+            'ses/notification/reject',
             (array)$fakeJson
         );
 

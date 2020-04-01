@@ -43,7 +43,7 @@ class OpenController extends BaseController
         $this->sendEvent($emailOpen);
 
         // Server the actual image
-        return redirect(config('app.url')."/laravel-ses/to.png");
+        return redirect(config('app.url')."/ses/to.png");
     }
     
     /**

@@ -1,8 +1,8 @@
 <?php
-namespace Juhasev\LaravelSes\Tests\Feature;
+namespace Juhasev\LaravelSes\Tests;
 
 use Illuminate\Foundation\Application;
-use Juhasev\LaravelSes\SesMail;
+use Juhasev\LaravelSes\Facades\SesMail;
 use Juhasev\LaravelSes\LaravelSesServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
@@ -11,6 +11,8 @@ class FeatureTestCase extends OrchestraTestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->withoutExceptionHandling();
 
         $this->artisan('migrate', ['--database' => 'testbench']);
     }

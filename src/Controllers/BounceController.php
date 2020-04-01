@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use Juhasev\LaravelSes\Contracts\EmailBounceContract;
+use Juhasev\LaravelSes\Events\SesMailBounceEvent;
+use Juhasev\LaravelSes\Factories\EventFactory;
 use Juhasev\LaravelSes\ModelResolver;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -69,17 +72,31 @@ class BounceController extends BaseController
 
         } catch (ModelNotFoundException $e) {
             Log::error("Could not find sent email ($messageId). Email bounce failed to record!");
+            return;
         }
 
         try {
-            ModelResolver::get('EmailBounce')::create([
+            $bounce = ModelResolver::get('EmailBounce')::create([
                 'sent_email_id' => $sentEmail->id,
                 'type' => $message->bounce->bounceType,
                 'bounced_at' => Carbon::parse($message->mail->timestamp)
             ]);
 
+            $this->sendEvent($bounce);
+
         } catch (QueryException $e) {
-            Log::error("Failed inserting EmailBounce, got error: ".$e->getMessage());
+            Log::error("Failed inserting EmailBounce, got error: " . $e->getMessage());
         }
+    }
+
+    /**
+     * Sent event to listeners
+     *
+     * @param EmailBounceContract $bounce
+     */
+
+    protected function sendEvent(EmailBounceContract $bounce)
+    {
+        event(EventFactory::create('Bounce', 'EmailBounce', $bounce->id));
     }
 }

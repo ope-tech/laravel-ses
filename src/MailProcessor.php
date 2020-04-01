@@ -2,6 +2,7 @@
 
 namespace Juhasev\LaravelSes;
 
+use Illuminate\Support\Facades\Log;
 use Juhasev\LaravelSes\Contracts\SentEmailContract;
 use PHPHtmlParser\Dom;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
@@ -66,7 +67,7 @@ class MailProcessor
     {
         $beaconIdentifier = Uuid::uuid4()->toString();
         $beaconUrl = config('app.url') . "/laravel-ses/beacon/$beaconIdentifier";
-        
+
         ModelResolver::get('EmailOpen')::create([
             'sent_email_id' => $this->sentEmail->id,
             'beacon_identifier' => $beaconIdentifier,

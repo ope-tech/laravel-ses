@@ -4,6 +4,8 @@ namespace Juhasev\LaravelSes;
 
 use Carbon\Carbon;
 use Illuminate\Mail\Mailer;
+use Juhasev\LaravelSes\Contracts\SentEmailContract;
+use Juhasev\LaravelSes\Events\SesSentEmailEvent;
 use Juhasev\LaravelSes\Exceptions\TooManyEmails;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
 use PHPHtmlParser\Exceptions\CircularException;
@@ -17,6 +19,7 @@ class SesMailer extends Mailer implements SesMailerInterface
 
     /**
      * Init message (this is always called)
+     * Creates database entry for the sent email
      *
      * @param $message
      * @return mixed
@@ -30,7 +33,7 @@ class SesMailer extends Mailer implements SesMailerInterface
             'message_id' => $message->getId(),
             'email' => key($message->getTo()),
             'batch_id' => $this->getBatchId(),
-            'sent_at' => Carbon::now(),
+            'sent_at' => Carbon::now()->toDateTimeString(),
             'delivery_tracking' => $this->deliveryTracking,
             'complaint_tracking' => $this->complaintTracking,
             'bounce_tracking' => $this->bounceTracking,
@@ -41,6 +44,7 @@ class SesMailer extends Mailer implements SesMailerInterface
     /**
      * Check message recipient for tracking
      * Open tracking etc won't work if emails are sent to more than one recipient at a time
+     * 
      * @param $message
      */
     protected function checkNumberOfRecipients($message)
@@ -66,7 +70,19 @@ class SesMailer extends Mailer implements SesMailerInterface
         $sentEmail = $this->initMessage($message); //adds database record for the email
         $newBody = $this->setupTracking($message->getBody(), $sentEmail); //parses email body and adds tracking functionality
         $message->setBody($newBody); //sets the new parsed body as email body
-
+        
+        $this->sendEvent($sentEmail);
+        
         parent::sendSwiftMessage($message);
+    }
+
+    /**
+     * Send event
+     *
+     * @param SentEmailContract $sentEmail
+     */
+    protected function sendEvent(SentEmailContract $sentEmail)
+    {
+        event(new SesSentEmailEvent($sentEmail->toArray()));
     }
 }

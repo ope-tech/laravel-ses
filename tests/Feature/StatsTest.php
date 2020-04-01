@@ -8,6 +8,7 @@ use Juhasev\LaravelSes\ModelResolver;
 use Juhasev\LaravelSes\Models\Batch;
 use Juhasev\LaravelSes\Repositories\EmailRepository;
 use Juhasev\LaravelSes\Services\Stats;
+use Juhasev\LaravelSes\Tests\FeatureTestCase;
 
 class StatsTest extends FeatureTestCase
 {
@@ -36,6 +37,7 @@ class StatsTest extends FeatureTestCase
 
         $messageId = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->where('batch_id', $batch->id)->first()->message_id;
         $fakeJson = json_decode($this->generateBounceJson($messageId, 'something@gmail.com'));
+        
         $this->json('POST', 'laravel-ses/notification/bounce', (array)$fakeJson);
 
         $messageId = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->where('batch_id', $batch->id)->first()->message_id;
@@ -46,13 +48,10 @@ class StatsTest extends FeatureTestCase
         $fakeJson = json_decode($this->generateComplaintJson($messageId, 'something@gmail.com'));
         $this->json('POST', 'laravel-ses/notification/complaint', (array)$fakeJson);
 
-        $this->get('laravel-ses/api/stats/email/something@gmail.com');
-
         $links = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')
             ->where('batch_id', $batch->id)
             ->first()
             ->emailLinks;
-
 
         $linkId = $links->first()->link_identifier;
         $this->get("https://laravel-ses.com/laravel-ses/link/$linkId");

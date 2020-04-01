@@ -51,7 +51,7 @@ class SesMailFake implements SesMailerInterface, Mailer
             'reject_tracking' => $this->rejectTracking
         ]);
     }
-    
+
     /**
      * Check message recipient for tracking
      * Open tracking etc won't work if emails are sent to more than one recipient at a time

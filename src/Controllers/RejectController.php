@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use Juhasev\LaravelSes\Contracts\EmailRejectContract;
+use Juhasev\LaravelSes\Factories\EventFactory;
 use Juhasev\LaravelSes\ModelResolver;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -70,18 +72,32 @@ class RejectController extends BaseController
 
         } catch (ModelNotFoundException $e) {
             Log::error("Could not find sent email ($messageId). Email reject failed to record!");
+            return;
         }
 
         try {
-            ModelResolver::get('EmailReject')::create([
+            $emailReject = ModelResolver::get('EmailReject')::create([
                 'sent_email_id' => $sentEmail->id,
                 'type' => 'Reject',
                 'rejected_at' => Carbon::parse($message->mail->timestamp)
             ]);
 
+            $this->sendEvent($emailReject);
+
         } catch (QueryException $e) {
             echo $e->getMessage();
             Log::error("Failed insert reject, got error: ".$e->getMessage());
         }
+    }
+
+    /**
+     * Sent event to listeners
+     *
+     * @param EmailRejectContract $emailReject
+     */
+
+    protected function sendEvent(EmailRejectContract $emailReject)
+    {
+        event(EventFactory::create('Reject', 'EmailReject', $emailReject->id));
     }
 }

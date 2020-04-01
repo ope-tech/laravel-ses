@@ -2,7 +2,10 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
+use Illuminate\Support\Facades\Event;
+use Juhasev\LaravelSes\Factories\Events\SesDeliveryEvent;
 use Juhasev\LaravelSes\ModelResolver;
+use Juhasev\LaravelSes\Tests\FeatureTestCase;
 
 class DeliveryTrackingTest extends FeatureTestCase
 {
@@ -15,11 +18,16 @@ class DeliveryTrackingTest extends FeatureTestCase
         ]);
 
         $fakeJson = json_decode($this->exampleSesResponse);
-        $res = $this->json(
+
+        Event::fake();
+
+        $this->json(
             'POST',
             'laravel-ses/notification/delivery',
             (array)$fakeJson
         );
+
+        Event::assertDispatched(SesDeliveryEvent::class);
 
         $this->assertNotNull(ModelResolver::get('SentEmail')::first()->delivered_at);
     }

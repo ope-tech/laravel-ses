@@ -1,7 +1,7 @@
 <?php
 use Juhasev\LaravelSes\MailProcessor;
 use Juhasev\LaravelSes\ModelResolver;
-use Juhasev\LaravelSes\Tests\Unit\UnitTestCase;
+use Juhasev\LaravelSes\Tests\UnitTestCase;
 
 class MailProcessorTest extends UnitTestCase
 {

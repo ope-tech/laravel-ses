@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
+use Juhasev\LaravelSes\Contracts\EmailOpenContract;
+use Juhasev\LaravelSes\Contracts\SentEmailContract;
+use Juhasev\LaravelSes\Factories\EventFactory;
 use Juhasev\LaravelSes\ModelResolver;
 
 class OpenController extends BaseController
@@ -23,9 +26,9 @@ class OpenController extends BaseController
     public function open($beaconIdentifier)
     {
         try {
-            $open = ModelResolver::get('EmailOpen')::whereBeaconIdentifier($beaconIdentifier)->firstOrFail();
-            $open->opened_at = Carbon::now();
-            $open->save();
+            $emailOpen = ModelResolver::get('EmailOpen')::whereBeaconIdentifier($beaconIdentifier)->firstOrFail();
+            $emailOpen->opened_at = Carbon::now();
+            $emailOpen->save();
 
         } catch (ModelNotFoundException $e) {
 
@@ -37,7 +40,20 @@ class OpenController extends BaseController
             ], 404);
         }
 
+        $this->sendEvent($emailOpen);
+
         // Server the actual image
         return redirect(config('app.url')."/laravel-ses/to.png");
+    }
+    
+    /**
+     * Sent event to listeners
+     *
+     * @param EmailOpenContract $emailOpen
+     */
+
+    protected function sendEvent(EmailOpenContract $emailOpen)
+    {
+        event(EventFactory::create('Open', 'EmailOpen', $emailOpen->id));
     }
 }

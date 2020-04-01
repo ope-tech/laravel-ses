@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use Juhasev\LaravelSes\Contracts\EmailComplaintContract;
+use Juhasev\LaravelSes\Events\SesMailBounceEvent;
+use Juhasev\LaravelSes\Factories\EventFactory;
 use Juhasev\LaravelSes\ModelResolver;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
@@ -78,17 +81,31 @@ class ComplaintController extends BaseController
 
         } catch (ModelNotFoundException $e) {
             Log::error("Could not find sent email ($messageId). Email complaint failed to record!");
+            return;
         }
 
         try {
-            ModelResolver::get('EmailComplaint')::create([
+            $emailComplaint = ModelResolver::get('EmailComplaint')::create([
                 'sent_email_id' => $sentEmail->id,
                 'type' => $message->complaint->complaintFeedbackType,
                 'complained_at' => Carbon::parse($message->mail->timestamp)
             ]);
 
+            $this->sendEvent($emailComplaint);
+
         } catch (QueryException $e) {
             Log::error("Failed inserting EmailComplaint, got error: " . $e->getMessage());
         }
+    }
+
+    /**
+     * Sent event to listeners
+     *
+     * @param EmailComplaintContract $complaint
+     */
+
+    protected function sendEvent(EmailComplaintContract $complaint)
+    {
+        event(EventFactory::create('Complaint', 'EmailComplaint', $complaint->id));
     }
 }

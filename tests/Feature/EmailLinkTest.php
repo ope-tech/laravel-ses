@@ -2,10 +2,13 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
+use Illuminate\Support\Facades\Event;
+use Juhasev\LaravelSes\Factories\Events\SesLinkEvent;
 use Juhasev\LaravelSes\ModelResolver;
+use Juhasev\LaravelSes\Tests\FeatureTestCase;
 use Ramsey\Uuid\Uuid;
 
-class ClickTrackingTest extends FeatureTestCase
+class EmailLinkTest extends FeatureTestCase
 {
     public function testEmailLinksCanBeTracked()
     {
@@ -17,9 +20,13 @@ class ClickTrackingTest extends FeatureTestCase
             'link_identifier' => $linkId
         ]);
 
+        Event::fake();
+        
         $res = $this->get("https://laravel-ses.com/laravel-ses/link/$linkId")
             ->assertStatus(302);
 
+        Event::assertDispatched(SesLinkEvent::class);
+        
         $this->assertEquals('https://redirect.com', $res->getTargetUrl());
 
         $emailLink = ModelResolver::get('EmailLink')::first()->toArray();

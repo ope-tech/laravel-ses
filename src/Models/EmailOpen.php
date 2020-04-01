@@ -3,7 +3,9 @@
 namespace Juhasev\LaravelSes\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Juhasev\LaravelSes\Contracts\EmailOpenContract;
+use Juhasev\LaravelSes\ModelResolver;
 
 class EmailOpen extends Model implements EmailOpenContract
 {
@@ -12,4 +14,15 @@ class EmailOpen extends Model implements EmailOpenContract
     public $timestamps = false;
 
     protected $guarded = [];
+
+    /**
+     * Relation ship to parent
+     *
+     * @return BelongsTo
+     * @throws \Exception
+     */
+    public function sentEmail()
+    {
+        return $this->belongsTo(ModelResolver::get('SentEmail'));
+    }
 }

@@ -6,6 +6,9 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
+use Juhasev\LaravelSes\Contracts\EmailLinkContract;
+use Juhasev\LaravelSes\Contracts\SentEmailContract;
+use Juhasev\LaravelSes\Factories\EventFactory;
 use Juhasev\LaravelSes\ModelResolver;
 
 class LinkController extends BaseController
@@ -21,15 +24,28 @@ class LinkController extends BaseController
     public function click($linkIdentifier)
     {
         try {
-            $link = ModelResolver::get('EmailLink')::whereLinkIdentifier($linkIdentifier)->firstOrFail();
+            $emailLink = ModelResolver::get('EmailLink')::whereLinkIdentifier($linkIdentifier)->firstOrFail();
 
-            $link->setClicked(true)->incrementClickCount();
+            $emailLink->setClicked(true)->incrementClickCount();
 
-            return redirect($link->original_url);
+            $this->sendEvent($emailLink);
+
+            return redirect($emailLink->original_url);
 
         } catch (ModelNotFoundException $e) {
 
             Log::error("Could not find link ($linkIdentifier). Email link click count not incremented!");
         }
+    }
+
+    /**
+     * Sent event to listeners
+     *
+     * @param EmailLinkContract $emailLink
+     */
+
+    protected function sendEvent(EmailLinkContract $emailLink)
+    {
+        event(EventFactory::create('Link', 'EmailLink', $emailLink->id));
     }
 }

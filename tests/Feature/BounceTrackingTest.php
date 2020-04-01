@@ -2,7 +2,10 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
+use Illuminate\Support\Facades\Event;
+use Juhasev\LaravelSes\Factories\Events\SesBounceEvent;
 use Juhasev\LaravelSes\ModelResolver;
+use Juhasev\LaravelSes\Tests\FeatureTestCase;
 
 class BounceTrackingTest extends FeatureTestCase
 {
@@ -16,11 +19,15 @@ class BounceTrackingTest extends FeatureTestCase
 
         $fakeJson = json_decode($this->exampleSesResponse);
 
+        Event::fake();
+
         $this->json(
             'POST',
             'laravel-ses/notification/bounce',
             (array)$fakeJson
         );
+
+        Event::assertDispatched(SesBounceEvent::class);
 
         $bounceRecord = ModelResolver::get('EmailBounce')::first()->toArray();
 

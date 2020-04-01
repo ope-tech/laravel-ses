@@ -2,7 +2,10 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
+use Illuminate\Support\Facades\Event;
+use Juhasev\LaravelSes\Factories\Events\SesComplaintEvent;
 use Juhasev\LaravelSes\ModelResolver;
+use Juhasev\LaravelSes\Tests\FeatureTestCase;
 
 class ComplaintTrackingTest extends FeatureTestCase
 {
@@ -16,12 +19,16 @@ class ComplaintTrackingTest extends FeatureTestCase
 
         $fakeJson = json_decode($this->exampleSesResponse);
 
+        Event::fake();
+
         $this->json(
             'POST',
             'laravel-ses/notification/complaint',
             (array)$fakeJson
         );
 
+        Event::assertDispatched(SesComplaintEvent::class);
+        
         $emailComplaint = ModelResolver::get('EmailComplaint')::first()->toArray();
 
         // Check bounce is logged correctly

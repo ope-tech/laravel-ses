@@ -2,7 +2,10 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
+use Illuminate\Support\Facades\Event;
+use Juhasev\LaravelSes\Factories\Events\SesRejectEvent;
 use Juhasev\LaravelSes\ModelResolver;
+use Juhasev\LaravelSes\Tests\FeatureTestCase;
 
 class RejectTrackingTest extends FeatureTestCase
 {
@@ -14,6 +17,8 @@ class RejectTrackingTest extends FeatureTestCase
             'reject_tracking' => true
         ]);
 
+        Event::fake();
+
         $fakeJson = json_decode($this->exampleSesResponse);
 
         $this->json(
@@ -21,6 +26,8 @@ class RejectTrackingTest extends FeatureTestCase
             'laravel-ses/notification/reject',
             (array)$fakeJson
         );
+
+        Event::assertDispatched(SesRejectEvent::class);
 
         $emailReject = ModelResolver::get('EmailReject')::first()->toArray();
 

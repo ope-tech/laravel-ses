@@ -1,5 +1,5 @@
 <?php
-namespace Juhasev\LaravelSes\Tests\Unit;
+namespace Juhasev\LaravelSes\Tests;
 
 use Illuminate\Foundation\Application;
 use Juhasev\LaravelSes\Facades\SesMail;

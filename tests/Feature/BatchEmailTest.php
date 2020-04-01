@@ -6,8 +6,8 @@ use Juhasev\LaravelSes\Facades\SesMail;
 use Juhasev\LaravelSes\Mocking\TestMailable;
 use Juhasev\LaravelSes\ModelResolver;
 use Juhasev\LaravelSes\Models\Batch;
-use Juhasev\LaravelSes\Models\SentEmail;
 use Juhasev\LaravelSes\Services\Stats;
+use Juhasev\LaravelSes\Tests\FeatureTestCase;
 
 class BatchEmailTest extends FeatureTestCase
 {

@@ -2,10 +2,13 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
+use Illuminate\Support\Facades\Event;
 use Juhasev\LaravelSes\Facades\SesMail;
+use Juhasev\LaravelSes\Factories\Events\SesOpenEvent;
 use Juhasev\LaravelSes\Mocking\TestMailable;
 use Juhasev\LaravelSes\ModelResolver;
 use Juhasev\LaravelSes\Models\EmailOpen;
+use Juhasev\LaravelSes\Tests\FeatureTestCase;
 
 class OpenTrackingTest extends FeatureTestCase
 {
@@ -25,9 +28,13 @@ class OpenTrackingTest extends FeatureTestCase
                 ]
             ]);
 
-        $res = $this->get('laravel-ses/beacon/' . EmailOpen::first()->beacon_identifier)
+        Event::fake();
+
+        $this->get('laravel-ses/beacon/' . EmailOpen::first()->beacon_identifier)
             ->assertStatus(302)
             ->assertHeader('location', 'https://laravel-ses.com/laravel-ses/to.png');
+
+        Event::assertDispatched(SesOpenEvent::class);
 
         //check email open has been saved
         $this->assertNotNull(ModelResolver::get('EmailOpen')::first()->opened_at);

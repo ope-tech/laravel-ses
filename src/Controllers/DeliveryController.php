@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use Juhasev\LaravelSes\Contracts\SentEmailContract;
+use Juhasev\LaravelSes\Factories\EventFactory;
 use Juhasev\LaravelSes\ModelResolver;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
@@ -73,6 +75,7 @@ class DeliveryController extends BaseController
 
         } catch (ModelNotFoundException $e) {
             Log::error("Could not find sent email ($messageId). Email delivery failed to record!");
+            return;
         }
 
         try {
@@ -81,5 +84,18 @@ class DeliveryController extends BaseController
         } catch (QueryException $e) {
             Log::error("Failed updating delivered timestamp, got error: " . $e->getMessage());
         }
+
+        $this->sendEvent($sentEmail);
+    }
+
+    /**
+     * Sent event to listeners
+     *
+     * @param SentEmailContract $sentEmail
+     */
+
+    protected function sendEvent(SentEmailContract $sentEmail)
+    {
+        event(EventFactory::create('Delivery', 'SentEmail', $sentEmail->id));
     }
 }

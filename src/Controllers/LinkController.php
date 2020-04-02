@@ -34,7 +34,7 @@ class LinkController extends BaseController
 
         } catch (ModelNotFoundException $e) {
 
-            Log::error("Could not find link ($linkIdentifier). Email link click count not incremented!");
+            Log::info("Could not find link ($linkIdentifier). Email link click count not incremented!");
         }
     }
 

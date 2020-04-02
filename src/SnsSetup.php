@@ -57,7 +57,6 @@ class SnsSetup
      */
     public function init()
     {
-        $this->setupNotification('Reject');
         $this->setupNotification('Bounce');
         $this->setupNotification('Complaint');
         $this->setupNotification('Delivery');
@@ -80,7 +79,7 @@ class SnsSetup
         $urlSlug = strtolower($type);
 
         $this->sns->subscribe([
-            'Endpoint' => config('app.url') . "/laravel-ses/notification/{$urlSlug}",
+            'Endpoint' => config('app.url') . "/ses/notification/{$urlSlug}",
             'Protocol' => 'https',
             'TopicArn' => $topicArn
         ]);

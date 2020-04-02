@@ -6,7 +6,6 @@ use Juhasev\LaravelSes\Models\EmailComplaint;
 use Juhasev\LaravelSes\Models\EmailLink;
 use Juhasev\LaravelSes\Models\EmailOpen;
 use Juhasev\LaravelSes\Models\SentEmail;
-use Juhasev\LaravelSes\Models\EmailReject;
 
 return [
 
@@ -44,7 +43,6 @@ return [
         'EmailBounce' => EmailBounce::class,
         'EmailComplaint' => EmailComplaint::class,
         'EmailLink' => EmailLink::class,
-        'EmailOpen' => EmailOpen::class,
-        'EmailReject' => EmailReject::class
+        'EmailOpen' => EmailOpen::class
     ]
 ];

@@ -233,8 +233,7 @@ trait TrackingTrait
             ->enableLinkTracking()
             ->enableBounceTracking()
             ->enableComplaintTracking()
-            ->enableDeliveryTracking()
-            ->enableRejectTracking();
+            ->enableDeliveryTracking();
     }
 
     /**
@@ -248,8 +247,7 @@ trait TrackingTrait
             ->disableLinkTracking()
             ->disableBounceTracking()
             ->disableComplaintTracking()
-            ->disableDeliveryTracking()
-            ->disableRejectTracking();
+            ->disableDeliveryTracking();
     }
 
     /**
@@ -264,8 +262,7 @@ trait TrackingTrait
             'linkTracking' => $this->linkTracking,
             'bounceTracking' => $this->bounceTracking,
             'complaintTracking' => $this->complaintTracking,
-            'deliveryTracking' => $this->deliveryTracking,
-            'rejectTracking' => $this->rejectTracking
+            'deliveryTracking' => $this->deliveryTracking
         ];
     }
 }

@@ -77,21 +77,6 @@ class EmailStatRepository
     }
 
     /**
-     * Get rejected count for given address
-     *
-     * @param $email
-     * @return int
-     * @throws \Exception
-     */
-    public static function getRejectsCount($email): int
-    {
-        return ModelResolver::get('SentEmail')::whereEmail($email)
-            ->withCount(['emailReject' => function ($query) {
-                $query->whereNotNull('rejected_at');
-            }])->get()->sum('email_reject_count');
-    }
-
-    /**
      * Get click through count
      * If a user clicks two different links on one campaign, only one is counted
      * 

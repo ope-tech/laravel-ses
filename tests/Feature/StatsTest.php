@@ -64,7 +64,6 @@ class StatsTest extends FeatureTestCase
             "opens" => 1,
             "bounces" => 1,
             "complaints" => 1,
-            "rejects" => 0,
             "clicks" => 2
         ];
 
@@ -86,9 +85,6 @@ class StatsTest extends FeatureTestCase
 
         $complaints = EmailRepository::getComplaints('something@gmail.com');
         $this->assertCount(1, $complaints);
-
-        $rejects = EmailRepository::getRejects('something@gmail.com');
-        $this->assertCount(0, $rejects);
 
         $clicks = EmailRepository::getClicks('something@gmail.com');
 
@@ -138,7 +134,6 @@ class StatsTest extends FeatureTestCase
             "opens" => 4,
             "bounces" => 1,
             "complaints" => 2,
-            "rejects" => 0,
             "clicks" => 3,
             "link_popularity" => [
                 "https://google.com" => [
@@ -187,7 +182,6 @@ class StatsTest extends FeatureTestCase
         $this->assertEquals(0, $statsForBatch['deliveries']);
         $this->assertEquals(0, $statsForBatch['opens']);
         $this->assertEquals(0, $statsForBatch['complaints']);
-        $this->assertEquals(0, $statsForBatch['rejects']);
         $this->assertEquals(0, $statsForBatch['clicks']);
         $this->assertEquals([], $statsForBatch['link_popularity']);
 

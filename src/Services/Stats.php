@@ -27,7 +27,6 @@ class Stats
             'opens' => EmailStatRepository::getOpenedCount($email),
             'bounces' => EmailStatRepository::getBouncedCount($email),
             'complaints' => EmailStatRepository::getComplaintsCount($email),
-            'rejects' => EmailStatRepository::getRejectsCount($email),
             'clicks' => EmailStatRepository::getClicksCount($email)
         ];
     }
@@ -47,7 +46,6 @@ class Stats
             'opens' => EmailRepository::getOpens($email),
             'bounces' => EmailRepository::getBounces($email),
             'complaints' => EmailRepository::getComplaints($email),
-            'rejects' => EmailRepository::getRejects($email),
             'clicks' => EmailRepository::getClicks($email)
         ];
     }
@@ -55,7 +53,7 @@ class Stats
     /**
      * Get stats for batch
      *
-     * @param Batch $batch
+     * @param BatchContract $batch
      * @return array
      * @throws Exception
      */
@@ -67,7 +65,6 @@ class Stats
             'opens' => BatchStatRepository::getOpenedCount($batch),
             'bounces' => BatchStatRepository::getBouncedCount($batch),
             'complaints' => BatchStatRepository::getComplaintsCount($batch),
-            'rejects' => BatchStatRepository::getRejectsCount($batch),
             'clicks' => BatchStatRepository::getClicksCount($batch),
             'link_popularity' => BatchStatRepository::getLinkPopularity($batch)
         ];

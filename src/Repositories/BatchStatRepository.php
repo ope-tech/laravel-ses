@@ -79,25 +79,6 @@ class BatchStatRepository
     }
 
     /**
-     * Get reject count for batch
-     *
-     * @param BatchContract $batch
-     * @return int
-     * @throws Exception
-     */
-    public static function getRejectsCount(BatchContract $batch): int
-    {
-        return ModelResolver::get('SentEmail')::where('batch_id', $batch->id)
-        ->join(
-            'laravel_ses_email_rejects',
-            'laravel_ses_sent_emails.id',
-            'laravel_ses_email_rejects.sent_email_id'
-        )
-            ->whereNotNull('rejected_at')
-            ->count();
-    }
-
-    /**
      * Get deliveries count for barch
      *
      * @param BatchContract $batch

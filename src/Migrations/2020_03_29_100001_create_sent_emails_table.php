@@ -23,7 +23,6 @@ class CreateSentEmailsTable extends Migration
             $table->boolean('complaint_tracking')->default(false);
             $table->boolean('delivery_tracking')->default(false);
             $table->boolean('bounce_tracking')->default(false);
-            $table->boolean('reject_tracking')->default(false);
             $table->timestamps();
 
             $table->foreign('batch_id')

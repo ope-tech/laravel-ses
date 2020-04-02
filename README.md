@@ -2,12 +2,13 @@
 
 # Laravel AWS Simple Email Service
 A Laravel 6+ Package that allows you to get sending statistics for emails you send through AWS SES (Simple Email Service), 
-including deliveries, opens, rejects, bounces, complaints and link tracking. This package was originally written by Oliveready7.
+including deliveries, opens, bounces, complaints and link tracking. This package was originally written by Oliveready7.
 Unfortunately the original author had stopped maintaining this package so I decided to create this fork so that this 
 package can be used with current versions of Laravel.
 
-All packages have been updated to modern versions. Also added Reject tracking and optimized the original database
-storage. Please note that this package is still experimental and currently going thru extensive testing with Laravel 6.x.
+All packages have been updated to modern versions. I have optimized the original database
+storage for space and proper indexing. Please note that this package is still experimental and currently 
+going thru extensive testing with Laravel 6.x.
 
 ## Installation
 Install via composer
@@ -55,6 +56,19 @@ Publish the package's config (laravelses.php)
 
 ```
 php artisan vendor:publish --tag=ses-config
+```
+
+### Routes
+This package add 3 public routes to your application that AWS SNS callbacks target
+```
+/ses/notification/bounce
+/ses/notification/complaint
+/ses/notification/delivery
+```
+We also add two more public routes for tracking opens and link clicks
+```
+/ses/beacon
+/ses/link
 ```
 
 Config Options
@@ -162,8 +176,6 @@ SesMail::disableLinkTracking();
 SesMail::disableBounceTracking();
 SesMail::disableComplaintTracking();
 SesMail::disableDeliveryTracking();
-SesMail::disableRejectTracking();
-
 
 SesMail::enableAllTracking();
 SesMail::enableOpenTracking();
@@ -171,7 +183,6 @@ SesMail::enableLinkTracking();
 SesMail::enableBounceTracking();
 SesMail::enableComplaintTracking();
 SesMail::enableDeliveryTracking();
-SesMail::enableRejectTracking();
 ```
 
 The batching option gives you the chance to group emails, so you can get the results for a specific group
@@ -198,7 +209,6 @@ Stats::statsForBatch('welcome_emails');
     "opens" => 4,
     "bounces" => 1,
     "complaints" => 2,
-    "rejects" => 1,
     "clicks" => 3,
     "link_popularity" => [
         "https://welcome.page" => [
@@ -230,7 +240,6 @@ $emailBounces = EmailBounce::whereEmail($email)->get();
 $emailComplaints = EmailComplaint::whereEmail($email)->get();
 $emailLink = EmailLink::whereEmail($email)->get();
 $emailOpen = EmailOpen::whereEmail($email)->get();
-$emailReject = EmailReject::whereEmail($email)->get();
 
 ```
 If you are using custom models then you can use ModelResolver() helper like so
@@ -246,8 +255,6 @@ Deliveries = number of emails that were delivered
 Opens = number of emails that were opened
 
 Complaints = number of people that put email into spam
-
-Rejects = number of emails AWS rejected to deliver i.e. attached virus
 
 Clicks = number of people that clicked at least one link in your email
 

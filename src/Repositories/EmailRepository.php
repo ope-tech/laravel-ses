@@ -82,22 +82,6 @@ class EmailRepository
     }
 
     /**
-     * Get rejects
-     *
-     * @param $email
-     * @return Collection
-     * @throws \Exception
-     */
-    public static function getRejects($email): Collection
-    {
-        return ModelResolver::get('SentEmail')::whereEmail($email)
-            ->with('emailReject')
-            ->whereHas('emailReject', function ($query) {
-                $query->whereNotNull('rejected_at');
-            })->get();
-    }
-
-    /**
      * Get all emails that have been clicked
      *
      * @param $email

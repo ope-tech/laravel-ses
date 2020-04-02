@@ -5,13 +5,9 @@ namespace Juhasev\LaravelSes\Controllers;
 use Aws\Sns\Exception\InvalidSnsMessageException;
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
-use Exception;
 use GuzzleHttp\Client;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
-use Juhasev\LaravelSes\ModelResolver;
-use Nyholm\Psr7\ServerRequest;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
 
@@ -111,7 +107,7 @@ class BaseController extends Controller
     protected function logResult(string $content): void
     {
         if ($this->debug()) {
-            Log::debug("Result object:\n" . $content);
+            Log::debug("RAW SES REQUEST BODY:\n" . $content);
         }
     }
 
@@ -123,6 +119,6 @@ class BaseController extends Controller
 
     protected function debug(): bool
     {
-        return config('laravelses.debug');
+        return config('laravelses.debug') === true;
     }
 }

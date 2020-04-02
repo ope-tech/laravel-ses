@@ -15,7 +15,7 @@ return [
      * https://github.com/aws/aws-php-sns-message-validator
      */
 
-    'aws_sns_validator' => env('SES_SNS_VALIDATOR', false),
+    'aws_sns_validator' => env('SES_SNS_VALIDATOR', true),
 
     /**
      * Enable debug mode. In this mode you can test incoming AWS routes

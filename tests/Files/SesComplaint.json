@@ -1,68 +1,11 @@
 {
-  "notificationType": "Complaint",
-  "complaint": {
-    "complaintSubType": null,
-    "complainedRecipients": [
-      {
-        "emailAddress": "complaint@simulator.amazonses.com"
-      }
-    ],
-    "timestamp": "2020-04-01T18:07:49.000Z",
-    "feedbackId": "0101017136ed8fb9-dd7d3a9e-2158-4696-8f96-9d31c5b98c89-000000",
-    "userAgent": "Amazon SES Mailbox Simulator",
-    "complaintFeedbackType": "abuse"
-  },
-  "mail": {
-    "timestamp": "2020-04-01T18:07:48.000Z",
-    "source": "info@sampleninja.io",
-    "sourceArn": "arn:aws:ses:us-west-2:635608510762:identity/sampleninja.io",
-    "sourceIp": "52.88.49.154",
-    "sendingAccountId": "635608510762",
-    "messageId": "0101017136ed862b-90f34d8e-1d84-4f58-9dd2-63285665099c-000000",
-    "destination": [
-      "complaint@simulator.amazonses.com"
-    ],
-    "headersTruncated": false,
-    "headers": [
-      {
-        "name": "Message-ID",
-        "value": "<07d38addf1b9ccbf18ecaaa2c2793773@localhost>"
-      },
-      {
-        "name": "Date",
-        "value": "Wed, 01 Apr 2020 18:07:48 +0000"
-      },
-      {
-        "name": "Subject",
-        "value": "Test email"
-      },
-      {
-        "name": "From",
-        "value": "Sample Ninja <info@sampleninja.io>"
-      },
-      {
-        "name": "To",
-        "value": "complaint@simulator.amazonses.com"
-      },
-      {
-        "name": "MIME-Version",
-        "value": "1.0"
-      },
-      {
-        "name": "Content-Type",
-        "value": "multipart/alternative; boundary=\"_=_swift_1585764468_18e3cc9ea7eefadd38a5ec0ffe6bf100_=_\""
-      }
-    ],
-    "commonHeaders": {
-      "from": [
-        "Sample Ninja <info@sampleninja.io>"
-      ],
-      "date": "Wed, 01 Apr 2020 18:07:48 +0000",
-      "to": [
-        "complaint@simulator.amazonses.com"
-      ],
-      "messageId": "<07d38addf1b9ccbf18ecaaa2c2793773@localhost>",
-      "subject": "Test email"
-    }
-  }
+  "Type": "Notification",
+  "MessageId": "3b34a79f-fb0f-541b-b800-f09fab6f54cb",
+  "TopicArn": "arn:aws:sns:us-west-2:635608510762:laravel-ses-Complaint",
+  "Message": "{\"notificationType\":\"Complaint\",\"complaint\":{\"complaintSubType\":null,\"complainedRecipients\":[{\"emailAddress\":\"complaint@simulator.amazonses.com\"}],\"timestamp\":\"2020-04-02T20:42:07.000Z\",\"feedbackId\":\"010101713ca12edc-f860b605-5dbf-484e-9cf9-30b3cd337d74-000000\",\"userAgent\":\"Amazon SES Mailbox Simulator\",\"complaintFeedbackType\":\"abuse\"},\"mail\":{\"timestamp\":\"2020-04-02T20:42:06.000Z\",\"source\":\"info@sampleninja.io\",\"sourceArn\":\"arn:aws:ses:us-west-2:635608510762:identity/sampleninja.io\",\"sourceIp\":\"52.40.37.175\",\"sendingAccountId\":\"635608510762\",\"messageId\":\"010101713ca12600-91dcfd5a-f653-4c07-ae79-793021aed4b4-000000\",\"destination\":[\"complaint@simulator.amazonses.com\"],\"headersTruncated\":false,\"headers\":[{\"name\":\"Message-ID\",\"value\":\"<b8f85f29a926aed914b296cc8c0eb459@localhost>\"},{\"name\":\"Date\",\"value\":\"Thu, 02 Apr 2020 20:42:06 +0000\"},{\"name\":\"Subject\",\"value\":\"Test email\"},{\"name\":\"From\",\"value\":\"Sample Ninja <info@sampleninja.io>\"},{\"name\":\"To\",\"value\":\"complaint@simulator.amazonses.com\"},{\"name\":\"MIME-Version\",\"value\":\"1.0\"},{\"name\":\"Content-Type\",\"value\":\"multipart/alternative; boundary=\\\"_=_swift_1585860126_6922003ad51c3de879c64dc364ad56dc_=_\\\"\"}],\"commonHeaders\":{\"from\":[\"Sample Ninja <info@sampleninja.io>\"],\"date\":\"Thu, 02 Apr 2020 20:42:06 +0000\",\"to\":[\"complaint@simulator.amazonses.com\"],\"messageId\":\"<b8f85f29a926aed914b296cc8c0eb459@localhost>\",\"subject\":\"Test email\"}}}",
+  "Timestamp": "2020-04-02T20:42:08.575Z",
+  "SignatureVersion": "1",
+  "Signature": "PmjzxD8GHcsEbBYG6oAXjhfdb7ZnSWwuu/82uTMD47FiQ8OpzEvYcjefOi2oOtIy/E3NZoFd6Pp1lEgBJG6EozNDwtUI/6CTsf9DFD334fV0g+UGXE0zcrAO0qn+Pyai+0CKEfvI0xd8bIho8J0CUL/3bq5P/oIcbIonPIzyDigp8bDTR2D+DC38qitEZ75oE9kOeXEb6frvp1fg88n4fsebOmzYrZlgw7RxRaxYhpaYeNj0sFeSmhZJ+TBdl6YDbgHJfKRb2FLzMWQAGuGc50blGjm0wM7P5VwuTaE5qSJr5SS901lIuC+DDqEtfIv1Vb6Zi8ukZT7ntSwCvgBVaw==",
+  "SigningCertURL": "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-a86cb10b4e1f29c941702d737128f7b6.pem",
+  "UnsubscribeURL": "https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:635608510762:laravel-ses-Complaint:dd09ff62-3f02-44fa-b82a-fe06508d6cec"
 }

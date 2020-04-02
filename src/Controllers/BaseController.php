@@ -111,7 +111,7 @@ class BaseController extends Controller
     protected function logResult(string $content): void
     {
         if ($this->debug()) {
-            Log::debug("Result object:\n" . json_decode($content,true));
+            Log::debug("Result object:\n" . $content);
         }
     }
 

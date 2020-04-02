@@ -2,7 +2,7 @@
 
 namespace Juhasev\LaravelSes;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Closure;
 use Illuminate\Contracts\Mail\Mailable;
 use Illuminate\Contracts\Mail\Mailer;

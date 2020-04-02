@@ -2,7 +2,7 @@
 
 namespace Juhasev\LaravelSes;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Mail\Mailer;
 use Juhasev\LaravelSes\Contracts\SentEmailContract;
 use Juhasev\LaravelSes\Events\SesSentEmailEvent;

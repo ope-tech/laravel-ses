@@ -2,7 +2,7 @@
 
 namespace Juhasev\LaravelSes\Controllers;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;

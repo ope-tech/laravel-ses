@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Juhasev\LaravelSes\Commands\SetupSNS;
+use Juhasev\LaravelSes\Commands\SetupSns;
 
 class LaravelSesServiceProvider extends ServiceProvider
 {

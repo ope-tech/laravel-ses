@@ -32,7 +32,7 @@ class OpenController extends BaseController
 
         } catch (ModelNotFoundException $e) {
 
-            Log::error("Could not find sent email with beacon identifier ($beaconIdentifier). Email open could not be recorded!");
+            Log::info("Could not find sent email with beacon identifier ($beaconIdentifier). Email open could not be recorded!");
 
             return response()->json([
                 'success' => false,

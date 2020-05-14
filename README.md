@@ -246,6 +246,122 @@ If you are using custom models then you can use ModelResolver() helper like so
 ```
 $sentEmail = ModelResolver::get('SentEmail')::take(100)->get();
 ```
+### Listening to event
+
+Event subscriber can be created:
+```php
+<?php
+
+namespace App\Listeners;
+
+use App\Actions\ProcessSesEvent;
+use Juhasev\LaravelSes\Factories\Events\SesBounceEvent;
+use Juhasev\LaravelSes\Factories\Events\SesComplaintEvent;
+use Juhasev\LaravelSes\Factories\Events\SesDeliveryEvent;
+use Juhasev\LaravelSes\Factories\Events\SesOpenEvent;
+use Juhasev\LaravelSes\Factories\Events\SesSentEvent;
+
+class SesSentEventSubscriber
+{
+    /**
+     * Subscribe to events
+     *
+     * @param $events
+     */
+    public function subscribe($events)
+    {
+        $events->listen(SesBounceEvent::class, SesSentEventSubscriber::class . '@bounce');
+        $events->listen(SesComplaintEvent::class, SesSentEventSubscriber::class . '@complaint');
+        $events->listen(SesDeliveryEvent::class,SesSentEventSubscriber::class . '@delivery');
+        $events->listen(SesOpenEvent::class, SesSentEventSubscriber::class . '@open');
+        $events->listen(SesLinkEvent::class, SesSentEventSubscriber::class . '@link');
+    }
+
+    /**
+     * SES bounce event took place
+     *
+     * @param SesBounceEvent $event
+     */
+    public function bounce(SesBounceEvent $event)
+    {
+        // Do something
+    }
+
+    /**
+     * SES complaint event took place
+     *
+     * @param SesComplaintEvent $event
+     */
+    public function complaint(SesComplaintEvent $event)
+    {
+        // Do something
+    }
+
+    /**
+     * SES delivery event took place
+     *
+     * @param SesDeliveryEvent $event
+     */
+    public function delivery(SesDeliveryEvent $event)
+    {
+        // Do something
+    }
+
+    /**
+     * SES Open open event took place
+     *
+     * @param SesOpenEvent $event
+     */
+    public function open(SesOpenEvent $event)
+    {
+        // Do something
+    }
+   /**
+     * SES Open link event took place
+     *
+     * @param SesLinkEvent $event
+     */
+    public function link(SesLinkEvent $event)
+    {
+        // Do something
+    }
+
+}
+```
+
+You will need to register EventSubscriber in the Laravel EventServerProvider in order to work.
+
+Example event data:
+```
+
+// $event->data
+
+(
+    [id] => 22
+    [sent_email_id] => 49
+    [type] => Permanent
+    [bounced_at] => 2020-04-03 19:42:31
+    [sent_email] => Array
+        (
+            [id] => 49
+            [message_id] => 31b530dce8e2a282d12e5627e7109580@localhost
+            [email] => bounce@simulator.amazonses.com
+            [batch_id] => 7
+            [sent_at] => 2020-04-03 19:42:31
+            [delivered_at] => 
+            [batch] => Array
+                (
+                    [id] => 7
+                    [name] => fa04cbf2c2:Project:268
+                    [created_at] => 2020-04-03 17:03:23
+                    [updated_at] => 2020-04-03 17:03:23
+                )
+
+        )
+    )
+)
+```
+
 
 ### Terminology
 Sent = number of emails that were attempted

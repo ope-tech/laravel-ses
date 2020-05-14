@@ -76,7 +76,11 @@ class DeliveryController extends BaseController
                 ->firstOrFail();
 
         } catch (ModelNotFoundException $e) {
-            Log::error("Could not find sent email ($messageId). Email delivery failed to record!");
+
+            // If sent email is not found then email delivery
+            // was likely done without using Laravel-SES
+            // We simply ignore these and do nothing with them.
+
             return;
         }
 

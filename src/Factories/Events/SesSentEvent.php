@@ -14,7 +14,7 @@ class SesSentEvent extends BaseEvent
     public $data;
 
     /**
-     * Create a new event instance.
+     * Create a new event instance. Model name is always SentEmail.
      *
      * @param string $modelName
      * @param int $modelId

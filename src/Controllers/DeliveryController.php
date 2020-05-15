@@ -2,6 +2,7 @@
 
 namespace Juhasev\LaravelSes\Controllers;
 
+use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -28,7 +29,7 @@ class DeliveryController extends BaseController
         $this->validateSns($request);
 
         $content = request()->getContent();
-        
+
         $this->logResult($content);
 
         $result = json_decode($content);
@@ -43,8 +44,11 @@ class DeliveryController extends BaseController
             ]);
         }
 
-        // TODO: This can fail
         $message = json_decode($result->Message);
+
+        if ($message === null) {
+            throw new Exception('Result message failed to decode!');
+        }
 
         $this->persistDelivery($message);
 
@@ -86,7 +90,7 @@ class DeliveryController extends BaseController
 
         try {
             $sentEmail->setDeliveredAt($deliveryTime);
-            
+
         } catch (QueryException $e) {
             Log::error("Failed updating delivered timestamp, got error: " . $e->getMessage());
         }

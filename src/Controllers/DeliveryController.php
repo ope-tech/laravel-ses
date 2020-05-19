@@ -52,7 +52,7 @@ class DeliveryController extends BaseController
 
         $this->persistDelivery($message);
 
-        $this->logMessage("Complaint processed for: " . $message->mail->destination[0]);
+        $this->logMessage("Delivery processed for: " . $message->mail->destination[0]);
 
         return response()->json([
             'success' => true,

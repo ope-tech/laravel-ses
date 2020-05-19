@@ -9,7 +9,6 @@ use GuzzleHttp\Client;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\ServerRequestInterface;
-use stdClass;
 
 class BaseController extends Controller
 {

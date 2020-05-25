@@ -70,7 +70,8 @@ class MailProcessor
 
         ModelResolver::get('EmailOpen')::create([
             'sent_email_id' => $this->sentEmail->id,
-            'beacon_identifier' => $beaconIdentifier
+            'beacon_identifier' => $beaconIdentifier,
+            'url' => $beaconUrl
         ]);
 
         $this->setEmailBody($this->getEmailBody() . "<img src=\"$beaconUrl\""

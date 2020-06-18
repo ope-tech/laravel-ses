@@ -4,7 +4,7 @@
 A Laravel package that allows you to get sending statistics for emails you send through AWS SES (Simple Email Service), 
 including deliveries, opens, bounces, complaints and link tracking. This package was originally written by Oliveready7.
 Unfortunately the original author had stopped maintaining this package so I decided to create this fork so that this 
-package can be used with current versions of Laravel.
+package can be used with current versions of Laravel. The minimum requirement is PHP 7.1.
 
 All packages have been updated to modern versions. I have optimized the original database
 storage for space and proper indexing. This package is compatible with Laravel 6.x or Laravel 7.x

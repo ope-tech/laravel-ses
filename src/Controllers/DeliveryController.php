@@ -12,7 +12,6 @@ use Juhasev\LaravelSes\Contracts\SentEmailContract;
 use Juhasev\LaravelSes\Factories\EventFactory;
 use Juhasev\LaravelSes\ModelResolver;
 use Psr\Http\Message\ServerRequestInterface;
-use stdClass;
 
 class DeliveryController extends BaseController
 {
@@ -63,11 +62,11 @@ class DeliveryController extends BaseController
     /**
      * Persist delivery record to the database
      *
-     * @param stdClass $message
+     * @param $message
      * @throws \Exception
      */
 
-    protected function persistDelivery(stdClass $message): void
+    protected function persistDelivery($message): void
     {
         $messageId = $this->parseMessageId($message);
 

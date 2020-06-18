@@ -12,7 +12,6 @@ use Juhasev\LaravelSes\Contracts\EmailComplaintContract;
 use Juhasev\LaravelSes\Factories\EventFactory;
 use Juhasev\LaravelSes\ModelResolver;
 use Psr\Http\Message\ServerRequestInterface;
-use stdClass;
 
 class ComplaintController extends BaseController
 {
@@ -65,11 +64,11 @@ class ComplaintController extends BaseController
     /**
      * Persist complaint to the database
      *
-     * @param stdClass $message
+     * @param $message
      * @throws Exception
      */
 
-    private function persistComplaint(stdClass $message)
+    private function persistComplaint($message)
     {
         $messageId = $this->parseMessageId($message);
 

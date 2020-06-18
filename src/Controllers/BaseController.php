@@ -40,11 +40,11 @@ class BaseController extends Controller
     /**
      * Parse message ID out of message
      *
-     * @param stdClass $message
+     * @param $message
      * @return string
      */
 
-    protected function parseMessageId(stdClass $message): string
+    protected function parseMessageId($message): string
     {
         $messageId = $message
             ->mail
@@ -60,11 +60,11 @@ class BaseController extends Controller
     /**
      * Make call back to AWS to confirm subscription
      *
-     * @param stdClass $result
+     * @param $result
      * @return void
      */
 
-    protected function confirmSubscription(stdClass $result): void
+    protected function confirmSubscription($result): void
     {
         $client = new Client;
         $client->get($result->SubscribeURL);
@@ -75,11 +75,11 @@ class BaseController extends Controller
     /**
      * If AWS is trying to confirm subscription
      *
-     * @param stdClass $result
+     * @param $result
      * @return bool
      */
 
-    protected function isSubscriptionConfirmation(stdClass $result): bool
+    protected function isSubscriptionConfirmation($result): bool
     {
         return isset($result->Type) && $result->Type == 'SubscriptionConfirmation';
     }

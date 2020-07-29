@@ -33,7 +33,7 @@
         "illuminate/container": "6.*|7.*",
         "illuminate/routing": "6.*|7.*",
         "aws/aws-sdk-php": "^3.28",
-        "ramsey/uuid": "^3.7",
+        "ramsey/uuid": "3.*|4.*",
         "guzzlehttp/guzzle": "^6.0",
         "paquettg/php-html-parser": "^2.2",
         "aws/aws-php-sns-message-validator": "^1.6",

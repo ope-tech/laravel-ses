@@ -71,7 +71,6 @@ class LaravelSesServiceProvider extends ServiceProvider
             // on the mailer. This allows us to resolve mailer classes via containers
             // for maximum testability on said classes instead of passing Closures.
             $mailer = new SesMailer(
-                'SesMailer',
                 $app['view'],
                 app('mailer')->getSwiftMailer(),
                 $app['events']

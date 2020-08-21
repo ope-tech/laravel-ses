@@ -67,12 +67,26 @@ class LaravelSesServiceProvider extends ServiceProvider
         $this->app->singleton('SesMailer', function ($app) {
             $config = $app->make('config')->get('mail');
 
+            $swiftMailer = null;
+
+            // Check if we using Laravel 7.x.
+            if (method_exists(app('mailer'), 'getSwiftMailer')) {
+                $swiftMailer = app('mailer')->getSwiftMailer();
+            }
+            // We must on Laravel 6.x and we should be able to find container binding
+            // for swift.mailer
+            else {
+                $swiftMailer = $app['swift.mailer'];
+            }
+
             // Once we have create the mailer instance, we will set a container instance
             // on the mailer. This allows us to resolve mailer classes via containers
             // for maximum testability on said classes instead of passing Closures.
+            // We will first test if swift.mailer is bound to the container (Laravel 6.x) and if not
+            // then we attempt to do the same thing in Laravel 7.x style.
             $mailer = new SesMailer(
                 $app['view'],
-                app('mailer')->getSwiftMailer(),
+                $swiftMailer,
                 $app['events']
             );
 

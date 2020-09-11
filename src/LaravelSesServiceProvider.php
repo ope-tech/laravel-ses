@@ -66,24 +66,16 @@ class LaravelSesServiceProvider extends ServiceProvider
     protected function registerIlluminateMailer()
     {
         $this->app->singleton('SesMailer', function ($app) {
+
             $config = $app->make('config')->get('mail');
 
-            $swiftMailer = null;
-
-            try {
-                // Attempt to get Laravel 7.x mailer
-                $swiftMailer = app('mailer')->getSwiftMailer();
-            } catch (BindingResolutionException $e) {
-                // We must be on Laravel 6.x
-                $swiftMailer = app('swift.mailer');
-            }
+            $swiftMailer = app('mailer')->getSwiftMailer();
 
             // Once we have create the mailer instance, we will set a container instance
             // on the mailer. This allows us to resolve mailer classes via containers
             // for maximum testability on said classes instead of passing Closures.
-            // We will first test if swift.mailer is bound to the container (Laravel 6.x) and if not
-            // then we attempt to do the same thing in Laravel 7.x style.
             $mailer = new SesMailer(
+                'ses-mailer',
                 $app['view'],
                 $swiftMailer,
                 $app['events']

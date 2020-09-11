@@ -2,7 +2,6 @@
 
 namespace Juhasev\LaravelSes\Facades;
 
-use Illuminate\Support\Testing\Fakes\MailFake;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Container\Container;
 use Juhasev\LaravelSes\SesMailFake;
@@ -14,14 +13,18 @@ class SesMail extends Facade
 {
     public static function fake()
     {
+        $swiftMailer = app('mailer')->getSwiftMailer();
+
         static::swap(
             new SesMailFake(
-            Container::getInstance()['view'],
-            Container::getInstance()['swift.mailer'],
-            Container::getInstance()['events']
+                'ses-mailer-fake',
+                Container::getInstance()['view'],
+                app('mailer')->getSwiftMailer(),
+                Container::getInstance()['events']
             )
         );
     }
+
     /**
      * Get the registered name of the component.
      *

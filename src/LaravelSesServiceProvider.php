@@ -2,6 +2,7 @@
 
 namespace Juhasev\LaravelSes;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
@@ -69,14 +70,12 @@ class LaravelSesServiceProvider extends ServiceProvider
 
             $swiftMailer = null;
 
-            // Check if we using Laravel 7.x.
-            if (method_exists(app('mailer'), 'getSwiftMailer')) {
+            try {
+                // Attempt to get Laravel 7.x mailer
                 $swiftMailer = app('mailer')->getSwiftMailer();
-            }
-            // We must on Laravel 6.x and we should be able to find container binding
-            // for swift.mailer
-            else {
-                $swiftMailer = $app['swift.mailer'];
+            } catch (BindingResolutionException $e) {
+                // We must be on Laravel 6.x
+                $swiftMailer = app('swift.mailer');
             }
 
             // Once we have create the mailer instance, we will set a container instance

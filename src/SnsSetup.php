@@ -2,25 +2,47 @@
 
 namespace Juhasev\LaravelSes;
 
-use Aws\Ses\SesClient;
+use Aws\SesV2\Exception\SesV2Exception;
+use Aws\SesV2\SesV2Client;
+use Aws\Sns\Exception\SnsException;
 use Aws\Sns\SnsClient;
+use Exception;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Str;
 
 class SnsSetup
 {
     protected $ses;
     protected $sns;
     protected $domain;
+    protected $console;
+    protected $configSetName;
+    protected $exceptionCount;
 
     /**
      * SnsSetup constructor.
      *
-     * @param string $domain
+     * @param $console
+     * @param string|null $domain
      */
-    public function __construct(string $domain)
+    public function __construct($console, string $domain = null)
     {
-        $this->domain = $domain;
+        $console->info(str_repeat('-', 48));
+        $console->info(" SETTING UP SES Bounce, Delivery and Complaints ");
+        $console->info(str_repeat('-', 48));
 
-        $this->ses = new SesClient([
+        if (!$domain) {
+            $this->domain = parse_url(config('app.url'), PHP_URL_HOST);
+        } else {
+            $this->domain = $domain;
+        }
+
+        $this->exceptionCount = 0;
+        $this->console = $console;
+
+        $this->configSetName = App::environment() . "-ses-" . config('services.ses.region');
+
+        $this->ses = new SesV2Client([
             'credentials' => [
                 'key' => config('services.ses.key'),
                 'secret' => config('services.ses.secret')
@@ -39,17 +61,26 @@ class SnsSetup
         ]);
 
         $this->init();
+
+        $console->line('');
+
+        if ($this->exceptionCount === 0) {
+            $console->success('ALL COMPLETED!');
+        } else {
+            $console->error('Some setup tasks failed! Please review them manually in AWS Console!');
+        }
     }
 
     /**
-     * Fluent systax method
+     * Fluent method
      *
-     * @param string $domain
+     * @param $console
+     * @param string|null $domain
      * @return SnsSetup
      */
-    public static function create(string $domain)
+    public static function create($console, string $domain = null): SnsSetup
     {
-        return new self($domain);
+        return new self( $console, $domain);
     }
 
     /**
@@ -57,9 +88,10 @@ class SnsSetup
      */
     public function init()
     {
-        $this->setupNotification('Bounce');
-        $this->setupNotification('Complaint');
-        $this->setupNotification('Delivery');
+        $this->createConfigurationSet();
+        $this->setupNotification('bounce');
+        $this->setupNotification('complaint');
+        $this->setupNotification('delivery');
     }
 
     /**
@@ -68,15 +100,39 @@ class SnsSetup
      * @param $type
      * @return bool
      */
-    public function setupNotification(string $type)
+    public function setupNotification(string $type): bool
     {
-        $result = $this->sns->createTopic([
-            'Name' => "laravel-ses-{$type}"
-        ]);
+        $topic = App::environment() . "-ses-{$type}-" . config('services.ses.region');
+
+        try {
+            $result = $this->sns->createTopic([
+                'Name' => $topic
+            ]);
+        } catch (SNSException $e) {
+            $this->console->error("Topic (" . $topic . ") already exists...");
+        }
 
         $topicArn = $result['TopicArn'];
 
         $urlSlug = strtolower($type);
+
+        $eventDestinationName = "destination-" . $topic;
+
+        try {
+            $this->ses->createConfigurationSetEventDestination([
+                'ConfigurationSetName' => $this->configSetName,
+                'EventDestination' => [
+                    'Enabled' => true,
+                    'MatchingEventTypes' => [strtoupper($type)],
+                    'SnsDestination' => [
+                        'TopicArn' => $topicArn,
+                    ],
+                ],
+                'EventDestinationName' => $eventDestinationName,
+            ]);
+        } catch (SesV2Exception $e) {
+            $this->outputException('EventDestination', $eventDestinationName, $e);
+        }
 
         $this->sns->subscribe([
             'Endpoint' => config('app.url') . "/ses/notification/{$urlSlug}",
@@ -84,35 +140,48 @@ class SnsSetup
             'TopicArn' => $topicArn
         ]);
 
-        $this->ses->setIdentityNotificationTopic([
-            'Identity' => $this->domain,
-            'NotificationType' => $type,
-            'SnsTopic' => $topicArn
-        ]);
-
-        $this->ses->setIdentityHeadersInNotificationsEnabled([
-            'Enabled' => true,
-            'Identity' => $this->domain,
-            'NotificationType' => $type
-        ]);
-
         return true;
     }
 
     /**
-     * Check if notification is set for type
+     * Create configuration set
+     */
+    protected function createConfigurationSet(): void
+    {
+        try {
+            $this->ses->createConfigurationSet([
+                'ConfigurationSetName' => $this->configSetName,
+                'DeliveryOptions' => [
+                    'TlsPolicy' => 'REQUIRE',
+                ],
+                'SendingOptions' => [
+                    'SendingEnabled' => true,
+                ],
+                'TrackingOptions' => [
+                    'CustomRedirectDomain' => $this->domain,
+                ],
+            ]);
+        } catch (SesV2Exception $e) {
+            $this->outputException("ConfigSet", $this->configSetName, $e);
+        }
+    }
+
+    /**
+     * Output SES Exception
      *
      * @param string $type
-     * @return bool
+     * @param string $name
+     * @param Exception $e
      */
-
-    public function notificationIsSet(string $type): bool
+    protected function outputException(string $type, string $name, Exception $e): void
     {
-        $result = $this->ses->getIdentityNotificationAttributes([
-            'Identities' => [config('services.ses.domain')
-            ]
-        ]);
+        $this->exceptionCount++;
 
-        return isset($result['NotificationAttributes'][config('services.ses.domain')]["{$type}Topic"]);
+        if (Str::contains($e->getMessage(), 'AlreadyExistsException')) {
+            $this->console->comment("SES " . sprintf('%-25s', $type) . " " . sprintf('%-50s', $name) . " Already exist!");
+        } else {
+
+            $this->console->error($e->getMessage());
+        }
     }
 }

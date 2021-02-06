@@ -4,8 +4,8 @@ namespace Juhasev\LaravelSes;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Mail\Mailer;
+use Illuminate\Support\Facades\App;
 use Juhasev\LaravelSes\Contracts\SentEmailContract;
-use Juhasev\LaravelSes\Events\SesSentEmailEvent;
 use Juhasev\LaravelSes\Exceptions\TooManyEmails;
 use Juhasev\LaravelSes\Factories\EventFactory;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
@@ -44,7 +44,7 @@ class SesMailer extends Mailer implements SesMailerInterface
     /**
      * Check message recipient for tracking
      * Open tracking etc won't work if emails are sent to more than one recipient at a time
-     * 
+     *
      * @param $message
      */
     protected function checkNumberOfRecipients($message)
@@ -58,21 +58,28 @@ class SesMailer extends Mailer implements SesMailerInterface
      * Send swift message
      *
      * @param $message
-     * @return int|void|null
+     * @return void
+     *
      * @throws ChildNotFoundException
      * @throws CircularException
      * @throws CurlException
      * @throws NotLoadedException
      * @throws StrictException
      */
-    protected function sendSwiftMessage($message)
+    protected function sendSwiftMessage($message): void
     {
-        $sentEmail = $this->initMessage($message); //adds database record for the email
-        $newBody = $this->setupTracking($message->getBody(), $sentEmail); //parses email body and adds tracking functionality
-        $message->setBody($newBody); //sets the new parsed body as email body
-        
+        $headers = $message->getHeaders();
+
+        # staging-ses-complaint-us-west-2
+        $configurationSetName="ses-".App::environment()."-".config('services.ses.region');
+        $headers->addTextHeader('X-SES-CONFIGURATION-SET', $configurationSetName);
+
+        $sentEmail = $this->initMessage($message);
+        $newBody = $this->setupTracking($message->getBody(), $sentEmail);
+        $message->setBody($newBody);
+
         $this->sendEvent($sentEmail);
-        
+
         parent::sendSwiftMessage($message);
     }
 

@@ -37,7 +37,7 @@ trait TrackingTrait
      */
     public function setupTracking($emailBody, SentEmailContract $sentEmail)
     {
-        $batch = null;
+        $this->batch = null;
 
         $mailProcessor = new MailProcessor($sentEmail, $emailBody);
 

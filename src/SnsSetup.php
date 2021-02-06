@@ -65,7 +65,7 @@ class SnsSetup
         $console->line('');
 
         if ($this->exceptionCount === 0) {
-            $console->success('ALL COMPLETED!');
+            $console->info('ALL COMPLETED!');
         } else {
             $console->error('Some setup tasks failed! Please review them manually in AWS Console!');
         }
@@ -80,7 +80,7 @@ class SnsSetup
      */
     public static function create($console, string $domain = null): SnsSetup
     {
-        return new self( $console, $domain);
+        return new self($console, $domain);
     }
 
     /**
@@ -131,7 +131,7 @@ class SnsSetup
                 'EventDestinationName' => $eventDestinationName,
             ]);
         } catch (SesV2Exception $e) {
-            $this->outputException('EventDestination', $eventDestinationName, $e);
+            $this->outputException('EventDestination', $eventDestinationName, $e, true);
         }
 
         $this->sns->subscribe([
@@ -172,8 +172,9 @@ class SnsSetup
      * @param string $type
      * @param string $name
      * @param Exception $e
+     * @param bool $exit
      */
-    protected function outputException(string $type, string $name, Exception $e): void
+    protected function outputException(string $type, string $name, Exception $e, bool $exit = false): void
     {
         $this->exceptionCount++;
 
@@ -182,6 +183,8 @@ class SnsSetup
         } else {
 
             $this->console->error($e->getMessage());
+
+            if ($exit) exit(0);
         }
     }
 }

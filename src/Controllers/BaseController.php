@@ -70,7 +70,7 @@ class BaseController extends Controller
         $client = new Client;
         $client->get($result->SubscribeURL);
 
-        $this->logMessage("Subscribed to: " . $result->TopicArn);
+        $this->logMessage("Subscribed to (".$result->TopicArn.") using GET Request " . $result->SubscribeURL);
     }
 
     /**

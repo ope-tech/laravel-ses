@@ -85,7 +85,7 @@ class ComplaintController extends BaseController
                 ->firstOrFail();
 
         } catch (ModelNotFoundException $e) {
-            Log::error("Could not find sent email ($messageId). Email complaint failed to record!");
+            $this->logMessage('Message ID ('.$messageId.') not found in the SentEmail, this email is likely sent without Laravel SES. Skipping delivery processing...');
             return;
         }
 

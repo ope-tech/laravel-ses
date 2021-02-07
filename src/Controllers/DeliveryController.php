@@ -84,8 +84,6 @@ class DeliveryController extends BaseController
 
         $this->logMessage("Parsed delivery time is: " . $deliveryTime->toDateTimeString());
 
-        $sent = ModelResolver::get('SentEmail')::all();
-
         try {
             $sentEmail = ModelResolver::get('SentEmail')::whereMessageId($messageId)
                 ->whereDeliveryTracking(true)

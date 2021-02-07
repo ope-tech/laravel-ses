@@ -44,7 +44,11 @@ class BounceController extends BaseController
         }
 
         $message = json_decode($result->Message);
-        
+
+        if ($message === null) {
+            throw new Exception('Result message failed to decode! '. print_r($result,true));
+        }
+
         $this->persistBounce($message);
 
         $this->logMessage("Bounce processed for: " . $message->mail->destination[0]);

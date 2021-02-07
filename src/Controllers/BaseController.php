@@ -8,6 +8,7 @@ use Aws\Sns\MessageValidator;
 use GuzzleHttp\Client;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Psr\Http\Message\ServerRequestInterface;
 
 class BaseController extends Controller
@@ -81,7 +82,9 @@ class BaseController extends Controller
 
     protected function isSubscriptionConfirmation($result): bool
     {
-        return isset($result->Type) && $result->Type == 'SubscriptionConfirmation';
+        return isset($result->Type) &&
+            $result->Type == 'Notification' &&
+            Str::contains($result->message, "Successfully validated SNS topic");
     }
 
     /**

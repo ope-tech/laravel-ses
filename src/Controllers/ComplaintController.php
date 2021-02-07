@@ -48,8 +48,11 @@ class ComplaintController extends BaseController
             ]);
         }
 
-        // TODO: This can fail
         $message = json_decode($result->Message);
+
+        if ($message === null) {
+            throw new Exception('Result message failed to decode! '. print_r($result,true));
+        }
 
         $this->persistComplaint($message);
 

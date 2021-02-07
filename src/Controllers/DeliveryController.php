@@ -107,6 +107,7 @@ class DeliveryController extends BaseController
 
     protected function sendEvent(SentEmailContract $sentEmail)
     {
+        $this->logMessage('Creating delivery event');
         event(EventFactory::create('Delivery', 'SentEmail', $sentEmail->id));
     }
 }

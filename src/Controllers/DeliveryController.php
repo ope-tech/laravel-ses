@@ -84,15 +84,13 @@ class DeliveryController extends BaseController
 
         } catch (ModelNotFoundException $e) {
 
-            // If sent email is not found then email delivery
-            // was likely done without using Laravel-SES
-            // We simply ignore these and do nothing with them.
-
+            $this->logMessage('Message ID not found in the SentEmail, this email is likely sent without Laravel SES. Skipping delivery processing...');
             return;
         }
 
         try {
             $sentEmail->setDeliveredAt($deliveryTime);
+            $sentEmail->save();
 
         } catch (QueryException $e) {
             Log::error("Failed updating delivered timestamp, got error: " . $e->getMessage());

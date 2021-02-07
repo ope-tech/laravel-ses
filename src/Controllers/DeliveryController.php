@@ -33,6 +33,10 @@ class DeliveryController extends BaseController
 
         $result = json_decode($content);
 
+        if ($result === null) {
+            throw new Exception("Delivery event failed to parse!");
+        }
+
         if ($this->isTopicConfirmation($result)) {
             return response()->json(['success' => true]);
         }
@@ -80,14 +84,15 @@ class DeliveryController extends BaseController
 
         $this->logMessage("Parsed delivery time is: " . $deliveryTime->toDateTimeString());
 
+        $sent = ModelResolver::get('SentEmail')::all();
+
         try {
             $sentEmail = ModelResolver::get('SentEmail')::whereMessageId($messageId)
                 ->whereDeliveryTracking(true)
                 ->firstOrFail();
 
         } catch (ModelNotFoundException $e) {
-
-            $this->logMessage('Message ID not found in the SentEmail, this email is likely sent without Laravel SES. Skipping delivery processing...');
+            $this->logMessage('Message ID ('.$messageId.') not found in the SentEmail, this email is likely sent without Laravel SES. Skipping delivery processing...');
             return;
         }
 
@@ -95,6 +100,7 @@ class DeliveryController extends BaseController
             $sentEmail->setDeliveredAt($deliveryTime);
 
         } catch (QueryException $e) {
+
             Log::error("Failed updating delivered timestamp, got error: " . $e->getMessage());
         }
 

@@ -2,6 +2,7 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
+use Exception;
 use Illuminate\Support\Facades\Event;
 use Juhasev\LaravelSes\Factories\Events\SesDeliveryEvent;
 use Juhasev\LaravelSes\ModelResolver;
@@ -12,12 +13,16 @@ class DeliveryTrackingTest extends FeatureTestCase
     public function testDeliveryTracking()
     {
         ModelResolver::get('SentEmail')::create([
-            'message_id' => 'a4947f1f3fdb397b3a7bf2d3b7d2f53e@swift.generated',
+            'message_id' => '010101777df559d4-5080db0f-5e72-43aa-af23-3cdeca00807c-000000',
             'email' => 'eriksen23@gmail.com',
             'delivery_tracking' => true
         ]);
 
         $fakeJson = json_decode($this->exampleSesResponse);
+
+        if ($fakeJson === null) {
+            throw new Exception("Fake json failed to parse");
+        }
 
         Event::fake();
 
@@ -70,15 +75,15 @@ class DeliveryTrackingTest extends FeatureTestCase
     }
 
     private $exampleTopicResponse = '{
-      "Type": "Notification",
-      "MessageId": "6abf341d-f4e7-5d58-a5f6-6c84bc4e39f2",
-      "TopicArn": "arn:aws:sns:us-west-2:635608510762:staging-ses-delivery-us-west-2",
-      "Message": "Successfully validated SNS topic for Amazon SES event publishing.",
-      "Timestamp": "2021-02-07T01:46:17.368Z",
-      "SignatureVersion": "1",
-      "Signature": "KoisQ3njC6m+gkr6GlSoX8NA+XLEVUZ2tgBPfQ4VP2uIZSL1YCpnUUfoH1IYflo+PniNbVummhiEWNAYvNYF31vihbwiMqXwXWZ3xS23YxflknPDYNF8hBYZkBG66S1arRvNtw6F+JsxgQd6nZrs4RMADALRaD8vu79C5ZsEnFATUIOrdWOML7XKd3/kXnHKbxZvwpjhCTYu7x0Srb378OMMl9ax5/I0465zs2XSL/LaP5NB3aQp9DSGOJTDUlEh0C8wXZceJr3c9PlYQStbMkqDdzeqBy4Gbrtnx/28CSKgh9Hx1UuAAeZvVmjmYmFco1nobu8+m2H/cpx6mllQNQ==",
-      "SigningCertURL": "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-010a507c1833636cd94bdb98bd93083a.pem",
-      "UnsubscribeURL": "https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:635608510762:staging-ses-delivery-us-west-2:43df3888-7e5e-4e35-83b7-3247d9947525"
+          "Type": "Notification",
+          "MessageId": "6abf341d-f4e7-5d58-a5f6-6c84bc4e39f2",
+          "TopicArn": "arn:aws:sns:us-west-2:635608510762:staging-ses-delivery-us-west-2",
+          "Message": "Successfully validated SNS topic for Amazon SES event publishing.",
+          "Timestamp": "2021-02-07T01:46:17.368Z",
+          "SignatureVersion": "1",
+          "Signature": "KoisQ3njC6m+gkr6GlSoX8NA+XLEVUZ2tgBPfQ4VP2uIZSL1YCpnUUfoH1IYflo+PniNbVummhiEWNAYvNYF31vihbwiMqXwXWZ3xS23YxflknPDYNF8hBYZkBG66S1arRvNtw6F+JsxgQd6nZrs4RMADALRaD8vu79C5ZsEnFATUIOrdWOML7XKd3/kXnHKbxZvwpjhCTYu7x0Srb378OMMl9ax5/I0465zs2XSL/LaP5NB3aQp9DSGOJTDUlEh0C8wXZceJr3c9PlYQStbMkqDdzeqBy4Gbrtnx/28CSKgh9Hx1UuAAeZvVmjmYmFco1nobu8+m2H/cpx6mllQNQ==",
+          "SigningCertURL": "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-010a507c1833636cd94bdb98bd93083a.pem",
+          "UnsubscribeURL": "https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:635608510762:staging-ses-delivery-us-west-2:43df3888-7e5e-4e35-83b7-3247d9947525"
     }';
 
     private $exampleSubscriptionResponse = '{
@@ -96,8 +101,11 @@ class DeliveryTrackingTest extends FeatureTestCase
 
     private $exampleSesResponse = '{
         "Type": "Notification",
-        "MessageId": "950a823d-501f-5137-a9a3-d0246f6094b6",
-        "TopicArn": "arn:aws:sns:eu-west-1:111111111111:laravel-ses-Bounce",
-        "Message": "{\"notificationType\":\"Delivery\",\"mail\":{\"timestamp\":\"2017-08-25T07:58:39.096Z\",\"source\":\"test@laravel-ses.com\",\"sourceArn\":\"arn:aws:ses:eu-west-1:11153938800833:identity/laravel-ses.com\",\"sourceIp\":\"127.0.0.1\",\"sendingAccountId\":\"111100833\",\"messageId\":\"1112015e18666bf8-8277947d-f88b-47ef-8e1b-1c97d4d4e51a-000000\",\"destination\":[\"success@simulator.amazonses.com\"],\"headersTruncated\":false,\"headers\":[{\"name\":\"Message-ID\",\"value\":\"<a4947f1f3fdb397b3a7bf2d3b7d2f53e@swift.generated>\"},{\"name\":\"Date\",\"value\":\"Fri, 25 Aug 2017 07:58:38 +0000\"},{\"name\":\"Subject\",\"value\":\"test\"},{\"name\":\"From\",\"value\":\"test@laravel-ses.com\"},{\"name\":\"Reply-To\",\"value\":\"test@laravel-ses.com\"},{\"name\":\"To\",\"value\":\"success@simulator.amazonses.com\"},{\"name\":\"MIME-Version\",\"value\":\"1.0\"},{\"name\":\"Content-Type\",\"value\":\"text/html; charset=utf-8\"},{\"name\":\"Content-Transfer-Encoding\",\"value\":\"quoted-printable\"}],\"commonHeaders\":{\"from\":[\"test@laravel-ses.com\"],\"replyTo\":[\"test@laravel-ses.com\"],\"date\":\"Fri, 25 Aug 2017 07:58:38 +0000\",\"to\":[\"success@simulator.amazonses.com\"],\"messageId\":\"<a4947f1f3fdb397b3a7bf2d3b7d2f53e@swift.generated>\",\"subject\":\"test\"}},\"delivery\":{\"timestamp\":\"2017-08-25T07:58:40.192Z\",\"processingTimeMillis\":1096,\"recipients\":[\"success@simulator.amazonses.com\"],\"smtpResponse\":\"250 2.6.0 Message received\",\"remoteMtaIp\":\"205.251.222.49\",\"reportingMTA\":\"b8-29.smtp-out.eu-west-1.amazonses.com\"}}"
+        "MessageId": "bbe17393-1d62-51ee-baaf-2b095c738701",
+        "TopicArn": "arn:aws:sns:us-west-2:635608510762:staging-ses-delivery-us-west-2",
+        "Subject": "Amazon SES Email Event Notification",
+        "Message": "{\"eventType\":\"Delivery\",\"mail\":{\"timestamp\":\"2021-02-07T19:26:07.316Z\",\"source\":\"invite@staging.sampleninja.io\",\"sourceArn\":\"arn:aws:ses:us-west-2:635608510762:identity/sampleninja.io\",\"sendingAccountId\":\"635608510762\",\"messageId\":\"010101777df559d4-5080db0f-5e72-43aa-af23-3cdeca00807c-000000\",\"destination\":[\"eriksen23@gmail.com\"],\"headersTruncated\":false,\"headers\":[{\"name\":\"Received\",\"value\":\"from [127.0.0.1] (ec2-34-222-112-151.us-west-2.compute.amazonaws.com [34.222.112.151]) by email-smtp.amazonaws.com with SMTP (SimpleEmailService-d-86T2QZXB8) id 65fhQokClkTT7psVXZJo for eriksen23@gmail.com; Sun, 07 Feb 2021 19:26:07 +0000 (UTC)\"},{\"name\":\"Message-ID\",\"value\":\"<f15a35e162a7324363785b71f5813cf7@swift.generated>\"},{\"name\":\"Date\",\"value\":\"Sun, 07 Feb 2021 19:26:07 +0000\"},{\"name\":\"Subject\",\"value\":\"We want your feedback!\"},{\"name\":\"From\",\"value\":\"The Sample Ninja Team <invite@staging.sampleninja.io>\"},{\"name\":\"To\",\"value\":\"eriksen23@gmail.com\"},{\"name\":\"MIME-Version\",\"value\":\"1.0\"},{\"name\":\"X-SES-CONFIGURATION-SET\",\"value\":\"staging-ses-us-west-2\"}],\"commonHeaders\":{\"from\":[\"The Sample Ninja Team <invite@staging.sampleninja.io>\"],\"date\":\"Sun, 07 Feb 2021 19:26:07 +0000\",\"to\":[\"eriksen23@gmail.com\"],\"messageId\":\"010101777df559d4-5080db0f-5e72-43aa-af23-3cdeca00807c-000000\",\"subject\":\"We want your feedback!\"},\"tags\":{\"ses:operation\":[\"SendSmtpEmail\"],\"ses:configuration-set\":[\"staging-ses-us-west-2\"],\"ses:source-ip\":[\"34.222.112.151\"],\"ses:from-domain\":[\"staging.sampleninja.io\"],\"ses:caller-identity\":[\"ses-smtp-user.20190503-125922\"],\"ses:outgoing-ip\":[\"54.240.27.42\"]}},\"delivery\":{\"timestamp\":\"2021-02-07T19:26:09.114Z\",\"processingTimeMillis\":1798,\"recipients\":[\"eriksen23@gmail.com\"],\"smtpResponse\":\"250 2.0.0 OK 1612725969 y7si5679644pgb.218 - gsmtp\",\"reportingMTA\":\"a27-42.smtp-out.us-west-2.amazonses.com\"}}\n",
+        "Timestamp": "2021-02-07T19:26:09.194Z",
+        "SignatureVersion": "1"
     }';
 }

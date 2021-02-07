@@ -82,9 +82,20 @@ class BaseController extends Controller
 
     protected function isSubscriptionConfirmation($result): bool
     {
+        return isset($result->Type) && $result->Type == 'SubscriptionConfirmation';
+    }
+
+    /**
+     * Is topic confirmation
+     *
+     * @param $result
+     * @return bool
+     */
+    protected function isTopicConfirmation($result): bool
+    {
         return isset($result->Type) &&
             $result->Type == 'Notification' &&
-            Str::contains($result->message, "Successfully validated SNS topic");
+            Str::contains($result->Message, "Successfully validated SNS topic");
     }
 
     /**

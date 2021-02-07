@@ -33,6 +33,10 @@ class DeliveryController extends BaseController
 
         $result = json_decode($content);
 
+        if ($this->isTopicConfirmation($result)) {
+            return response()->json(['success' => true]);
+        }
+
         if ($this->isSubscriptionConfirmation($result)) {
 
             $this->confirmSubscription($result);

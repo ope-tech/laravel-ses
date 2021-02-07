@@ -67,6 +67,17 @@ class ComplaintTrackingTest extends FeatureTestCase
         )->assertJson(['success' => true]);
     }
 
+    public function testTopicConfirmation()
+    {
+        $fakeJson = json_decode($this->exampleTopicResponse);
+
+        $this->json(
+            'POST',
+            '/ses/notification/complaint',
+            (array)$fakeJson
+        )->assertJson(['success' => true]);
+    }
+
     public function testThatComplaintIsNotRecordedIfComplaintTrackingIsNotSet()
     {
         ModelResolver::get('SentEmail')::create([
@@ -84,6 +95,18 @@ class ComplaintTrackingTest extends FeatureTestCase
 
         $this->assertNull(ModelResolver::get('EmailComplaint')::first());
     }
+
+    private $exampleTopicResponse = '{
+      "Type": "Notification",
+      "MessageId": "6abf341d-f4e7-5d58-a5f6-6c84bc4e39f2",
+      "TopicArn": "arn:aws:sns:us-west-2:635608510762:staging-ses-complaint-us-west-2",
+      "Message": "Successfully validated SNS topic for Amazon SES event publishing.",
+      "Timestamp": "2021-02-07T01:46:17.368Z",
+      "SignatureVersion": "1",
+      "Signature": "KoisQ3njC6m+gkr6GlSoX8NA+XLEVUZ2tgBPfQ4VP2uIZSL1YCpnUUfoH1IYflo+PniNbVummhiEWNAYvNYF31vihbwiMqXwXWZ3xS23YxflknPDYNF8hBYZkBG66S1arRvNtw6F+JsxgQd6nZrs4RMADALRaD8vu79C5ZsEnFATUIOrdWOML7XKd3/kXnHKbxZvwpjhCTYu7x0Srb378OMMl9ax5/I0465zs2XSL/LaP5NB3aQp9DSGOJTDUlEh0C8wXZceJr3c9PlYQStbMkqDdzeqBy4Gbrtnx/28CSKgh9Hx1UuAAeZvVmjmYmFco1nobu8+m2H/cpx6mllQNQ==",
+      "SigningCertURL": "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-010a507c1833636cd94bdb98bd93083a.pem",
+      "UnsubscribeURL": "https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:635608510762:staging-ses-complaint-us-west-2:43df3888-7e5e-4e35-83b7-3247d9947525"
+    }';
 
     private $exampleSubscriptionResponse = '{
           "Type" : "SubscriptionConfirmation",

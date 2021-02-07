@@ -48,6 +48,17 @@ class BounceTrackingTest extends FeatureTestCase
         )->assertJson(['success' => true]);
     }
 
+    public function testTopicConfirmation()
+    {
+        $fakeJson = json_decode($this->exampleTopicResponse);
+
+        $this->json(
+            'POST',
+            '/ses/notification/bounce',
+            (array)$fakeJson
+        )->assertJson(['success' => true]);
+    }
+
     public function testABounceIsNotStoredWhenThereIsNoEquivilantMessageId()
     {
         ModelResolver::get('SentEmail')::create([
@@ -84,6 +95,17 @@ class BounceTrackingTest extends FeatureTestCase
         $this->assertNull(ModelResolver::get('EmailBounce')::first());
     }
 
+    private $exampleTopicResponse = '{
+      "Type": "Notification",
+      "MessageId": "6abf341d-f4e7-5d58-a5f6-6c84bc4e39f2",
+      "TopicArn": "arn:aws:sns:us-west-2:635608510762:staging-ses-bounce-us-west-2",
+      "Message": "Successfully validated SNS topic for Amazon SES event publishing.",
+      "Timestamp": "2021-02-07T01:46:17.368Z",
+      "SignatureVersion": "1",
+      "Signature": "KoisQ3njC6m+gkr6GlSoX8NA+XLEVUZ2tgBPfQ4VP2uIZSL1YCpnUUfoH1IYflo+PniNbVummhiEWNAYvNYF31vihbwiMqXwXWZ3xS23YxflknPDYNF8hBYZkBG66S1arRvNtw6F+JsxgQd6nZrs4RMADALRaD8vu79C5ZsEnFATUIOrdWOML7XKd3/kXnHKbxZvwpjhCTYu7x0Srb378OMMl9ax5/I0465zs2XSL/LaP5NB3aQp9DSGOJTDUlEh0C8wXZceJr3c9PlYQStbMkqDdzeqBy4Gbrtnx/28CSKgh9Hx1UuAAeZvVmjmYmFco1nobu8+m2H/cpx6mllQNQ==",
+      "SigningCertURL": "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-010a507c1833636cd94bdb98bd93083a.pem",
+      "UnsubscribeURL": "https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:635608510762:staging-ses-bounce-us-west-2:43df3888-7e5e-4e35-83b7-3247d9947525"
+    }';
 
     private $exampleSubscriptionResponse = '{
           "Type" : "SubscriptionConfirmation",
@@ -97,7 +119,6 @@ class BounceTrackingTest extends FeatureTestCase
           "Signature" : "EXAMPLEpH+DcEwjAPg8O9mY8dReBSwksfg2S7WKQcikcNKWLQjwu6A4VbeS0QHVCkhRS7fUQvi2egU3N858fiTDN6bkkOxYDVrY0Ad8L10Hs3zH81mtnPk5uvvolIC1CXGu43obcgFxeL3khZl8IKvO61GWB6jI9b5+gLPoBc1Q=",
           "SigningCertURL" : "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-f3ecfb7224c7233fe7bb5f59f96de52f.pem"
     }';
-
 
     private $exampleSesResponse = '{"Type" : "Notification",
       "MessageId" : "950a823d-501f-5137-a9a3-d0246f6094b6",

@@ -38,6 +38,10 @@ class ComplaintController extends BaseController
             return response()->json(['success' => true]);
         }
 
+        if ($this->isTopicConfirmation($result)) {
+            return response()->json(['success' => true]);
+        }
+
         if ($this->isSubscriptionConfirmation($result)) {
 
             $this->confirmSubscription($result);

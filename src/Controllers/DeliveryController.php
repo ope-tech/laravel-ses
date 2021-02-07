@@ -74,8 +74,11 @@ class DeliveryController extends BaseController
     {
         $messageId = $this->parseMessageId($message);
 
-        $deliveryTime = Carbon::parse($message->delivery
-            ->timestamp);
+        $this->logMessage("Persisting delivery");
+
+        $deliveryTime = Carbon::parse($message->delivery->timestamp);
+
+        $this->logMessage("Parsed delivery time is: " . $deliveryTime->toDateTimeString());
 
         try {
             $sentEmail = ModelResolver::get('SentEmail')::whereMessageId($messageId)
@@ -90,7 +93,6 @@ class DeliveryController extends BaseController
 
         try {
             $sentEmail->setDeliveredAt($deliveryTime);
-            $sentEmail->save();
 
         } catch (QueryException $e) {
             Log::error("Failed updating delivered timestamp, got error: " . $e->getMessage());

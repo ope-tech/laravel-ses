@@ -47,13 +47,9 @@ class BaseController extends Controller
 
     protected function parseMessageId($message): string
     {
-        $messageId = $message
-            ->mail
-            ->commonHeaders
-            ->messageId;
+        $messageId = collect($message->mail->headers)->where('name', 'Message-ID')->pluck('value')->first();
 
-        $messageId = str_replace('<', '', $messageId);
-        $messageId = str_replace('>', '', $messageId);
+        $messageId = str_replace(['<','>'], '', $messageId);
 
         return $messageId;
     }

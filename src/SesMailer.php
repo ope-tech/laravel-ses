@@ -71,7 +71,7 @@ class SesMailer extends Mailer implements SesMailerInterface
         $headers = $message->getHeaders();
 
         # staging-ses-complaint-us-west-2
-        $configurationSetName="ses-".App::environment()."-".config('services.ses.region');
+        $configurationSetName=App::environment() ."-ses-".config('services.ses.region');
         $headers->addTextHeader('X-SES-CONFIGURATION-SET', $configurationSetName);
 
         $sentEmail = $this->initMessage($message);

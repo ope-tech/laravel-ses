@@ -2,7 +2,6 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
-use Exception;
 use Illuminate\Support\Facades\Event;
 use Juhasev\LaravelSes\Factories\Events\SesDeliveryEvent;
 use Juhasev\LaravelSes\ModelResolver;
@@ -12,24 +11,18 @@ class DeliveryTrackingTest extends FeatureTestCase
 {
     public function testDeliveryTracking()
     {
-        ModelResolver::get('SentEmail')::create([
+        $model = ModelResolver::get('SentEmail')::create([
             'message_id' => '010101777df559d4-5080db0f-5e72-43aa-af23-3cdeca00807c-000000',
             'email' => 'eriksen23@gmail.com',
             'delivery_tracking' => true
         ]);
-
-        $fakeJson = json_decode($this->exampleSesResponse);
-
-        if ($fakeJson === null) {
-            throw new Exception("Fake json failed to parse");
-        }
 
         Event::fake();
 
         $this->json(
             'POST',
             '/ses/notification/delivery',
-            (array)$fakeJson
+            $this->generateDeliveryPayload($model->message_id, $model->email)
         );
 
         Event::assertDispatched(SesDeliveryEvent::class);
@@ -39,36 +32,33 @@ class DeliveryTrackingTest extends FeatureTestCase
 
     public function testConfirmSubscription()
     {
-        $fakeJson = json_decode($this->exampleSubscriptionResponse);
-        $response = $this->json(
+        $this->json(
             'POST',
             '/ses/notification/delivery',
-            (array)$fakeJson
+            json_decode($this->exampleSubscriptionResponse, true)
         )->assertJson(['success' => true]);
     }
 
     public function testTopicResponse()
     {
-        $fakeJson = json_decode($this->exampleTopicResponse);
-        $response = $this->json(
+        $this->json(
             'POST',
             '/ses/notification/delivery',
-            (array)$fakeJson
+            json_decode($this->exampleTopicResponse, true)
         )->assertJson(['success' => true]);
     }
 
     public function testDeliveryTimeIsNotSetIfTrackingNotEnabled()
     {
-        ModelResolver::get('SentEmail')::create([
+        $model = ModelResolver::get('SentEmail')::create([
             'message_id' => 'a4947f1f3fdb397b3a7bf2d3b7d2f53e@swift.generated',
             'email' => 'eriksen23@gmail.com'
         ]);
 
-        $fakeJson = json_decode($this->exampleSesResponse);
-        $res = $this->json(
+        $this->json(
             'POST',
             '/ses/notification/delivery',
-            (array)$fakeJson
+            $this->generateDeliveryPayload($model->message_id, $model->email)
         );
 
         $this->assertNull(ModelResolver::get('SentEmail')::first()->delivered_at);
@@ -97,15 +87,5 @@ class DeliveryTrackingTest extends FeatureTestCase
           "SignatureVersion" : "1",
           "Signature" : "EXAMPLEpH+DcEwjAPg8O9mY8dReBSwksfg2S7WKQcikcNKWLQjwu6A4VbeS0QHVCkhRS7fUQvi2egU3N858fiTDN6bkkOxYDVrY0Ad8L10Hs3zH81mtnPk5uvvolIC1CXGu43obcgFxeL3khZl8IKvO61GWB6jI9b5+gLPoBc1Q=",
           "SigningCertURL" : "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-f3ecfb7224c7233fe7bb5f59f96de52f.pem"
-    }';
-
-    private $exampleSesResponse = '{
-        "Type": "Notification",
-        "MessageId": "bbe17393-1d62-51ee-baaf-2b095c738701",
-        "TopicArn": "arn:aws:sns:us-west-2:635608510762:staging-ses-delivery-us-west-2",
-        "Subject": "Amazon SES Email Event Notification",
-        "Message": "{\"eventType\":\"Delivery\",\"mail\":{\"timestamp\":\"2021-02-07T19:26:07.316Z\",\"source\":\"invite@staging.sampleninja.io\",\"sourceArn\":\"arn:aws:ses:us-west-2:635608510762:identity/sampleninja.io\",\"sendingAccountId\":\"635608510762\",\"messageId\":\"010101777df559d4-5080db0f-5e72-43aa-af23-3cdeca00807c-000000\",\"destination\":[\"eriksen23@gmail.com\"],\"headersTruncated\":false,\"headers\":[{\"name\":\"Received\",\"value\":\"from [127.0.0.1] (ec2-34-222-112-151.us-west-2.compute.amazonaws.com [34.222.112.151]) by email-smtp.amazonaws.com with SMTP (SimpleEmailService-d-86T2QZXB8) id 65fhQokClkTT7psVXZJo for eriksen23@gmail.com; Sun, 07 Feb 2021 19:26:07 +0000 (UTC)\"},{\"name\":\"Message-ID\",\"value\":\"<f15a35e162a7324363785b71f5813cf7@swift.generated>\"},{\"name\":\"Date\",\"value\":\"Sun, 07 Feb 2021 19:26:07 +0000\"},{\"name\":\"Subject\",\"value\":\"We want your feedback!\"},{\"name\":\"From\",\"value\":\"The Sample Ninja Team <invite@staging.sampleninja.io>\"},{\"name\":\"To\",\"value\":\"eriksen23@gmail.com\"},{\"name\":\"MIME-Version\",\"value\":\"1.0\"},{\"name\":\"X-SES-CONFIGURATION-SET\",\"value\":\"staging-ses-us-west-2\"}],\"commonHeaders\":{\"from\":[\"The Sample Ninja Team <invite@staging.sampleninja.io>\"],\"date\":\"Sun, 07 Feb 2021 19:26:07 +0000\",\"to\":[\"eriksen23@gmail.com\"],\"messageId\":\"010101777df559d4-5080db0f-5e72-43aa-af23-3cdeca00807c-000000\",\"subject\":\"We want your feedback!\"},\"tags\":{\"ses:operation\":[\"SendSmtpEmail\"],\"ses:configuration-set\":[\"staging-ses-us-west-2\"],\"ses:source-ip\":[\"34.222.112.151\"],\"ses:from-domain\":[\"staging.sampleninja.io\"],\"ses:caller-identity\":[\"ses-smtp-user.20190503-125922\"],\"ses:outgoing-ip\":[\"54.240.27.42\"]}},\"delivery\":{\"timestamp\":\"2021-02-07T19:26:09.114Z\",\"processingTimeMillis\":1798,\"recipients\":[\"eriksen23@gmail.com\"],\"smtpResponse\":\"250 2.0.0 OK 1612725969 y7si5679644pgb.218 - gsmtp\",\"reportingMTA\":\"a27-42.smtp-out.us-west-2.amazonses.com\"}}\n",
-        "Timestamp": "2021-02-07T19:26:09.194Z",
-        "SignatureVersion": "1"
     }';
 }

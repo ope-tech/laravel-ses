@@ -33,6 +33,11 @@ class BounceController extends BaseController
 
         $result = json_decode($content);
 
+        if ($result === null) {
+            Log::error('Failed to parse AWS SES Bounce request '. json_last_error_msg());
+            return response()->json(['success' => false], 422);
+        }
+
         if ($this->isTopicConfirmation($result)) {
             return response()->json(['success' => true]);
         }
@@ -50,7 +55,7 @@ class BounceController extends BaseController
         $message = json_decode($result->Message);
 
         if ($message === null) {
-            throw new Exception('Result message failed to decode! '. print_r($result,true));
+            throw new Exception("Result message failed to decode: ".json_last_error_msg()."! ". print_r($result,true));
         }
 
         $this->persistBounce($message);

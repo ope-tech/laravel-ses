@@ -1,4 +1,5 @@
 <?php
+
 namespace Juhasev\LaravelSes\Tests;
 
 use Illuminate\Foundation\Application;
@@ -30,7 +31,8 @@ class FeatureTestCase extends OrchestraTestCase
 
     /**
      * Load package alias
-     * @param  Application $app
+     *
+     * @param Application $app
      * @return array
      */
     protected function getPackageAliases($app)
@@ -40,52 +42,262 @@ class FeatureTestCase extends OrchestraTestCase
         ];
     }
 
+    /**
+     * Get environment setup
+     *
+     * @param Application $app
+     */
     protected function getEnvironmentSetUp($app)
     {
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
 
         $app['config']->set('app.url', 'https://laravel-ses.com');
         $app['config']->set('app.debug', true);
     }
 
-
-    public function generateBounceJson($messageId, $email = 'bounce@simulator.amazonses.com')
+    /**
+     * Generate bounce json
+     *
+     * @param $messageId
+     * @param string $email
+     * @return array
+     */
+    public function generateBouncePayload($messageId, $email = 'bounce@simulator.amazonses.com')
     {
-        return '{
-          "Type" : "Notification",
-          "MessageId" : "950a823d-501f-5137-a9a3-d0246f6094b6",
-          "TopicArn" : "arn:aws:sns:eu-west-1:111158800833:laravel-ses-Bounce",
-          "Message" : "{\"notificationType\":\"Bounce\",\"bounce\":{\"bounceType\":\"Permanent\",\"bounceSubType\":\"General\",\"bouncedRecipients\":[{\"emailAddress\":\"'.$email.'\",\"action\":\"failed\",\"status\":\"5.1.1\",\"diagnosticCode\":\"smtp; 550 5.1.1 user unknown\"}],\"timestamp\":\"2017-08-24T20:55:27.843Z\",\"feedbackId\":\"0102015e16074124-76fb1d19-754a-4623-b37b-509eb649e884-000000\",\"remoteMtaIp\":\"207.171.163.188\",\"reportingMTA\":\"dsn; a7-12.smtp-out.eu-west-1.amazonses.com\"},\"mail\":{\"timestamp\":\"2017-08-24T20:55:27.000Z\",\"source\":\"test@laravel-ses.com\",\"sourceArn\":\"arn:aws:ses:eu-west-1:111158800833:identity/laravel-ses.com\",\"sourceIp\":\"127.0.0\",\"sendingAccountId\":\"111111111111\",\"messageId\":\"0102015e16073ec2-e6c0fd6b-17fb-4f8d-a1ce-82c68fe2a943-000000\",\"destination\":[\"'.$email.'\"],\"headersTruncated\":false,\"headers\":[{\"name\":\"Message-ID\",\"value\":\"<530389a196a58d2057754a9d8eeda262@swift.generated>\"},{\"name\":\"Date\",\"value\":\"Thu, 24 Aug 2017 20:55:27 +0000\"},{\"name\":\"Subject\",\"value\":\"test\"},{\"name\":\"From\",\"value\":\"test@laravel-ses.com\"},{\"name\":\"Reply-To\",\"value\":\"test@laravel-ses.com\"},{\"name\":\"To\",\"value\":\"'.$email.'\"},{\"name\":\"MIME-Version\",\"value\":\"1.0\"},{\"name\":\"Content-Type\",\"value\":\"text/html; charset=utf-8\"},{\"name\":\"Content-Transfer-Encoding\",\"value\":\"quoted-printable\"}],\"commonHeaders\":{\"from\":[\"test@laravel-ses.com\"],\"replyTo\":[\"test@laravel-ses.com\"],\"date\":\"Thu, 24 Aug 2017 20:55:27 +0000\",\"to\":[\"'.$email.'\"],\"messageId\":\"' . $messageId . '\",\"subject\":\"test\"}}}",
-          "Timestamp" : "2017-08-24T20:55:27.883Z",
-          "SignatureVersion" : "1",
-          "Signature" : "EXAMPLEoRtETzzKxQhgINqozOINqCWecbs827aR4rbYQpMameLSzB9KbUl+pc630htDNFp8TRMe6z55CEERbWehRw//cZ2zI2Gt/qlYL5NdW54UrTJvNl4Sh4ifWatGbhfkWHsgjf4SnNNdAV+rgr4sB45mUwZMUuXcXTu1dKA07qXYYj+VTt3M8tPC9fXd+WvmnoakHi6fg4aqdPXzY5QhCYBJmWp5Io0qkQWKgxF3HJG91coRqp7NQcEfPz2CGcvT0EiPgZxh6D0y7fZNNrg/ThdOVxeFixYi1Ix67hCerQ9H7d6XBQzbYEHTUeVMRozAkFziTuoyQ==",
-          "SigningCertURL" : "https://sns.eu-west-1.amazonaws.com/SimpleNotificationService-433026a4050d206028891664da859041.pem",
-          "UnsubscribeURL" : "https://sns.eu-west-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-west-1:111111111111:laravel-ses-Bounce:7546aed7-b188-46f6-913c-2f548c0cb251"}';
+        $message = [
+            "eventType" => "Bounce",
+            "bounce" => [
+                "feedbackId" => "010101777e55309f-fac8d01b-3c72-4d85-b7dc-7f5acc4dae4c-000000",
+                "bounceType" => "Permanent",
+                "bounceSubType" => "General",
+                "bouncedRecipients" => [
+                    [
+                        "emailAddress" => "$email",
+                        "action" => "failed",
+                        "status" => "5.1.1",
+                        "diagnosticCode" => "smtp; 550-5.1.1 The email account that you tried to reach does not exist."
+                    ]
+                ],
+                "timestamp" => "2021-02-07T21=>10=>48.305Z",
+                "reportingMTA" => "dsn; a27-52.smtp-out.us-west-2.amazonses.com"
+            ],
+            "mail" => [
+                "timestamp" => "2021-02-07T21:10:47.730Z",
+                "source" => "invite@juhapanel.sampleninja.io",
+                "sourceArn" => "arn:aws:ses:us-west-2:635608510762:identity/sampleninja.io",
+                "sendingAccountId" => "635608510762",
+                "messageId" => "010101777e552eb2-7597bca3-2730-452a-ae64-35983ed994ce-000000",
+                "destination" => [
+                    "$email"
+                ],
+                "headersTruncated" => false,
+                "headers" => [
+                    [
+                        "name" => "Received",
+                        "value" => "from localhost)"
+                    ],
+                    [
+                        "name" => "Message-ID",
+                        "value" => "<$messageId>"
+                    ],
+                    [
+                        "name" => "Date",
+                        "value" => "Sun, 07 Feb 2021 21=>10=>47 +0000"
+                    ],
+                    [
+                        "name" => "Subject",
+                        "value" => "We want your feedback!"
+                    ],
+                    [
+                        "name" => "From",
+                        "value" => "The Sample Ninja Team <invite@juhapanel.sampleninja.io>"
+                    ],
+                    [
+                        "name" => "To",
+                        "value" => "$email"
+                    ],
+                    [
+                        "name" => "MIME-Version",
+                        "value" => "1.0"
+                    ],
+                    [
+                        "name" => "X-SES-CONFIGURATION-SET",
+                        "value" => "staging-ses-us-west-2"
+                    ]
+                ]
+            ]
+        ];
+
+        return [
+            "Type" => "Notification",
+            "MessageId" => "3ba72fc2-84a4-5181-8bc3-7758dd3cfdb3",
+            "TopicArn" => "arn:aws:sns:us-west-2:635608510762:staging-ses-bounce-us-west-2",
+            "Subject" => "Amazon SES Email Event Notification",
+            "Message" => json_encode($message),
+            "Timestamp" => "2021-02-07T21:10:48.412Z",
+            "SignatureVersion" => "1",
+            "Signature" => "TOilTHyNNPPpsv5FQGcyt45YR/pVJYzBljw/CJbIYhLePWAC9ZSVH4EJCNpuDCoDUbco6+I5A7gzHOM7elLdMTB5TSpdp38MF63X3WpHHiBLON6astguDTmqJxj6OzxRpe31bOzxJBwC6eMNs5YxEw5GL/s97lp+7M47HVShOVQEmIkYqaLsMCLAoHkC22h9dFaxJHk/UVJv3fR4Q5MPpPlI03Ol4udpxA7Z3dolb9nwTtchbMAo0J9ZpAiFQzD0G9pMh+DYm40tqBJjyXwk1R9kFcfdL4LaBOudIf76KVsbPEf5B5QCnEMEwp03bhhwx9lYKEYiTZZOGWDkeBBY2A==",
+            "SigningCertURL" => "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-010a507c1833636cd94bdb98bd93083a.pem",
+            "UnsubscribeURL" => "https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:635608510762:staging-ses-bounce-us-west-2:caf51da3-ce68-4d64-b9f2-c9f51e17401d"
+        ];
     }
 
-    public function generateComplaintJson($messageId, $email = 'complaint@simulator.amazonses.com')
+    /**
+     * Generate complaint request
+     *
+     * @param $messageId
+     * @param string $email
+     * @return array
+     */
+    public function generateComplaintPayload($messageId, $email = 'complaint@simulator.amazonses.com')
     {
-        return '{
-            "Type": "Notification",
-            "MessageId": "950a823d-501f-5137-a9a3-d0246f6094b6",
-            "TopicArn": "arn:aws:sns:eu-west-1:111111111111:laravel-ses-Complaint",
-            "Message": "{\"notificationType\":\"Complaint\",\"complaint\":{\"complainedRecipients\":[{\"emailAddress\":\"'.$email.'\"}],\"timestamp\":\"2017-08-25T07:58:41.000Z\",\"feedbackId\":\"0102015e1866790f-365140b7-896b-11e7-90ec-fd10e954797f-000000\",\"userAgent\":\"Amazon SES Mailbox Simulator\",\"complaintFeedbackType\":\"abuse\"},\"mail\":{\"timestamp\":\"2017-08-25T07:58:39.000Z\",\"source\":\"test@laravel-ses.com\",\"sourceArn\":\"arn:aws:ses:eu-west-1:111111111111:identity/babecall.co.uk\",\"sourceIp\":\"127.0.0.1\",\"sendingAccountId\":\"111111111111\",\"messageId\":\"0102015e18666ec9-e00f3e03-f3fd-486f-9522-ebc919b8ea9c-000000\",\"destination\":[\"'.$email.'\"],\"headersTruncated\":false,\"headers\":[{\"name\":\"Message-ID\",\"value\":\"<049c6b53557871a2a1fb77e117f60971@swift.generated>\"},{\"name\":\"Date\",\"value\":\"Fri, 25 Aug 2017 07:58:39 +0000\"},{\"name\":\"Subject\",\"value\":\"test\"},{\"name\":\"From\",\"value\":\"test@laravel-ses.com\"},{\"name\":\"Reply-To\",\"value\":\"test@laravel-ses.com\"},{\"name\":\"To\",\"value\":\"'.$email.'\"},{\"name\":\"MIME-Version\",\"value\":\"1.0\"},{\"name\":\"Content-Type\",\"value\":\"text/html charset=utf-8\"},{\"name\":\"Content-Transfer-Encoding\",\"value\":\"quoted-printable\"}],\"commonHeaders\":{\"from\":[\"test@laravel-ses.com\"],\"replyTo\":[\"test@laravel-ses.com\"],\"date\":\"Fri, 25 Aug 2017 07:58:39 +0000\",\"to\":[\"'.$email.'\"],\"messageId\":\"'.$messageId.'\",\"subject\":\"test\"}}}"
-        }';
+        $message = [
+            "eventType" => "Complaint",
+            "complaint" => [
+                "feedbackId" => "010101777e55309f-fac8d01b-3c72-4d85-b7dc-7f5acc4dae4c-000000",
+                "complaintSubType" => null,
+                "complaintFeedbackType" => "abuse",
+                "complainedRecipients" => [
+                    [
+                        "emailAddress" => "$email"
+                    ]
+                ],
+                "timestamp" => "2021-02-07T21:10:48.305Z",
+                "reportingMTA" => "dsn; a27-52.smtp-out.us-west-2.amazonses.com"
+            ],
+            "mail" => [
+                "timestamp" => "2021-02-07T21:10:47.730Z",
+                "source" => "invite@juhapanel.sampleninja.io",
+                "sourceArn" => "arn:aws:ses:us-west-2:635608510762:identity/sampleninja.io",
+                "sendingAccountId" => "635608510762",
+                "messageId" => "010101777e552eb2-7597bca3-2730-452a-ae64-35983ed994ce-000000",
+                "destination" => [
+                    "$email"
+                ],
+                "headersTruncated" => false,
+                "headers" => [
+                    [
+                        "name" => "Received",
+                        "value" => "from localhost"
+                    ],
+                    [
+                        "name" => "Message-ID",
+                        "value" => "<$messageId>"
+                    ],
+                    [
+                        "name" => "Date",
+                        "value" => "Sun, 07 Feb 2021 21=>10=>47 +0000"
+                    ],
+                    [
+                        "name" => "Subject",
+                        "value" => "We want your feedback!"
+                    ],
+                    [
+                        "name" => "From",
+                        "value" => "The Sample Ninja Team <invite@juhapanel.sampleninja.io>"
+                    ],
+                    [
+                        "name" => "To",
+                        "value" => "$email"
+                    ],
+                    [
+                        "name" => "MIME-Version",
+                        "value" => "1.0"
+                    ],
+                    [
+                        "name" => "X-SES-CONFIGURATION-SET",
+                        "value" => "staging-ses-us-west-2"
+                    ]
+                ]
+            ]
+        ];
+
+        return [
+            "Type" => "Notification",
+            "MessageId" => "950a823d-501f-5137-a9a3-d0246f6094b6",
+            "TopicArn" => "arn:aws:ses:us-west-2:635608510762:identity/sampleninja.io",
+            "Message" => json_encode($message)
+        ];
     }
 
-    public function generateDeliveryJson($messageId, $email = 'success@simulator.amazonses.com')
+    /**
+     * Generate delivery payload
+     *
+     * @param $messageId
+     * @param string $email
+     * @return array
+     */
+    public function generateDeliveryPayload($messageId, $email = 'success@simulator.amazonses.com')
     {
-        return '{
-            "Type": "Notification",
-            "MessageId": "950a823d-501f-5137-a9a3-d0246f6094b6",
-            "TopicArn": "arn:aws:sns:eu-west-1:111111111111:laravel-ses-Delivery",
-            "Message": "{\"notificationType\":\"Delivery\",\"mail\":{\"timestamp\":\"2017-08-25T07:58:39.096Z\",\"source\":\"test@laravel-ses.com\",\"sourceArn\":\"arn:aws:ses:eu-west-1:11153938800833:identity/laravel-ses.com\",\"sourceIp\":\"127.0.0.1\",\"sendingAccountId\":\"111100833\",\"messageId\":\"1112015e18666bf8-8277947d-f88b-47ef-8e1b-1c97d4d4e51a-000000\",\"destination\":[\"'.$email.'\"],\"headersTruncated\":false,\"headers\":[{\"name\":\"Message-ID\",\"value\":\"<a4947f1f3fdb397b3a7bf2d3b7d2f53e@swift.generated>\"},{\"name\":\"Date\",\"value\":\"Fri, 25 Aug 2017 07:58:38 +0000\"},{\"name\":\"Subject\",\"value\":\"test\"},{\"name\":\"From\",\"value\":\"test@laravel-ses.com\"},{\"name\":\"Reply-To\",\"value\":\"test@laravel-ses.com\"},{\"name\":\"To\",\"value\":\"'.$email.'\"},{\"name\":\"MIME-Version\",\"value\":\"1.0\"},{\"name\":\"Content-Type\",\"value\":\"text/html; charset=utf-8\"},{\"name\":\"Content-Transfer-Encoding\",\"value\":\"quoted-printable\"}],\"commonHeaders\":{\"from\":[\"test@laravel-ses.com\"],\"replyTo\":[\"test@laravel-ses.com\"],\"date\":\"Fri, 25 Aug 2017 07:58:38 +0000\",\"to\":[\"'.$email.'\"],\"messageId\":\"'.$messageId.'\",\"subject\":\"test\"}},\"delivery\":{\"timestamp\":\"2017-08-25T07:58:40.192Z\",\"processingTimeMillis\":1096,\"recipients\":[\"'.$email.'\"],\"smtpResponse\":\"250 2.6.0 Message received\",\"remoteMtaIp\":\"205.251.222.49\",\"reportingMTA\":\"b8-29.smtp-out.eu-west-1.amazonses.com\"}}"
-        }';
+        $message = [
+            "eventType" => "Delivery",
+            "mail" => [
+                "timestamp" => "2021-02-07T21:26:32.000Z",
+                "source" => "invite@juhapanel.sampleninja.io",
+                "sourceArn" => "arn:aws:ses:us-west-2:635608510762:identity/sampleninja.io",
+                "sendingAccountId" => "635608510762",
+                "messageId" => "010101777e639740-9228413e-068a-4c01-9bb8-595b6e676700-000000",
+                "destination" => [
+                    "$email"
+                ],
+                "headersTruncated" => false,
+                "headers" => [
+                    [
+                        "name" => "Received",
+                        "value" => "from Localhost; Sun, 07 Feb 2021 21:26:31 +0000 (UTC)"
+                    ],
+                    [
+                        "name" => "Message-ID",
+                        "value" => "<$messageId>"
+                    ],
+                    [
+                        "name" => "Date",
+                        "value" => "Sun, 07 Feb 2021 21:26:31 +0000"
+                    ],
+                    [
+                        "name" => "Subject",
+                        "value" => "We want your feedback!"
+                    ],
+                    [
+                        "name" => "From",
+                        "value" => "The Sample Ninja Team <invite@juhapanel.sampleninja.io>"
+                    ],
+                    [
+                        "name" => "To",
+                        "value" => "$email"
+                    ],
+                    [
+                        "name" => "MIME-Version",
+                        "value" => "1.0"
+                    ],
+                    [
+                        "name" => "X-SES-CONFIGURATION-SET",
+                        "value" => "staging-ses-us-west-2"
+                    ]
+                ]
+            ],
+            "delivery" => [
+                "timestamp" => "2021-02-07T21:26:32.900Z",
+                "processingTimeMillis" => 900,
+                "recipients" => [
+                    "$email"
+                ],
+                "smtpResponse" => "250 2.0.0 OK 1612733192 j1si16962504pgl.398 - gsmtp",
+                "reportingMTA" => "a27-42.smtp-out.us-west-2.amazonses.com"
+            ]
+        ];
+
+        return [
+            "Type" => "Notification",
+            "MessageId" => "950a823d-501f-5137-a9a3-d0246f6094b6",
+            "TopicArn" => "arn:aws:sns:eu-west-1:111111111111:laravel-ses-Delivery",
+            "Message" => json_encode($message)
+        ];
     }
 }

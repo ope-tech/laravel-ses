@@ -48,28 +48,25 @@ class BatchEmailTest extends FeatureTestCase
         foreach ($emails as $email) {
             if ($email != 'bounce@ses.com') {
                 $sentEmailId = ModelResolver::get('SentEmail')::whereEmail($email)->first()->message_id;
-                $fakeJson = json_decode($this->generateDeliveryJson($sentEmailId));
+
                 $this->json(
                     'POST',
                     '/ses/notification/delivery',
-                    (array)$fakeJson
+                    $this->generateDeliveryPayload($sentEmailId)
                 );
             }
         }
 
         // Bounce an email
         $sentEmailId  = ModelResolver::get('SentEmail')::whereEmail('bounce@ses.com')->first()->message_id;
-        $fakeJson = json_decode($this->generateBounceJson($sentEmailId));
-        $this->json('POST', 'ses/notification/bounce', (array)$fakeJson);
+        $this->json('POST', 'ses/notification/bounce', $this->generateBouncePayload($sentEmailId));
 
         // Two complaints
         $sentEmailId  = ModelResolver::get('SentEmail')::whereEmail('complaint@yes.com')->first()->message_id;
-        $fakeJson = json_decode($this->generateComplaintJson($sentEmailId));
-        $this->json('POST', 'ses/notification/complaint', (array)$fakeJson);
+        $this->json('POST', 'ses/notification/complaint', $this->generateComplaintPayload($sentEmailId));
 
         $sentEmailId  = ModelResolver::get('SentEmail')::whereEmail('ay@yahoo.com')->first()->message_id;
-        $fakeJson = json_decode($this->generateComplaintJson($sentEmailId));
-        $this->json('POST', 'ses/notification/complaint', (array)$fakeJson);
+        $this->json('POST', 'ses/notification/complaint', $this->generateComplaintPayload($sentEmailId));
 
         //register 4 opens
         $openedEmails = [

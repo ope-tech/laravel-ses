@@ -34,7 +34,8 @@ class DeliveryController extends BaseController
         $result = json_decode($content);
 
         if ($result === null) {
-            throw new Exception("Delivery event failed to parse!");
+            Log::error('Failed to parse AWS SES Delivery request '. json_last_error_msg());
+            return response()->json(['success' => false], 422);
         }
 
         if ($this->isTopicConfirmation($result)) {
@@ -54,7 +55,7 @@ class DeliveryController extends BaseController
         $message = json_decode($result->Message);
 
         if ($message === null) {
-            throw new Exception('Result message failed to decode! '. print_r($result,true));
+            throw new Exception("Result message failed to decode: ".json_last_error_msg()."! ". print_r($result,true));
         }
 
         $this->persistDelivery($message);
@@ -78,11 +79,7 @@ class DeliveryController extends BaseController
     {
         $messageId = $this->parseMessageId($message);
 
-        $this->logMessage("Persisting delivery");
-
         $deliveryTime = Carbon::parse($message->delivery->timestamp);
-
-        $this->logMessage("Parsed delivery time is: " . $deliveryTime->toDateTimeString());
 
         try {
             $sentEmail = ModelResolver::get('SentEmail')::whereMessageId($messageId)
@@ -113,7 +110,6 @@ class DeliveryController extends BaseController
 
     protected function sendEvent(SentEmailContract $sentEmail)
     {
-        $this->logMessage('Creating delivery event');
         event(EventFactory::create('Delivery', 'SentEmail', $sentEmail->id));
     }
 }

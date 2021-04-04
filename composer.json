@@ -24,17 +24,12 @@
         }
     ],
     "require": {
-        "php": ">=7.2.0",
+        "php": ">=7.3.0",
         "ext-json": "*",
-        "illuminate/support": "7.*",
-        "illuminate/console": "7.*",
-        "illuminate/mail": "7.*",
-        "illuminate/database": "7.*",
-        "illuminate/container": "7.*",
-        "illuminate/routing": "7.*",
+        "laravel/framework": "~8.0",
         "aws/aws-sdk-php": "^3.28",
         "ramsey/uuid": "3.*|4.*",
-        "guzzlehttp/guzzle": "^6.0",
+        "guzzlehttp/guzzle": "^7.0.1",
         "paquettg/php-html-parser": "^2.2",
         "aws/aws-php-sns-message-validator": "^1.6",
         "symfony/psr-http-message-bridge": "^2.0",
@@ -45,7 +40,7 @@
         "orchestra/database": "^5.0",
         "orchestra/testbench": "^5.0",
         "sempro/phpunit-pretty-print": "^1.2",
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "^9.0",
         "ext-json": "*"
     },
     "autoload": {

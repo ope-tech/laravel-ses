@@ -346,17 +346,19 @@ class SesSentEventSubscriber
 
 You will need to register EventSubscriber in the Laravel App/Providers/EventServiveProvider.php in order to work.
 
-```
+```php
  protected $subscribe = [
     SesSentEventSubscriber::class
  ];
  ```  
 
 Example event data:
+
+```php
+$event->data
 ```
 
-// $event->data
-
+```
 (
     [id] => 22
     [sent_email_id] => 49

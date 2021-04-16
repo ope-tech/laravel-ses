@@ -209,13 +209,13 @@ SesMail::enableAllTracking()
 
 You can also get aggregate stats:
 
-```
+```php
 
 Stats::statsForEmail($email);
 
 Stats::statsForBatch('welcome_emails');
 
-// Example result
+/** Example result
 [
     "sent" => 8,
     "deliveries" => 7,
@@ -232,6 +232,8 @@ Stats::statsForBatch('welcome_emails');
         ]
     ]
 ]
+
+*/
 ```
 
 To get individual stats via Repositories
@@ -411,7 +413,7 @@ Setup Composer.json to resolve classes from your dev folder:
 ```
 
 Composer require
-```json5
+```json
 require: {
     "juhasev/laravel-ses": "dev-master"
 }

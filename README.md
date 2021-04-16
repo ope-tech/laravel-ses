@@ -9,6 +9,16 @@ package can be used with current versions of Laravel. The minimum requirement is
 All packages have been updated to modern versions. I have optimized the original database
 storage for space and proper indexing. This package is compatible with Laravel 7.x
 
+If you are using Laravel 8 use the dev-master branch.
+
+In your composer.json use
+
+```"juhasev/laravel-ses": "dev-master"```
+
+Then run
+
+```composer install```
+
 ## Installation
 Install via composer
 

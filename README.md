@@ -236,8 +236,6 @@ print_r($stats)
         ]
     ]
 ]
-
-*/
 ```
 
 To get individual stats via Repositories

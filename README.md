@@ -213,9 +213,13 @@ You can also get aggregate stats:
 
 Stats::statsForEmail($email);
 
-Stats::statsForBatch('welcome_emails');
+$stats = Stats::statsForBatch('welcome_emails');
 
-/** Example result
+print_r($stats)
+
+```
+
+```
 [
     "sent" => 8,
     "deliveries" => 7,
@@ -355,7 +359,7 @@ You will need to register EventSubscriber in the Laravel App/Providers/EventServ
 Example event data:
 
 ```php
-$event->data
+print_r($event->data);
 ```
 
 ```

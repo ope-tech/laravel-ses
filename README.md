@@ -338,7 +338,13 @@ class SesSentEventSubscriber
 }
 ```
 
-You will need to register EventSubscriber in the Laravel EventServerProvider in order to work.
+You will need to register EventSubscriber in the Laravel App/Providers/EventServiveProvider.php in order to work.
+
+```
+ protected $subscribe = [
+    SesSentEventSubscriber::class
+ ];
+ ```  
 
 Example event data:
 ```

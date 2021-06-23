@@ -1,7 +1,7 @@
 ![alt text](laravel-ses.png "Laravel SES")
 
-# Laravel AWS Simple Email Service
-A Laravel package that allows you to get sending statistics for emails you send through AWS SES (Simple Email Service), 
+# Laravel AWS SES (Simple Email Service)
+Laravel package that allows you to get sending statistics for emails you send through AWS SES (Simple Email Service), 
 including deliveries, opens, bounces, complaints and link tracking. This package was originally written by Oliveready7.
 Unfortunately the original author had stopped maintaining this package so I decided to create this fork so that this 
 package can be used with current versions of Laravel. The minimum requirement is PHP 7.2.

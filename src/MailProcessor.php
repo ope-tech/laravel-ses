@@ -2,7 +2,6 @@
 
 namespace Juhasev\LaravelSes;
 
-use Illuminate\Support\Facades\Log;
 use Juhasev\LaravelSes\Contracts\SentEmailContract;
 use PHPHtmlParser\Dom;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;

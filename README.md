@@ -201,6 +201,9 @@ try {
         
 } catch (LaravelSesException $e) {
     
+    $smtpCode = $e->getCode();
+    $smtpErrorMessage = $e->getMessage();
+    
     // Do something like back of if rate limit is reached.
 )
 

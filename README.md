@@ -1,7 +1,7 @@
 ![alt text](laravel-ses.png "Laravel SES")
 
-# Laravel AWS Simple Email Service
-A Laravel package that allows you to get sending statistics for emails you send through AWS SES (Simple Email Service), 
+# Laravel AWS SES (Simple Email Service)
+Laravel package that allows you to get sending statistics for emails you send through AWS SES (Simple Email Service), 
 including deliveries, opens, bounces, complaints and link tracking. This package was originally written by Oliveready7.
 Unfortunately the original author had stopped maintaining this package so I decided to create this fork so that this 
 package can be used with current versions of Laravel. The minimum requirement is PHP 7.2.
@@ -9,10 +9,24 @@ package can be used with current versions of Laravel. The minimum requirement is
 All packages have been updated to modern versions. I have optimized the original database
 storage for space and proper indexing. This package is compatible with Laravel 7.x
 
+If you are using Laravel 8 use the dev-master branch.
+
+In your composer.json use
+
+```json
+"juhasev/laravel-ses": "dev-master"
+```
+
+Then run
+
+```bash
+composer install
+```
+
 ## Installation
 Install via composer
 
-```
+```bash
 composer require juhasev/laravel-ses
 composer require aws/aws-php-sns-message-validator (optional)
 ```
@@ -25,7 +39,7 @@ Juhasev\LaravelSes\LaravelSesServiceProvider::class
 ## Laravel configuration
 Make sure your app/config/services.php has SES values set
 
-```
+```php
 'ses' => [
     'key' => your_ses_key,
     'secret' => your_ses_secret,
@@ -35,25 +49,25 @@ Make sure your app/config/services.php has SES values set
 ```
 
 Make sure your mail driver located in app/config/mail.php is set to 'ses'
-```
+```php
     'default' => env('MAIL_MAILER', 'ses')
 ```
 
 Publish public assets
 
-```
+```bash
 php artisan vendor:publish --tag=ses-assets --force
 ```
 
 Publish migrations
 
-```
+```bash
 php artisan vendor:publish --tag=ses-migrations --force
 ```
 
 Publish the package's config (laravelses.php)
 
-```
+```bash
 php artisan vendor:publish --tag=ses-config
 ```
 
@@ -147,7 +161,7 @@ using this command.
 The setup command automatically configures your SES domain to send SNS notifications that
 trigger call backs to your Laravel application.
 
-```
+```bash
 php artisan sns:setup mydomain.com
 ```
 > NOTE: You should not attempt to use sub domains client.mydomain.com, this is not currently supported by AWS.
@@ -156,7 +170,7 @@ php artisan sns:setup mydomain.com
 
 To send an email with all tracking enabled
 
-```
+```php
 SesMail::enableAllTracking()
     ->to('hello@example.com')
     ->send(new Mailable);
@@ -168,7 +182,7 @@ Calling enableAllTracking() enables open, reject, bounce, delivery, complaint an
 
 You can, of course, disable and enable all the tracking options
 
-```
+```php
 SesMail::disableAllTracking();
 SesMail::disableOpenTracking();
 SesMail::disableLinkTracking();
@@ -186,7 +200,7 @@ SesMail::enableDeliveryTracking();
 
 The batching option gives you the chance to group emails, so you can get the results for a specific group
 
-```
+```php
 SesMail::enableAllTracking()
     ->setBatch('welcome_emails')
     ->to('hello@example.com')
@@ -195,13 +209,17 @@ SesMail::enableAllTracking()
 
 You can also get aggregate stats:
 
-```
+```php
 
 Stats::statsForEmail($email);
 
-Stats::statsForBatch('welcome_emails');
+$stats = Stats::statsForBatch('welcome_emails');
 
-// Example result
+print_r($stats)
+
+```
+
+```
 [
     "sent" => 8,
     "deliveries" => 7,
@@ -219,9 +237,9 @@ Stats::statsForBatch('welcome_emails');
     ]
 ]
 ```
-To get individual stats via Repositories
-```
 
+To get individual stats via Repositories
+```php
 EmailStatRepository::getBouncedCount($email);
 EmailRepository::getBounces($email);
 
@@ -232,7 +250,7 @@ BatchStatRepository::getComplaintsCount($batch);
 ```
 You can also use the models directly as you would any other Eloquent model:
 
-```
+```php
 $sentEmails = SentEmail::whereEmail($email)->get();
 
 $emailBounces = EmailBounce::whereEmail($email)->get();
@@ -242,7 +260,7 @@ $emailOpen = EmailOpen::whereEmail($email)->get();
 
 ```
 If you are using custom models then you can use ModelResolver() helper like so
-```
+```php
 $sentEmail = ModelResolver::get('SentEmail')::take(100)->get();
 ```
 ### Listening to event
@@ -328,13 +346,21 @@ class SesSentEventSubscriber
 }
 ```
 
-You will need to register EventSubscriber in the Laravel EventServerProvider in order to work.
+You will need to register EventSubscriber in the Laravel App/Providers/EventServiveProvider.php in order to work.
+
+```php
+ protected $subscribe = [
+    SesSentEventSubscriber::class
+ ];
+ ```  
 
 Example event data:
+
+```php
+print_r($event->data);
 ```
 
-// $event->data
-
+```
 (
     [id] => 22
     [sent_email_id] => 49
@@ -391,7 +417,7 @@ Setup Composer.json to resolve classes from your dev folder:
 ```
 
 Composer require
-```json5
+```json
 require: {
     "juhasev/laravel-ses": "dev-master"
 }

@@ -178,7 +178,31 @@ SesMail::enableAllTracking()
 
 Calling enableAllTracking() enables open, reject, bounce, delivery, complaint and link tracking.
 
-> Please note that an exception is thrown if you attempt send a Mailable that contains multiple recipients when Open -tracking is enabled.
+> Please note that an LaravelSesTooManyRecipients Exception is thrown if you attempt send a Mailable that contains multiple recipients when Open -tracking is enabled.
+
+Other exception thrown are:
+
+```php
+LaravelSesDailyQuotaExceededException::class
+LaravelSesInvalidSenderAddressException::class
+LaravelSesMaximumSendingRateExceeded::class
+LaravelSesSendFailedException::class
+LaravelSesTemporaryServiceFailureException::class
+LaravelSesTooManyRecipientsException::class
+```
+
+You can catch them all using the base class:
+
+```php
+try {
+    SesMail::enableAllTracking()
+        ->to('hello@example.com')
+        ->send(new Mailable);
+        
+} catch (LaravelSesException $e) {
+    
+    // Do something like back of if rate limit is reached.
+)
 
 You can, of course, disable and enable all the tracking options
 

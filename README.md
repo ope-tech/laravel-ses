@@ -199,6 +199,10 @@ try {
         ->to('hello@example.com')
         ->send(new Mailable);
         
+} catch (LaravelSesMaximumSendingRateExceeded $e) {
+
+    // Implement back off logic
+
 } catch (LaravelSesException $e) {
     
     $smtpCode = $e->getCode();

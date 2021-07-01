@@ -11,7 +11,7 @@ use Illuminate\Mail\PendingMail;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Testing\Fakes\PendingMailFake;
 use Juhasev\LaravelSes\Contracts\SentEmailContract;
-use Juhasev\LaravelSes\Exceptions\TooManyEmails;
+use Juhasev\LaravelSes\Exceptions\LaravelSesTooManyRecipientsException;
 use Juhasev\LaravelSes\Factories\EventFactory;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
 use PHPHtmlParser\Exceptions\CircularException;
@@ -61,7 +61,7 @@ class SesMailFake implements SesMailerInterface, Mailer
     protected function checkNumberOfRecipients($message)
     {
         if (count($message->to) > 1) {
-            throw new TooManyEmails("Tried to send to too many emails only one email may be set");
+            throw new LaravelSesTooManyRecipientsException("Tried to send to too many emails only one email may be set");
         }
     }
 

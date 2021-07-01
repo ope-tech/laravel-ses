@@ -5,14 +5,22 @@ namespace Juhasev\LaravelSes;
 use Illuminate\Support\Carbon;
 use Illuminate\Mail\Mailer;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Juhasev\LaravelSes\Contracts\SentEmailContract;
-use Juhasev\LaravelSes\Exceptions\TooManyEmails;
+use Juhasev\LaravelSes\Exceptions\LaravelLaravelSesDailyQuotaExceededException;
+use Juhasev\LaravelSes\Exceptions\LaravelSesInvalidSenderAddressException;
+use Juhasev\LaravelSes\Exceptions\LaravelSesMaximumSendingRateExceeded;
+use Juhasev\LaravelSes\Exceptions\LaravelSesSendFailedException;
+use Juhasev\LaravelSes\Exceptions\LaravelSesTemporaryServiceFailureException;
+use Juhasev\LaravelSes\Exceptions\LaravelSesTooManyRecipientsException;
 use Juhasev\LaravelSes\Factories\EventFactory;
 use PHPHtmlParser\Exceptions\ChildNotFoundException;
 use PHPHtmlParser\Exceptions\CircularException;
 use PHPHtmlParser\Exceptions\CurlException;
 use PHPHtmlParser\Exceptions\NotLoadedException;
 use PHPHtmlParser\Exceptions\StrictException;
+use Swift_TransportException;
 
 class SesMailer extends Mailer implements SesMailerInterface
 {
@@ -50,11 +58,77 @@ class SesMailer extends Mailer implements SesMailerInterface
     protected function checkNumberOfRecipients($message)
     {
         if (sizeOf($message->getTo()) > 1) {
-            throw new TooManyEmails("Tried to send to too many emails only one email may be set");
+            throw new LaravelSesTooManyRecipientsException("Tried to send to too many emails only one email may be set");
         }
     }
 
+    public function send($view, array $data = [], $callback = null)
+    {
+       try {
+           parent::send($view, $data, $callback);
+       } catch (Swift_TransportException $e) {
+           $this->throwException($e);
+       }
+    }
+
     /**
+     * Throw SampleNinja exceptions
+     *
+     * @param Swift_TransportException $e
+     * @throws LaravelLaravelSesDailyQuotaExceededException
+     * @throws LaravelSesInvalidSenderAddressException
+     * @throws LaravelSesMaximumSendingRateExceeded
+     * @throws LaravelSesTemporaryServiceFailureException|LaravelSesSendFailedException
+     */
+    protected function throwException(Swift_TransportException $e) {
+
+        $errorMessage = $this->parseErrorFromSwiftTransportException($e->getMessage());
+        $errorCode = $this->parseErrorCode($errorMessage);
+
+        Log::error('SES Error: ' . $errorMessage);
+
+        if (Str::contains($errorMessage, '454 Throttling failure: Maximum sending rate exceeded')) {
+            throw new LaravelSesMaximumSendingRateExceeded($errorMessage, $errorCode);
+        }
+
+        if (Str::contains($errorMessage, '454 Throttling failure: Daily message quota exceeded')) {
+            throw new LaravelLaravelSesDailyQuotaExceededException($errorMessage, $errorCode);
+        }
+
+        if (Str::contains($errorMessage, '554 Message rejected: Email address is not verified')) {
+            throw new LaravelSesInvalidSenderAddressException($errorMessage, $errorCode);
+        }
+
+        if (Str::contains($errorMessage, '451 Temporary service failure')) {
+            throw new LaravelSesTemporaryServiceFailureException($errorMessage, $errorCode);
+        }
+
+        throw new LaravelSesSendFailedException($errorMessage, $errorCode);
+    }
+
+    /**
+     * Resolve error code
+     *
+     * @param $message
+     * @return string
+     */
+    protected function parseErrorFromSwiftTransportException($message): string
+    {
+        $message = Str::after($message, ' with message "');
+        return Str::beforeLast($message, '"');
+    }
+
+    /**
+     * Parse error code
+     *
+     * @param string $smtpError
+     * @return int
+     */
+    protected function parseErrorCode(string $smtpError): int
+    {
+        return (int) Str::before($smtpError, ' Message');
+    }
+        /**
      * Send swift message
      *
      * @param $message

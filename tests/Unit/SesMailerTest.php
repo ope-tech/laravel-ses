@@ -3,7 +3,7 @@
 namespace Juhasev\LaravelSes\Tests\Unit;
 
 use Illuminate\Support\Facades\Event;
-use Juhasev\LaravelSes\Exceptions\TooManyEmails;
+use Juhasev\LaravelSes\Exceptions\LaravelSesTooManyRecipientsException;
 use Juhasev\LaravelSes\Facades\SesMail;
 use Juhasev\LaravelSes\Factories\Events\SesSentEvent;
 use Juhasev\LaravelSes\Mocking\TestMailable;
@@ -35,7 +35,7 @@ class SesMailerTest extends UnitTestCase
 
         try {
             SesMail::to(['oliveready@gmail.com', 'something@whatever.com'])->send($mail);
-        } catch (TooManyEmails $e) {
+        } catch (LaravelSesTooManyRecipientsException $e) {
             $exceptionThrown = true;
         }
 

@@ -2,7 +2,6 @@
 
 namespace Juhasev\LaravelSes\Factories;
 
-use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
 class EventFactory
@@ -22,8 +21,6 @@ class EventFactory
         if (!class_exists($class)) {
             throw new InvalidArgumentException('Class '.$class.' not found in SES EventFactory!');
         }
-
-        Log::debug("Event factory created " . $class);
 
         return new $class($modelName,$modelId);
     }

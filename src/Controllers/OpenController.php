@@ -30,6 +30,8 @@ class OpenController extends BaseController
             $emailOpen->opened_at = Carbon::now();
             $emailOpen->save();
 
+            $this->sendEvent($emailOpen);
+
         } catch (ModelNotFoundException $e) {
 
             Log::info("Could not find sent email with beacon identifier ($beaconIdentifier). Email open could not be recorded!");
@@ -40,9 +42,7 @@ class OpenController extends BaseController
             ], 404);
         }
 
-        $this->sendEvent($emailOpen);
-
-        // Server the actual image
+        // Serve the actual image
         return redirect(config('app.url')."/ses/to.png");
     }
     

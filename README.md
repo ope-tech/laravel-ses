@@ -438,6 +438,10 @@ Link Popularity = number of unique clicks on each link in the email, ordered by 
 
 Clone Laravel SES repo to your project under /packages
 
+```
+git clone https://github.com/juhasev/laravel-ses.git
+```
+
 Setup Composer.json to resolve classes from your dev folder:
 
 ```json

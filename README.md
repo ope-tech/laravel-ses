@@ -1,6 +1,6 @@
 ![alt text](laravel-ses.png "Laravel SES")
 
-# Laravel SES (Simple Email Service)
+# Laravel SES (Simple Email Service AWS)
 Laravel SES is package that allows you to get sending statistics for emails you send through AWS SES (Simple Email Service), 
 including deliveries, opens, bounces, complaints and link tracking. This package was originally written by Oliveready7.
 Unfortunately the original author had stopped maintaining this package so I decided to create this fork so that this 

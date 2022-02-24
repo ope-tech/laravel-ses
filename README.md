@@ -11,8 +11,9 @@ storage for space and proper indexing. This package is compatible with Laravel 8
 
 Laravel SES also supports SMTP errors codes will throw meaning exceptions like when you exceed your rate limits so you can handle proper back off.
 
-If you are using Laravel 8 use the current tag.
-If you are using Laravel 6 use v0.8.4
+Laravel version support:
+- If you are using Laravel 8 use the current tag.
+- If you are using Laravel 6 use v0.8.4
 
 In your composer.json use
 

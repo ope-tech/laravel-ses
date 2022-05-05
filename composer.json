@@ -26,13 +26,13 @@
     "require": {
         "php": "^8.0.2",
         "illuminate/contracts": "^9.0",
-        "doctrine/dbal": "2.*",
+        "doctrine/dbal": "^3.2",
         "aws/aws-sdk-php": "^3.28",
-        "ramsey/uuid": "4.*",
+        "ramsey/uuid": "^4.3",
         "guzzlehttp/guzzle": "^7.0.1",
         "paquettg/php-html-parser": "^2.2",
-        "aws/aws-php-sns-message-validator": "^1.6",
-        "symfony/psr-http-message-bridge": "^2.0",
+        "aws/aws-php-sns-message-validator": "^1.7",
+        "symfony/psr-http-message-bridge": "^2.1",
         "nyholm/psr7": "^1.0"
     },
     "require-dev": {
@@ -40,7 +40,8 @@
         "orchestra/testbench": "^7.0",
         "phpunit/phpunit": "^9.5.10",
         "ext-json": "*",
-        "vimeo/psalm": "^4.23"
+        "vimeo/psalm": "^4.23",
+        "nunomaduro/collision": "^6.2"
     },
     "autoload": {
         "psr-4": {

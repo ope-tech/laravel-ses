@@ -38,6 +38,6 @@ class SetupSns extends Command
      */
     public function handle()
     {
-        SnsSetup::create($this, $this->argument('domain'));
+        return SnsSetup::create($this, $this->argument('domain'));
     }
 }

@@ -115,6 +115,6 @@ class ComplaintController extends BaseController
 
     protected function sendEvent(EmailComplaintContract $complaint)
     {
-        event(EventFactory::create('Complaint', 'EmailComplaint', $complaint->id));
+        event(EventFactory::create('Complaint', 'EmailComplaint', $complaint->getId()));
     }
 }

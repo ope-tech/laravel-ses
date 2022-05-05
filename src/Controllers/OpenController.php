@@ -2,6 +2,7 @@
 
 namespace Juhasev\LaravelSes\Controllers;
 
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -19,7 +20,7 @@ class OpenController extends BaseController
      * Tracking pixel fired
      *
      * @param $beaconIdentifier
-     * @return JsonResponse|RedirectResponse
+     * @return JsonResponse|RedirectResponse|Redirector
      * @throws Exception
      */
 
@@ -51,9 +52,8 @@ class OpenController extends BaseController
      *
      * @param EmailOpenContract $emailOpen
      */
-
     protected function sendEvent(EmailOpenContract $emailOpen)
     {
-        event(EventFactory::create('Open', 'EmailOpen', $emailOpen->id));
+        event(EventFactory::create('Open', 'EmailOpen', $emailOpen->getId()));
     }
 }

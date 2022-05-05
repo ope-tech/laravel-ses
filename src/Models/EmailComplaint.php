@@ -25,4 +25,12 @@ class EmailComplaint extends Model implements EmailComplaintContract
     {
         return $this->belongsTo(ModelResolver::get('SentEmail'));
     }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->getKey();
+    }
 }

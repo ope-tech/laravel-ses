@@ -17,15 +17,11 @@ class ComplaintTrackingTest extends FeatureTestCase
             'complaint_tracking' => true
         ]);
 
-        $fakeJson = json_decode($this->exampleSesResponse);
+        $fakeJson = (array) json_decode($this->exampleSesResponse, associative: true);
 
         Event::fake();
 
-        $this->json(
-            'POST',
-            '/ses/notification/complaint',
-            (array)$fakeJson
-        );
+        $this->json('POST', '/ses/notification/complaint', $fakeJson);
 
         Event::assertDispatched(SesComplaintEvent::class);
         
@@ -45,37 +41,25 @@ class ComplaintTrackingTest extends FeatureTestCase
             'complaint_tracking' => true
         ]);
 
-        $fakeJson = json_decode($this->exampleSesResponse);
+        $fakeJson = (array) json_decode($this->exampleSesResponse, associative: true);
 
-        $this->json(
-            'POST',
-            '/ses/notification/bounce',
-            (array)$fakeJson
-        );
+        $this->json('POST', '/ses/notification/bounce', $fakeJson);
 
         $this->assertNull(ModelResolver::get('EmailComplaint')::first());
     }
 
     public function testSubscriptionConfirmation()
     {
-        $fakeJson = json_decode($this->exampleSubscriptionResponse);
+        $fakeJson = (array) json_decode($this->exampleSubscriptionResponse, associative: true);
 
-        $this->json(
-            'POST',
-            '/ses/notification/complaint',
-            (array)$fakeJson
-        )->assertJson(['success' => true]);
+        $this->json('POST', '/ses/notification/complaint', $fakeJson)->assertJson(['success' => true]);
     }
 
     public function testTopicConfirmation()
     {
-        $fakeJson = json_decode($this->exampleTopicResponse);
+        $fakeJson = (array) json_decode($this->exampleTopicResponse, associative: true);
 
-        $this->json(
-            'POST',
-            '/ses/notification/complaint',
-            (array)$fakeJson
-        )->assertJson(['success' => true]);
+        $this->json('POST', '/ses/notification/complaint', $fakeJson)->assertJson(['success' => true]);
     }
 
     public function testThatComplaintIsNotRecordedIfComplaintTrackingIsNotSet()
@@ -85,13 +69,9 @@ class ComplaintTrackingTest extends FeatureTestCase
             'email' => 'eriksen23@gmail.com'
         ]);
 
-        $fakeJson = json_decode($this->exampleSesResponse);
+        $fakeJson = (array) json_decode($this->exampleSesResponse, associative: true);
 
-        $this->json(
-            'POST',
-            '/ses/notification/complaint',
-            (array)$fakeJson
-        );
+        $this->json('POST', '/ses/notification/complaint', $fakeJson);
 
         $this->assertNull(ModelResolver::get('EmailComplaint')::first());
     }

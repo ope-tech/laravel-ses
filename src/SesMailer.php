@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Juhasev\LaravelSes\Contracts\SentEmailContract;
-use Juhasev\LaravelSes\Exceptions\LaravelLaravelSesDailyQuotaExceededException;
+use Juhasev\LaravelSes\Exceptions\LaravelSesDailyQuotaExceededException;
 use Juhasev\LaravelSes\Exceptions\LaravelSesInvalidSenderAddressException;
 use Juhasev\LaravelSes\Exceptions\LaravelSesMaximumSendingRateExceeded;
 use Juhasev\LaravelSes\Exceptions\LaravelSesSendFailedException;
@@ -20,7 +20,7 @@ use PHPHtmlParser\Exceptions\CircularException;
 use PHPHtmlParser\Exceptions\CurlException;
 use PHPHtmlParser\Exceptions\NotLoadedException;
 use PHPHtmlParser\Exceptions\StrictException;
-use Swift_TransportException;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class SesMailer extends Mailer implements SesMailerInterface
 {
@@ -31,7 +31,7 @@ class SesMailer extends Mailer implements SesMailerInterface
      * Creates database entry for the sent email
      *
      * @param $message
-     * @return mixed
+     * @return SentEmailContract
      * @throws \Exception
      */
     public function initMessage($message)
@@ -54,6 +54,7 @@ class SesMailer extends Mailer implements SesMailerInterface
      * Open tracking etc won't work if emails are sent to more than one recipient at a time
      *
      * @param $message
+     * @throws LaravelSesTooManyRecipientsException
      */
     protected function checkNumberOfRecipients($message)
     {
@@ -64,25 +65,21 @@ class SesMailer extends Mailer implements SesMailerInterface
 
     public function send($view, array $data = [], $callback = null)
     {
-       try {
-           parent::send($view, $data, $callback);
-       } catch (Swift_TransportException $e) {
-           $this->throwException($e);
-       }
+        parent::send($view, $data, $callback);
     }
 
     /**
      * Throw SampleNinja exceptions
      *
-     * @param Swift_TransportException $e
-     * @throws LaravelLaravelSesDailyQuotaExceededException
+     * @param TransportExceptionInterface $e
+     * @throws LaravelSesDailyQuotaExceededException
      * @throws LaravelSesInvalidSenderAddressException
      * @throws LaravelSesMaximumSendingRateExceeded
      * @throws LaravelSesTemporaryServiceFailureException|LaravelSesSendFailedException
      */
-    protected function throwException(Swift_TransportException $e) {
+    protected function throwException(TransportExceptionInterface $e) {
 
-        $errorMessage = $this->parseErrorFromSwiftTransportException($e->getMessage());
+        $errorMessage = $this->parseErrorFromSymfonyTransportException($e->getMessage());
         $errorCode = $this->parseErrorCode($errorMessage);
 
         Log::error('SES Error: ' . $errorMessage);
@@ -92,7 +89,7 @@ class SesMailer extends Mailer implements SesMailerInterface
         }
 
         if (Str::contains($errorMessage, '454 Throttling failure: Daily message quota exceeded')) {
-            throw new LaravelLaravelSesDailyQuotaExceededException($errorMessage, $errorCode);
+            throw new LaravelSesDailyQuotaExceededException($errorMessage, $errorCode);
         }
 
         if (Str::contains($errorMessage, '554 Message rejected: Email address is not verified')) {
@@ -112,7 +109,7 @@ class SesMailer extends Mailer implements SesMailerInterface
      * @param $message
      * @return string
      */
-    protected function parseErrorFromSwiftTransportException($message): string
+    protected function parseErrorFromSymfonyTransportException($message): string
     {
         $message = Str::after($message, ' with message "');
         return Str::beforeLast($message, '"');
@@ -128,8 +125,9 @@ class SesMailer extends Mailer implements SesMailerInterface
     {
         return (int) Str::before($smtpError, ' Message');
     }
-        /**
-     * Send swift message
+
+    /**
+     * Send symfony message
      *
      * @param $message
      * @return void
@@ -140,7 +138,7 @@ class SesMailer extends Mailer implements SesMailerInterface
      * @throws NotLoadedException
      * @throws StrictException
      */
-    protected function sendSwiftMessage($message): void
+    protected function sendSymfonyMessage($message): void
     {
         $headers = $message->getHeaders();
 
@@ -150,11 +148,11 @@ class SesMailer extends Mailer implements SesMailerInterface
 
         $sentEmail = $this->initMessage($message);
         $newBody = $this->setupTracking($message->getBody(), $sentEmail);
-        $message->setBody($newBody);
+        $message->html($newBody);
 
         $this->sendEvent($sentEmail);
 
-        parent::sendSwiftMessage($message);
+        parent::sendSymfonyMessage($message);
     }
 
     /**
@@ -164,6 +162,6 @@ class SesMailer extends Mailer implements SesMailerInterface
      */
     protected function sendEvent(SentEmailContract $sentEmail)
     {
-        event(EventFactory::create('Sent', 'SentEmail', $sentEmail->id));
+        event(EventFactory::create('Sent', 'SentEmail', $sentEmail->getId()));
     }
 }

@@ -19,9 +19,7 @@ class BounceTrackingTest extends FeatureTestCase
 
         Event::fake();
 
-        $this->json(
-            'POST',
-            '/ses/notification/bounce',
+        $this->json('POST', '/ses/notification/bounce',
             $this->generateBouncePayload($model->message_id, $model->email)
         );
 
@@ -37,36 +35,28 @@ class BounceTrackingTest extends FeatureTestCase
 
     public function testSubscriptionConfirmation()
     {
-        $fakeJson = json_decode($this->exampleSubscriptionResponse);
+        $fakeJson = (array) json_decode($this->exampleSubscriptionResponse, associative: true);
 
-        $this->json(
-            'POST',
-            '/ses/notification/bounce',
-            (array)$fakeJson
-        )->assertJson(['success' => true]);
+        $this->json('POST', '/ses/notification/bounce', $fakeJson)
+            ->assertJson(['success' => true]);
     }
 
     public function testTopicConfirmation()
     {
-        $fakeJson = json_decode($this->exampleTopicResponse);
+        $fakeJson = (array) json_decode($this->exampleTopicResponse, associative: true);
 
-        $this->json(
-            'POST',
-            '/ses/notification/bounce',
-            (array)$fakeJson
-        )->assertJson(['success' => true]);
+        $this->json('POST', '/ses/notification/bounce', $fakeJson)
+            ->assertJson(['success' => true]);
     }
 
-    public function testABounceIsNotStoredWhenThereIsNoEquivilantMessageId()
+    public function testABounceIsNotStoredWhenThereIsNoEquivalentMessageId()
     {
         $model = ModelResolver::get('SentEmail')::create([
             'message_id' => 'abcaseasyas123@swift.generated',
             'email' => 'eriksen23@gmail.com'
         ]);
 
-        $this->json(
-            'POST',
-            '/ses/notification/bounce',
+        $this->json('POST', '/ses/notification/bounce',
             $this->generateBouncePayload($model->message_id, $model->email)
         );
 
@@ -80,9 +70,7 @@ class BounceTrackingTest extends FeatureTestCase
             'email' => 'eriksen23@gmail.com'
         ]);
 
-        $this->json(
-            'POST',
-            '/ses/notification/bounce',
+        $this->json('POST', '/ses/notification/bounce',
             $this->generateBouncePayload($model->message_id, $model->email)
         );
 

@@ -1,4 +1,7 @@
 <?php
+
+namespace Juhasev\LaravelSes\Tests\Unit;
+
 use Juhasev\LaravelSes\MailProcessor;
 use Juhasev\LaravelSes\ModelResolver;
 use Juhasev\LaravelSes\Tests\UnitTestCase;

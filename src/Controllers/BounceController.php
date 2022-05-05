@@ -111,6 +111,6 @@ class BounceController extends BaseController
 
     protected function sendEvent(EmailBounceContract $bounce)
     {
-        event(EventFactory::create('Bounce', 'EmailBounce', $bounce->id));
+        event(EventFactory::create('Bounce', 'EmailBounce', $bounce->getId()));
     }
 }

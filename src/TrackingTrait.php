@@ -13,18 +13,45 @@ use PHPHtmlParser\Exceptions\StrictException;
 
 trait TrackingTrait
 {
+    /**
+     * @var bool
+     */
     private $openTracking = false;
+
+    /**
+     * @var bool
+     */
     private $linkTracking = false;
+
+    /**
+     * @var bool
+     */
     private $bounceTracking = false;
+
+    /**
+     * @var bool
+     */
     private $complaintTracking = false;
+
+    /**
+     * @var bool
+     */
     private $deliveryTracking = false;
+
+    /**
+     * @var bool
+     */
     private $rejectTracking = false;
+
+    /**
+     * @var BatchContract
+     */
     private $batch;
 
     /**
      * Set tracking
      *
-     * @param $emailBody
+     * @param $setupTracking
      * @param SentEmailContract $sentEmail
      *
      * @return string
@@ -34,16 +61,18 @@ trait TrackingTrait
      * @throws CurlException
      * @throws NotLoadedException
      * @throws StrictException
+     * @throws Exception
      */
-    public function setupTracking($emailBody, SentEmailContract $sentEmail)
+    public function setupTracking($setupTracking, SentEmailContract $sentEmail): string
     {
         $this->batch = null;
 
-        $mailProcessor = new MailProcessor($sentEmail, $emailBody);
+        $mailProcessor = new MailProcessor($sentEmail, $setupTracking);
 
         if ($this->openTracking) {
             $mailProcessor->openTracking();
         }
+
         if ($this->linkTracking) {
             $mailProcessor->linkTracking();
         }
@@ -54,19 +83,22 @@ trait TrackingTrait
     /**
      * Set batch identifier
      *
-     * @param string $batchName
+     * @param string $batch
      * @return SesMailerInterface
      * @throws Exception
      */
-    public function setBatch(string $batchName): SesMailerInterface
+    public function setBatch(string $batch): SesMailerInterface
     {
-        $batch = ModelResolver::get('Batch')::whereName($batchName)->first();
+        $batchModel = ModelResolver::get('Batch')::query();
 
-        if (!$batch) {
-            $batch = ModelResolver::get('Batch')::create(['name' => $batchName]);
+        $batchResult = $batchModel->where('name', $batch)->first();
+
+        if (! $batchResult) {
+            $batchResult = $batchModel->create(['name' => $batch]);
         }
 
-        $this->batch = $batch;
+        $this->batch = $batchResult;
+
         return $this;
     }
 
@@ -87,7 +119,7 @@ trait TrackingTrait
      */
     public function getBatchId(): ?int 
     {
-        return $this->batch ? $this->batch->id : null;
+        return $this->batch?->getId();
     }
     
     /**
@@ -98,6 +130,7 @@ trait TrackingTrait
     public function enableOpenTracking(): SesMailerInterface
     {
         $this->openTracking = true;
+
         return $this;
     }
 
@@ -109,6 +142,7 @@ trait TrackingTrait
     public function enableLinkTracking(): SesMailerInterface
     {
         $this->linkTracking = true;
+
         return $this;
     }
 
@@ -120,6 +154,7 @@ trait TrackingTrait
     public function enableBounceTracking(): SesMailerInterface
     {
         $this->bounceTracking = true;
+
         return $this;
     }
 
@@ -131,6 +166,7 @@ trait TrackingTrait
     public function enableComplaintTracking(): SesMailerInterface
     {
         $this->complaintTracking = true;
+
         return $this;
     }
 
@@ -142,6 +178,7 @@ trait TrackingTrait
     public function enableDeliveryTracking(): SesMailerInterface
     {
         $this->deliveryTracking = true;
+
         return $this;
     }
 
@@ -153,6 +190,7 @@ trait TrackingTrait
     public function enableRejectTracking(): SesMailerInterface
     {
         $this->rejectTracking = true;
+
         return $this;
     }
 
@@ -164,6 +202,7 @@ trait TrackingTrait
     public function disableOpenTracking(): SesMailerInterface
     {
         $this->openTracking = false;
+
         return $this;
     }
 
@@ -175,6 +214,7 @@ trait TrackingTrait
     public function disableLinkTracking(): SesMailerInterface
     {
         $this->linkTracking = false;
+
         return $this;
     }
 
@@ -186,6 +226,7 @@ trait TrackingTrait
     public function disableBounceTracking(): SesMailerInterface
     {
         $this->bounceTracking = false;
+
         return $this;
     }
 
@@ -197,6 +238,7 @@ trait TrackingTrait
     public function disableComplaintTracking(): SesMailerInterface
     {
         $this->complaintTracking = false;
+
         return $this;
     }
 
@@ -208,6 +250,7 @@ trait TrackingTrait
     public function disableDeliveryTracking(): SesMailerInterface
     {
         $this->deliveryTracking = false;
+
         return $this;
     }
 
@@ -219,6 +262,7 @@ trait TrackingTrait
     public function disableRejectTracking(): SesMailerInterface
     {
         $this->rejectTracking = false;
+
         return $this;
     }
 
@@ -253,7 +297,7 @@ trait TrackingTrait
     /**
      * Get tracking settings
      *
-     * @return array
+     * @return array<string, bool>
      */
     public function trackingSettings(): array
     {

@@ -69,15 +69,15 @@ class LaravelSesServiceProvider extends ServiceProvider
 
             $config = $app->make('config')->get('mail');
 
-            $swiftMailer = app('mailer')->getSwiftMailer();
+            $symfonyMailer = app('mailer')->getSymfonyTransport();
 
-            // Once we have create the mailer instance, we will set a container instance
+            // Once we have created the mailer instance, we will set a container instance
             // on the mailer. This allows us to resolve mailer classes via containers
             // for maximum testability on said classes instead of passing Closures.
             $mailer = new SesMailer(
                 'ses-mailer',
                 $app['view'],
-                $swiftMailer,
+                $symfonyMailer,
                 $app['events']
             );
 

@@ -25,4 +25,12 @@ class EmailBounce extends Model implements EmailBounceContract
     {
         return $this->belongsTo(ModelResolver::get('SentEmail'));
     }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->getKey();
+    }
 }

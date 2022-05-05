@@ -14,13 +14,11 @@ class SesMailerTest extends UnitTestCase
     public function testSendEmailEventIsSent()
     {
         SesMail::fake();
-        $mail = new TestMailable();
-
         Event::fake();
 
         SesMail::enableAllTracking()
             ->to('oliveready@gmail.com')
-            ->send($mail);
+            ->send(new TestMailable());
 
         Event::assertDispatched(SesSentEvent::class);
 
@@ -29,17 +27,14 @@ class SesMailerTest extends UnitTestCase
 
     public function testExceptionIsThrownWhenTryingToSendToMoreThanOnePerson()
     {
+        $this->expectException(LaravelSesTooManyRecipientsException::class);
+
         SesMail::fake();
-        $mail = new TestMailable();
-        $exceptionThrown = false;
 
-        try {
-            SesMail::to(['oliveready@gmail.com', 'something@whatever.com'])->send($mail);
-        } catch (LaravelSesTooManyRecipientsException $e) {
-            $exceptionThrown = true;
-        }
-
-        $this->assertTrue($exceptionThrown);
+        SesMail::to([
+            'oliveready@gmail.com',
+            'something@whatever.com',
+        ])->send(new TestMailable());
     }
 
     public function testTrackingSettingsAreSetCorrectly()

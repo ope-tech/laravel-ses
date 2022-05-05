@@ -72,7 +72,8 @@ class SentEmail extends Model implements SentEmailContract
     }
 
     /**
-     * Parent relation ship to batch
+     * Parent relationship to batch
+     *
      * @return BelongsTo
      * @throws Exception
      */
@@ -90,5 +91,13 @@ class SentEmail extends Model implements SentEmailContract
     {
         $this->delivered_at = $time;
         $this->save();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->getKey();
     }
 }

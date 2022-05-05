@@ -40,6 +40,5 @@ class EmailLinkTest extends FeatureTestCase
 
         $this->assertTrue($emailLink['clicked']);
         $this->assertEquals(2, $emailLink['click_count']);
-
     }
 }

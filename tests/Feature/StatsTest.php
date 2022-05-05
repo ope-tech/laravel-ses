@@ -35,17 +35,17 @@ class StatsTest extends FeatureTestCase
 
         $batch = Batch::resolve('win_back');
 
-        $messageId = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->where('batch_id', $batch->id)->first()->message_id;
+        $messageId = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->where('batch_id', $batch->getId())->first()->message_id;
               $this->json('POST', 'ses/notification/bounce', $this->generateBouncePayload($messageId, 'something@gmail.com'));
 
-        $messageId = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->where('batch_id', $batch->id)->first()->message_id;
+        $messageId = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->where('batch_id', $batch->getId())->first()->message_id;
         $this->json('POST', '/ses/notification/delivery', $this->generateDeliveryPayload($messageId, 'something@gmail.com'));
 
-        $messageId = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->where('batch_id', $batch->id)->first()->message_id;
+        $messageId = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->where('batch_id', $batch->getId())->first()->message_id;
         $this->json('POST', 'ses/notification/complaint', $this->generateComplaintPayload($messageId, 'something@gmail.com'));
 
         $links = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')
-            ->where('batch_id', $batch->id)
+            ->where('batch_id', $batch->getId())
             ->first()
             ->emailLinks;
 
@@ -91,33 +91,33 @@ class StatsTest extends FeatureTestCase
 
         // Check sent emails
         $this->assertEquals("something@gmail.com", $stats['sent'][0]['email']);
-        $this->assertEquals(Batch::resolve("welcome_emails")->id, $stats['sent'][0]['batch_id']);
+        $this->assertEquals(Batch::resolve("welcome_emails")->getId(), $stats['sent'][0]['batch_id']);
 
         $this->assertEquals("something@gmail.com", $stats['sent'][1]['email']);
-        $this->assertEquals(Batch::resolve("win_back")->id, $stats['sent'][1]['batch_id']);
+        $this->assertEquals(Batch::resolve("win_back")->getId(), $stats['sent'][1]['batch_id']);
 
         $this->assertEquals("something@gmail.com", $stats['sent'][2]['email']);
-        $this->assertEquals(Batch::resolve("june_newsletter")->id, $stats['sent'][2]['batch_id']);
+        $this->assertEquals(Batch::resolve("june_newsletter")->getId(), $stats['sent'][2]['batch_id']);
 
         // Check deliveries
         $this->assertEquals("something@gmail.com", $stats['deliveries'][0]['email']);
-        $this->assertEquals(Batch::resolve("welcome_emails")->id, $stats['deliveries'][0]['batch_id']);
+        $this->assertEquals(Batch::resolve("welcome_emails")->getId(), $stats['deliveries'][0]['batch_id']);
 
         $this->assertEquals("something@gmail.com", $stats['deliveries'][1]['email']);
-        $this->assertEquals(Batch::resolve("win_back")->id, $stats['deliveries'][1]['batch_id']);
+        $this->assertEquals(Batch::resolve("win_back")->getId(), $stats['deliveries'][1]['batch_id']);
 
         // Check click through
         $this->assertEquals(1, $stats['clicks'][0]->emailLinks[0]->sent_email_id);
         $this->assertEquals('https://google.com', $stats['clicks'][0]->emailLinks[0]->original_url);
-        $this->assertEquals(Batch::resolve('welcome_emails')->id, $stats['clicks'][0]->batch_id);
+        $this->assertEquals(Batch::resolve('welcome_emails')->getId(), $stats['clicks'][0]->batch_id);
 
         $this->assertEquals(1, $stats['clicks'][0]->emailLinks[1]->sent_email_id);
         $this->assertEquals('https://superficial.io', $stats['clicks'][0]->emailLinks[1]->original_url);
-        $this->assertEquals(Batch::resolve('welcome_emails')->id, $stats['clicks'][0]['batch_id']);
+        $this->assertEquals(Batch::resolve('welcome_emails')->getId(), $stats['clicks'][0]['batch_id']);
 
         $this->assertEquals(9, $stats['clicks'][1]->emailLinks[0]->sent_email_id);
         $this->assertEquals('https://google.com', $stats['clicks'][1]->emailLinks[0]->original_url);
-        $this->assertEquals(Batch::resolve('win_back')->id, $stats['clicks'][1]['batch_id']);
+        $this->assertEquals(Batch::resolve('win_back')->getId(), $stats['clicks'][1]['batch_id']);
     }
 
     public function testStatsForBatchEndPoint()

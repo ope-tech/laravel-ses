@@ -34,4 +34,12 @@ class Batch extends Model implements BatchContract
     {
         return self::where('name', $name)->first();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->getKey();
+    }
 }

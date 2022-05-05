@@ -20,7 +20,7 @@ class EmailLink extends Model implements EmailLinkContract
     ];
 
     /**
-     * Relation ship to parent
+     * Relationship to parent
      *
      * @return BelongsTo
      * @throws \Exception
@@ -53,5 +53,21 @@ class EmailLink extends Model implements EmailLinkContract
         $this->click_count++;
         $this->save();
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function originalUrl()
+    {
+        return $this->original_url;
     }
 }

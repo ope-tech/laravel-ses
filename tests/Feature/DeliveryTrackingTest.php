@@ -19,9 +19,7 @@ class DeliveryTrackingTest extends FeatureTestCase
 
         Event::fake();
 
-        $this->json(
-            'POST',
-            '/ses/notification/delivery',
+        $this->json('POST', '/ses/notification/delivery',
             $this->generateDeliveryPayload($model->message_id, $model->email)
         );
 
@@ -32,19 +30,15 @@ class DeliveryTrackingTest extends FeatureTestCase
 
     public function testConfirmSubscription()
     {
-        $this->json(
-            'POST',
-            '/ses/notification/delivery',
-            json_decode($this->exampleSubscriptionResponse, true)
+        $this->json('POST', '/ses/notification/delivery',
+            json_decode($this->exampleSubscriptionResponse, associative: true)
         )->assertJson(['success' => true]);
     }
 
     public function testTopicResponse()
     {
-        $this->json(
-            'POST',
-            '/ses/notification/delivery',
-            json_decode($this->exampleTopicResponse, true)
+        $this->json('POST', '/ses/notification/delivery',
+            json_decode($this->exampleTopicResponse, associative: true)
         )->assertJson(['success' => true]);
     }
 
@@ -55,9 +49,7 @@ class DeliveryTrackingTest extends FeatureTestCase
             'email' => 'eriksen23@gmail.com'
         ]);
 
-        $this->json(
-            'POST',
-            '/ses/notification/delivery',
+        $this->json('POST', '/ses/notification/delivery',
             $this->generateDeliveryPayload($model->message_id, $model->email)
         );
 

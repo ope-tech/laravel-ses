@@ -107,7 +107,7 @@ class BatchEmailTest extends FeatureTestCase
         $linkId = $links->where('original_url', 'https://google.com')->first()->link_identifier;
         $this->get("https://laravel-ses.com/ses/link/$linkId");
 
-        //check that stats are now correct, click throughs = amount of users that clicked at least one link
+        //check that stats are now correct, click through = amount of users that clicked at least one link
         //link popularity is amount of unique clicks on a link in the email body, ordered by most popular
         $stats = Stats::statsForBatch(Batch::resolve('welcome_emails'));
 

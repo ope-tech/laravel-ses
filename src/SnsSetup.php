@@ -7,37 +7,37 @@ use Aws\SesV2\SesV2Client;
 use Aws\Sns\Exception\SnsException;
 use Aws\Sns\SnsClient;
 use Exception;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
 class SnsSetup
 {
-    protected $ses;
-    protected $sns;
-    protected $domain;
-    protected $console;
-    protected $configSetName;
-    protected $exceptionCount;
+    protected SesV2Client $ses;
+    protected SnsClient $sns;
+    protected string|null $domain;
+    protected Command $console;
+    protected string $configSetName;
+    protected int $exceptionCount;
 
     /**
      * SnsSetup constructor.
      *
-     * @param $console
+     * @param Command $console
      * @param string|null $domain
+     * @return int
      */
-    public function __construct($console, string $domain = null)
+    public function __construct(Command $console, string $domain = null)
     {
         $console->info(str_repeat('-', 48));
         $console->info(" SETTING UP SES Bounce, Delivery and Complaints ");
         $console->info(str_repeat('-', 48));
 
-        if (!$domain) {
-            $this->domain = parse_url(config('app.url'), PHP_URL_HOST);
-        } else {
-            $this->domain = $domain;
-        }
+        $this->domain = $domain ?? parse_url(config('app.url'), PHP_URL_HOST);
 
-        $this->exceptionCount = 0;
+        $this->resetExceptionCounter();
+
         $this->console = $console;
 
         $this->configSetName = App::environment() . "-ses-" . config('services.ses.region');
@@ -62,23 +62,27 @@ class SnsSetup
 
         $this->init();
 
-        $console->line('');
+        $console->newLine();
 
-        if ($this->exceptionCount === 0) {
-            $console->info('ALL COMPLETED!');
-        } else {
+        if ($this->exceptionCount > 0) {
             $console->error('Some setup tasks failed! Please review them manually in AWS Console!');
+
+            return SymfonyCommand::FAILURE;
         }
+
+        $console->info('ALL COMPLETED!');
+
+        return SymfonyCommand::SUCCESS;
     }
 
     /**
      * Fluent method
      *
-     * @param $console
+     * @param Command $console
      * @param string|null $domain
      * @return SnsSetup
      */
-    public static function create($console, string $domain = null): SnsSetup
+    public static function create(Command $console, string $domain = null): SnsSetup
     {
         return new self($console, $domain);
     }
@@ -86,7 +90,7 @@ class SnsSetup
     /**
      * Init SNS setup
      */
-    public function init()
+    public function init(): void
     {
         $this->createConfigurationSet();
         $this->setupNotification('bounce');
@@ -97,7 +101,7 @@ class SnsSetup
     /**
      * Setup notification
      *
-     * @param $type
+     * @param string $type
      * @return bool
      */
     public function setupNotification(string $type): bool
@@ -110,6 +114,8 @@ class SnsSetup
             ]);
         } catch (SNSException $e) {
             $this->console->error("Topic (" . $topic . ") already exists...");
+
+            return false;
         }
 
         $topicArn = $result['TopicArn'];
@@ -186,5 +192,10 @@ class SnsSetup
 
             if ($exit) exit(0);
         }
+    }
+
+    private function resetExceptionCounter(): void
+    {
+        $this->exceptionCount = 0;
     }
 }

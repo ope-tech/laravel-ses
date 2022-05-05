@@ -25,4 +25,12 @@ class EmailOpen extends Model implements EmailOpenContract
     {
         return $this->belongsTo(ModelResolver::get('SentEmail'));
     }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->getKey();
+    }
 }

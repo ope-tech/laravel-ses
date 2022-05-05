@@ -68,6 +68,12 @@
             }
         }
     },
+    "config": {
+        "allow-plugins": {
+            "vimeo/psalm": true,
+            "phpunit/phpunit": true
+        }
+    },
     "prefer-stable": true,
     "minimum-stability": "dev"
 }

@@ -89,10 +89,14 @@ class ComplaintController extends BaseController
             return;
         }
 
+        $complaintFeedbackType = property_exists($message->complaint, 'complaintFeedbackType')
+            ? $message->complaint->complaintFeedbackType
+            : 'unknown';
+
         try {
             $emailComplaint = ModelResolver::get('EmailComplaint')::create([
                 'sent_email_id' => $sentEmail->id,
-                'type' => $message->complaint->complaintFeedbackType,
+                'type' => $complaintFeedbackType,
                 'complained_at' => Carbon::parse($message->mail->timestamp)
             ]);
 

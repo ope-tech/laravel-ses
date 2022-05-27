@@ -4,15 +4,16 @@
 Laravel SES is package that allows you to get sending statistics for emails you send through AWS SES (Simple Email Service), 
 including deliveries, opens, bounces, complaints and link tracking. This package was originally written by Oliveready7.
 Unfortunately the original author had stopped maintaining this package so I decided to create this fork so that this 
-package can be used with current versions of Laravel. The minimum requirement is PHP 7.3.
+package can be used with current versions of Laravel. The minimum requirement is PHP 7.3, Laravel 9 requires PHP 8.x.
 
 All packages have been updated to modern versions. I have optimized the original database
-storage for space and proper indexing. This package is compatible with Laravel 8.x.
+storage for space and proper indexing. This package is compatible with Laravel 9.x.
 
 Laravel SES also supports SMTP errors codes will throw meaning exceptions like when you exceed your rate limits so you can handle proper back off.
 
 Laravel version support:
-- If you are using Laravel 7 or 8 use the current tag.
+- If you are using Laravel 9 use 2.x
+- If you are using Laravel 7 or 8 use 1.x
 - If you are using Laravel 6 use v0.8.4
 
 In your composer.json use

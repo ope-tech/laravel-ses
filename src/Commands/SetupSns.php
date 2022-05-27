@@ -22,22 +22,14 @@ class SetupSns extends Command
     protected $description = 'Sets up Amazon SNS configuration for given domain i.e. sampleninja.io. Omit domain to use APP_URL domain';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
-        return SnsSetup::create($this, $this->argument('domain'));
+        SnsSetup::create($this, $this->argument('domain'));
+
+        return 0;
     }
 }

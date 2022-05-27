@@ -10,7 +10,6 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
-use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
 class SnsSetup
 {
@@ -66,13 +65,9 @@ class SnsSetup
 
         if ($this->exceptionCount > 0) {
             $console->error('Some setup tasks failed! Please review them manually in AWS Console!');
-
-            return SymfonyCommand::FAILURE;
         }
 
         $console->info('ALL COMPLETED!');
-
-        return SymfonyCommand::SUCCESS;
     }
 
     /**

@@ -25,7 +25,6 @@ class SnsSetup
      *
      * @param Command $console
      * @param string|null $domain
-     * @return int
      */
     public function __construct(Command $console, string $domain = null)
     {

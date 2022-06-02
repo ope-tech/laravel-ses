@@ -2,12 +2,15 @@
 
 namespace Juhasev\LaravelSes\Tests\Feature;
 
+use Illuminate\Support\Facades\Event;
 use Juhasev\LaravelSes\Facades\SesMail;
+use Juhasev\LaravelSes\Factories\Events\SesOpenEvent;
 use Juhasev\LaravelSes\Mocking\TestMailable;
 use Juhasev\LaravelSes\ModelResolver;
 use Juhasev\LaravelSes\Models\Batch;
 use Juhasev\LaravelSes\Services\Stats;
 use Juhasev\LaravelSes\Tests\FeatureTestCase;
+use Ramsey\Uuid\Uuid;
 
 class BatchEmailTest extends FeatureTestCase
 {
@@ -33,9 +36,9 @@ class BatchEmailTest extends FeatureTestCase
                 ->send(new TestMailable());
         }
 
-        $batch = Batch::resolve('welcome_emails');
-
-        $stats = Stats::statsForBatch($batch);
+        $stats = Stats::statsForBatch(
+            Batch::resolve('welcome_emails')
+        );
 
         // Make sure all stats are 0 apart except sent emails
         $this->assertEquals(8, $stats['sent']);
@@ -46,7 +49,7 @@ class BatchEmailTest extends FeatureTestCase
 
         //deliver all emails apart from bounced email
         foreach ($emails as $email) {
-            if ($email != 'bounce@ses.com') {
+            if ($email !== 'bounce@ses.com') {
                 $sentEmailId = ModelResolver::get('SentEmail')::whereEmail($email)->first()->message_id;
 
                 $this->json(
@@ -68,7 +71,7 @@ class BatchEmailTest extends FeatureTestCase
         $sentEmailId  = ModelResolver::get('SentEmail')::whereEmail('ay@yahoo.com')->first()->message_id;
         $this->json('POST', 'ses/notification/complaint', $this->generateComplaintPayload($sentEmailId));
 
-        //register 4 opens
+        // register 4 opens
         $openedEmails = [
             'something@gmail.com',
             'somethingelse@gmail.com',
@@ -76,35 +79,39 @@ class BatchEmailTest extends FeatureTestCase
             'no@gmail.com'
         ];
 
+        Event::fake(SesOpenEvent::class);
+
         foreach ($emails as $email) {
             if (in_array($email, $openedEmails)) {
                 $sentEmailId  = ModelResolver::get('SentEmail')::where('email', $email)->first()->id;
-                $beaconIdentifier = ModelResolver::get('EmailOpen')::whereSentEmailId($sentEmailId)->first()->beacon_identifier;
-                $this->get("ses/beacon/{$beaconIdentifier}");
+                $emailOpen = ModelResolver::get('EmailOpen')::whereSentEmailId($sentEmailId)->first();
+                $this->get("ses/beacon/{$emailOpen->beacon_identifier}");
+
+                Event::assertDispatched(SesOpenEvent::class, static fn ($event) => $event->data['id'] === $emailOpen->id);
             }
         }
 
-        //one user clicks both links
-        $links = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->first()->emailLinks;
-
-        $linkId = $links->where('original_url', 'https://google.com')->first()->link_identifier;
+        // one user clicks both links
+        ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->first()->emailLinks()->createMany([
+            ['original_url' => 'https://google.com', 'link_identifier' => $linkId = Uuid::uuid4()->toString()],
+            ['original_url' => 'https://superficial.io', 'link_identifier' => $anotherLinkId = Uuid::uuid4()->toString()],
+        ]);
         $this->get("https://laravel-ses.com/ses/link/$linkId");
-
-        $linkId = $links->where('original_url', 'https://superficial.io')->first()->link_identifier;
-        $this->get("https://laravel-ses.com/ses/link/$linkId");
+        $this->get("https://laravel-ses.com/ses/link/$anotherLinkId");
 
 
-        //one user clicks one link three times
-        $links = ModelResolver::get('SentEmail')::whereEmail('hey@google.com')->first()->emailLinks;
-
-        $linkId = $links->where('original_url', 'https://google.com')->first()->link_identifier;
-        $this->get("https://laravel-ses.com/ses/link/$linkId");
+        // one user clicks one link three times
+        ModelResolver::get('SentEmail')::whereEmail('hey@google.com')->first()->emailLinks()->create([
+            'original_url' => 'https://google.com', 'link_identifier' => $linkId = Uuid::uuid4()->toString()
+        ]);
         $this->get("https://laravel-ses.com/ses/link/$linkId");
         $this->get("https://laravel-ses.com/ses/link/$linkId");
+        $this->get("https://laravel-ses.com/ses/link/$linkId");
 
-        //one user clicks one link only
-        $links = ModelResolver::get('SentEmail')::whereEmail('no@gmail.com')->first()->emailLinks;
-        $linkId = $links->where('original_url', 'https://google.com')->first()->link_identifier;
+        // one user clicks one link only
+        ModelResolver::get('SentEmail')::whereEmail('no@gmail.com')->first()->emailLinks()->create([
+            'original_url' => 'https://google.com', 'link_identifier' => $linkId = Uuid::uuid4()->toString()
+        ]);
         $this->get("https://laravel-ses.com/ses/link/$linkId");
 
         //check that stats are now correct, click through = amount of users that clicked at least one link

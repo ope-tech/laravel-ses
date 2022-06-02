@@ -9,6 +9,7 @@ use Juhasev\LaravelSes\Models\Batch;
 use Juhasev\LaravelSes\Repositories\EmailRepository;
 use Juhasev\LaravelSes\Services\Stats;
 use Juhasev\LaravelSes\Tests\FeatureTestCase;
+use Ramsey\Uuid\Uuid;
 
 class StatsTest extends FeatureTestCase
 {
@@ -36,7 +37,7 @@ class StatsTest extends FeatureTestCase
         $batch = Batch::resolve('win_back');
 
         $messageId = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->where('batch_id', $batch->getId())->first()->message_id;
-              $this->json('POST', 'ses/notification/bounce', $this->generateBouncePayload($messageId, 'something@gmail.com'));
+        $this->json('POST', 'ses/notification/bounce', $this->generateBouncePayload($messageId, 'something@gmail.com'));
 
         $messageId = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->where('batch_id', $batch->getId())->first()->message_id;
         $this->json('POST', '/ses/notification/delivery', $this->generateDeliveryPayload($messageId, 'something@gmail.com'));
@@ -47,9 +48,10 @@ class StatsTest extends FeatureTestCase
         $links = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')
             ->where('batch_id', $batch->getId())
             ->first()
-            ->emailLinks;
+            ->emailLinks()->create([
+                'original_url' => 'https://google.com', 'link_identifier' => $linkId = Uuid::uuid4()->toString(),
+            ]);
 
-        $linkId = $links->first()->link_identifier;
         $this->get("https://laravel-ses.com/ses/link/$linkId");
 
         $stats = Stats::statsForEmail('something@gmail.com');
@@ -224,26 +226,26 @@ class StatsTest extends FeatureTestCase
         }
 
         //one user clicks both links
-        $links = ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->first()->emailLinks;
-
-        $linkId = $links->where('original_url', 'https://google.com')->first()->link_identifier;
+        ModelResolver::get('SentEmail')::whereEmail('something@gmail.com')->first()->emailLinks()->createMany([
+            ['original_url' => 'https://google.com', 'link_identifier' => $linkId = Uuid::uuid4()->toString()],
+            ['original_url' => 'https://superficial.io', 'link_identifier' => $anotherLinkId = Uuid::uuid4()->toString()],
+        ]);
         $this->get("https://laravel-ses.com/ses/link/$linkId");
-
-        $linkId = $links->where('original_url', 'https://superficial.io')->first()->link_identifier;
-        $this->get("https://laravel-ses.com/ses/link/$linkId");
+        $this->get("https://laravel-ses.com/ses/link/$anotherLinkId");
 
 
         //one user clicks one link three times
-        $links = ModelResolver::get('SentEmail')::whereEmail('hey@google.com')->first()->emailLinks;
-
-        $linkId = $links->where('original_url', 'https://google.com')->first()->link_identifier;
+        ModelResolver::get('SentEmail')::whereEmail('hey@google.com')->first()->emailLinks()->create([
+            'original_url' => 'https://google.com', 'link_identifier' => $linkId = Uuid::uuid4()->toString(),
+        ]);
         $this->get("https://laravel-ses.com/ses/link/$linkId");
         $this->get("https://laravel-ses.com/ses/link/$linkId");
         $this->get("https://laravel-ses.com/ses/link/$linkId");
 
         //one user clicks one link only
-        $links = ModelResolver::get('SentEmail')::whereEmail('no@gmail.com')->first()->emailLinks;
-        $linkId = $links->where('original_url', 'https://google.com')->first()->link_identifier;
+        ModelResolver::get('SentEmail')::whereEmail('no@gmail.com')->first()->emailLinks()->create([
+            'original_url' => 'https://google.com', 'link_identifier' => $linkId = Uuid::uuid4()->toString(),
+        ]);
         $this->get("https://laravel-ses.com/ses/link/$linkId");
     }
 }

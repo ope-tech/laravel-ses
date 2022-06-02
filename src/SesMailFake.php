@@ -3,7 +3,7 @@
 namespace Juhasev\LaravelSes;
 
 use Exception;
-use Illuminate\Support\Arr;
+use Illuminate\Mail\Message;
 use Illuminate\Support\Carbon;
 use Closure;
 use Illuminate\Contracts\Mail\Mailable;
@@ -12,6 +12,7 @@ use Illuminate\Support\Testing\Fakes\MailFake;
 use Juhasev\LaravelSes\Contracts\SentEmailContract;
 use Juhasev\LaravelSes\Exceptions\LaravelSesTooManyRecipientsException;
 use Juhasev\LaravelSes\Factories\EventFactory;
+use Symfony\Component\Mime\Email;
 
 class SesMailFake extends MailFake implements SesMailerInterface
 {
@@ -20,18 +21,18 @@ class SesMailFake extends MailFake implements SesMailerInterface
     /**
      * Init message this will be called everytime
      *
-     * @param Mailable $message
+     * @param Email $message
      * @return SentEmailContract
      * @throws Exception
      * @psalm-suppress NoInterfaceProperties
      */
-    public function initMessage($message): SentEmailContract
+    public function initMessage(Email $message): SentEmailContract
     {
         $this->checkNumberOfRecipients($message);
 
         return ModelResolver::get('SentEmail')::create([
-            'message_id' => rand(1, 999999),
-            'email' => Arr::get($message->to, '0.address'),
+            'message_id' => $message->generateMessageId(),
+            'email' => $message->getTo()[0]->getAddress(),
             'batch_id' => $this->getBatchId(),
             'sent_at' => Carbon::now(),
             'delivery_tracking' => $this->deliveryTracking,
@@ -44,12 +45,12 @@ class SesMailFake extends MailFake implements SesMailerInterface
      * Check message recipient for tracking
      * Open tracking etc won't work if emails are sent to more than one recipient at a time
      *
-     * @param $message
+     * @param Email $message
      * @throws LaravelSesTooManyRecipientsException
      */
-    protected function checkNumberOfRecipients($message)
+    protected function checkNumberOfRecipients(Email $message)
     {
-        if (count($message->to) > 1) {
+        if (sizeOf($message->getTo()) > 1) {
             throw new LaravelSesTooManyRecipientsException("Tried to send to too many emails only one email may be set");
         }
     }
@@ -72,14 +73,18 @@ class SesMailFake extends MailFake implements SesMailerInterface
             return;
         }
 
-        $sentEmail = $this->initMessage($view);
+        $message = new Message(new Email());
+        $message->from('sender@example.com', 'John Doe');
+        $message->to(collect($view->to)->pluck('address')->all(), null, true);
+        $message->html(' ');
 
-        $emailBody = $this->setupTracking($view->render(), $sentEmail);
+        $symfonyMessage = $message->getSymfonyMessage();
+        $sentEmail = $this->initMessage($symfonyMessage);
+        $emailBody = $this->setupTracking($message->getBody(), $sentEmail);
 
         $view->sesBody = $emailBody;
 
         $view->mailer($this->currentMailer);
-
         $this->currentMailer = null;
 
         if ($view instanceof ShouldQueue) {

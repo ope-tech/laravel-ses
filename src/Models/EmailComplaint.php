@@ -15,6 +15,11 @@ class EmailComplaint extends Model implements EmailComplaintContract
     
     protected $guarded = [];
 
+    protected $casts = [
+        'sent_email_id' => 'integer',
+        'complained_at' => 'datetime',
+    ];
+
     /**
      * Relation ship
      *

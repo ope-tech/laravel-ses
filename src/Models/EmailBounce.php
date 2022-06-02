@@ -15,6 +15,11 @@ class EmailBounce extends Model implements EmailBounceContract
     
     protected $guarded = [];
 
+    protected $casts = [
+        'sent_email_id' => 'integer',
+        'bounced_at' => 'datetime',
+    ];
+
     /**
      * Relation ship
      *

@@ -16,6 +16,17 @@ class SentEmail extends Model implements SentEmailContract
 
     protected $guarded = [];
 
+    protected $casts = [
+        'batch_id' => 'integer',
+        'sent_at' => 'datetime',
+        'delivered_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'complaint_tracking' => 'boolean',
+        'delivery_tracking' => 'boolean',
+        'bounce_tracking' => 'boolean',
+    ];
+
     /**
      * Opened relationship
      *

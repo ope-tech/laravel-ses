@@ -15,6 +15,11 @@ class EmailOpen extends Model implements EmailOpenContract
 
     protected $guarded = [];
 
+    protected $casts = [
+        'sent_email_id' => 'integer',
+        'opened_at' => 'datetime',
+    ];
+
     /**
      * Relation ship to parent
      *

@@ -16,7 +16,9 @@ class EmailLink extends Model implements EmailLinkContract
     protected $guarded = [];
 
     protected $casts = [
-        'clicked' => 'boolean'
+        'sent_email_id' => 'integer',
+        'clicked' => 'boolean',
+        'click_count' => 'integer',
     ];
 
     /**

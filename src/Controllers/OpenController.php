@@ -23,7 +23,6 @@ class OpenController extends BaseController
      * @return JsonResponse|RedirectResponse|Redirector
      * @throws Exception
      */
-
     public function open($beaconIdentifier)
     {
         try {

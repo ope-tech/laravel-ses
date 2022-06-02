@@ -10,6 +10,7 @@ use PHPHtmlParser\Exceptions\CircularException;
 use PHPHtmlParser\Exceptions\CurlException;
 use PHPHtmlParser\Exceptions\NotLoadedException;
 use PHPHtmlParser\Exceptions\StrictException;
+use Symfony\Component\Mime\Part\AbstractPart;
 
 trait TrackingTrait
 {
@@ -51,7 +52,7 @@ trait TrackingTrait
     /**
      * Set tracking
      *
-     * @param $setupTracking
+     * @param AbstractPart $setupTracking
      * @param SentEmailContract $sentEmail
      *
      * @return string
@@ -63,17 +64,11 @@ trait TrackingTrait
      * @throws StrictException
      * @throws Exception
      */
-    public function setupTracking($setupTracking, SentEmailContract $sentEmail): string
+    public function setupTracking(AbstractPart $setupTracking, SentEmailContract $sentEmail): string
     {
         $this->batch = null;
 
-        if (! is_string($setupTracking)) {
-            try {
-                $setupTracking = $setupTracking->toString();
-            } catch (\Throwable) {}
-        }
-
-        $mailProcessor = new MailProcessor($sentEmail, $setupTracking);
+        $mailProcessor = new MailProcessor($sentEmail, $setupTracking->toString());
 
         if ($this->openTracking) {
             $mailProcessor->openTracking();

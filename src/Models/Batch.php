@@ -14,6 +14,11 @@ class Batch extends Model implements BatchContract
 
     protected $guarded = [];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     /**
      * Model relation to sent emails
      * @return HasMany

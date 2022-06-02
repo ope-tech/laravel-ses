@@ -67,7 +67,13 @@ trait TrackingTrait
     {
         $this->batch = null;
 
-        $mailProcessor = new MailProcessor($sentEmail, $setupTracking->toString());
+        if (! is_string($setupTracking)) {
+            try {
+                $setupTracking = $setupTracking->toString();
+            } catch (\Throwable) {}
+        }
+
+        $mailProcessor = new MailProcessor($sentEmail, $setupTracking);
 
         if ($this->openTracking) {
             $mailProcessor->openTracking();

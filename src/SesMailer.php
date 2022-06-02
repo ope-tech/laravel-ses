@@ -40,7 +40,7 @@ class SesMailer extends Mailer implements SesMailerInterface
         $this->checkNumberOfRecipients($message);
 
         return ModelResolver::get('SentEmail')::create([
-            'message_id' => $message->getId(),
+            'message_id' => $message->generateMessageId(),
             'email' => key($message->getTo()),
             'batch_id' => $this->getBatchId(),
             'sent_at' => Carbon::now()->toDateTimeString(),

@@ -2,6 +2,7 @@
 
 namespace Juhasev\LaravelSes;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Mail\Mailer;
 use Illuminate\Support\Facades\App;
@@ -31,8 +32,8 @@ class SesMailer extends Mailer implements SesMailerInterface
      * Creates database entry for the sent email
      *
      * @param $message
-     * @return SentEmailContract
-     * @throws \Exception
+     * @return mixed
+     * @throws LaravelSesTooManyRecipientsException
      */
     public function initMessage($message)
     {
@@ -151,22 +152,19 @@ class SesMailer extends Mailer implements SesMailerInterface
         $newBody = $this->setupTracking($message->getBody(), $sentEmail);
         $message->html($newBody);
 
-        // Sent email is returned from symphony mailer (maybe was confused as SentMail interface from Laravel SES package)
-        $symphonySentEmail = parent::sendSymfonyMessage($message);
+        // Sending email first, in case sendEvent fails
+        parent::sendSymfonyMessage($message);
 
-        // Sending event here now rather than in the commented out method. Shot in the dark really.
-        event(EventFactory::create('Sent', 'SentEmail', $symphonySentEmail->getMessageId()));
-
-        //$this->sendEvent($sentEmail);
+        $this->sendEvent($sentEmail);
     }
 
     /**
      * Send event
      *
-     * @param SentEmailContract $sentEmail
+     * @param Model $sentEmail
      */
-//    protected function sendEvent(SentEmailContract $sentEmail)
-//    {
-//        event(EventFactory::create('Sent', 'SentEmail', $sentEmail->getId()));
-//    }
+    protected function sendEvent(Model $sentEmail)
+    {
+        event(EventFactory::create('Sent', 'SentEmail', $sentEmail->id));
+    }
 }

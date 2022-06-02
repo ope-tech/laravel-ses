@@ -147,12 +147,17 @@ class SesMailer extends Mailer implements SesMailerInterface
         $headers->addTextHeader('X-SES-CONFIGURATION-SET', $configurationSetName);
 
         $sentEmail = $this->initMessage($message);
+
         $newBody = $this->setupTracking($message->getBody(), $sentEmail);
         $message->html($newBody);
 
-        $this->sendEvent($sentEmail);
+        // Sent email is returned from symphony mailer (maybe was confused as SentMail interface from Laravel SES package)
+        $symphonySentEmail = parent::sendSymfonyMessage($message);
 
-        parent::sendSymfonyMessage($message);
+        // Sending event here now rather than in the commented out method. Shot in the dark really.
+        event(EventFactory::create('Sent', 'SentEmail', $symphonySentEmail->getMessageId()));
+
+        //$this->sendEvent($sentEmail);
     }
 
     /**
@@ -160,8 +165,8 @@ class SesMailer extends Mailer implements SesMailerInterface
      *
      * @param SentEmailContract $sentEmail
      */
-    protected function sendEvent(SentEmailContract $sentEmail)
-    {
-        event(EventFactory::create('Sent', 'SentEmail', $sentEmail->getId()));
-    }
+//    protected function sendEvent(SentEmailContract $sentEmail)
+//    {
+//        event(EventFactory::create('Sent', 'SentEmail', $sentEmail->getId()));
+//    }
 }

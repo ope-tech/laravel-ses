@@ -35,6 +35,5 @@ return [
      */
     'queues' => [
         'sns_notifications' => null,
-        'sending' => null,
     ],
 ];

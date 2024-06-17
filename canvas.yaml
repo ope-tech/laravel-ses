@@ -1,0 +1,29 @@
+preset: package
+
+namespace: OpeTech\LaravelSes
+
+paths:
+    src: src
+    resource: resources
+
+factory:
+    path: database/factories
+
+migration:
+    path: database/migrations
+    prefix: ""
+
+console:
+    namespace: OpeTech\LaravelSes\Console
+
+model:
+    namespace: OpeTech\LaravelSes\Models
+
+provider:
+    namespace: OpeTech\LaravelSes\Providers
+
+testing:
+    namespace: OpeTech\LaravelSes\Tests
+
+actions:
+    namespace: OpeTech\LaravelSes\Actions

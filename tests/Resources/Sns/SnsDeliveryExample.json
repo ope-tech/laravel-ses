@@ -1,0 +1,12 @@
+{
+    "Type": "Notification",
+    "MessageId": "165545c9-2a5c-472c-8df2-7ff2be2b3b1b",
+    "Token": "2336412f37f...",
+    "TopicArn": "arn:aws:sns:us-west-2:123456789012:MyTopic",
+    "Message": "{\n \"eventType\": \"Delivery\",\n \"mail\": {\n \"timestamp\": \"2016-10-19T23:20:52.240Z\",\n \"source\": \"sender@example.com\",\n \"sourceArn\": \"arn:aws:ses:us-east-1:123456789012:identity/sender@example.com\",\n \"sendingAccountId\": \"123456789012\",\n \"messageId\": \"EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000\",\n \"destination\": [\"recipient@example.com\"],\n \"headersTruncated\": false,\n \"headers\": [\n {\n \"name\": \"From\",\n \"value\": \"sender@example.com\"\n },\n {\n \"name\": \"To\",\n \"value\": \"recipient@example.com\"\n },\n {\n \"name\": \"Subject\",\n \"value\": \"Message sent from Amazon SES\"\n },\n {\n \"name\": \"MIME-Version\",\n \"value\": \"1.0\"\n },\n {\n \"name\": \"Content-Type\",\n \"value\": \"text/html; charset=UTF-8\"\n },\n {\n \"name\": \"Content-Transfer-Encoding\",\n \"value\": \"7bit\"\n }\n ],\n \"commonHeaders\": {\n \"from\": [\"sender@example.com\"],\n \"to\": [\"recipient@example.com\"],\n \"messageId\": \"EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000\",\n \"subject\": \"Message sent from Amazon SES\"\n },\n \"tags\": {\n \"ses:configuration-set\": [\"ConfigSet\"],\n \"ses:source-ip\": [\"192.0.2.0\"],\n \"ses:from-domain\": [\"example.com\"],\n \"ses:caller-identity\": [\"ses_user\"],\n \"ses:outgoing-ip\": [\"192.0.2.0\"],\n \"myCustomTag1\": [\"myCustomTagValue1\"],\n \"myCustomTag2\": [\"myCustomTagValue2\"]\n }\n },\n \"delivery\": {\n \"timestamp\": \"2016-10-19T23:21:04.133Z\",\n \"processingTimeMillis\": 11893,\n \"recipients\": [\"recipient@example.com\"],\n \"smtpResponse\": \"250 2.6.0 Message received\",\n \"reportingMTA\": \"mta.example.com\"\n }\n }",
+    "SubscribeURL": "https://sns.us-west-2.amazonaws.com/?Action=ConfirmSubscription&TopicArn=arn:aws:sns:us-west-2:123456789012:MyTopic&Token=2336412f37...",
+    "Timestamp": "2012-04-26T20:45:04.751Z",
+    "SignatureVersion": "1",
+    "Signature": "EXAMPLEpH+...",
+    "SigningCertURL": "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-f3ecfb7224c7233fe7bb5f59f96de52f.pem"
+}

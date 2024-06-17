@@ -1,0 +1,76 @@
+{
+    "name": "ope-tech/laravel-ses",
+    "description": "Tool for your Laravel Application to interact and monitor Amazon's Simple Email Service (SES).",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Oliver Eady",
+            "email": "ope.tech.ltd@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "OpeTech\\LaravelSes\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OpeTech\\LaravelSes\\Tests\\": "tests/",
+            "OpeTech\\LaravelSes\\Database\\Factories\\": "database/factories/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+        }
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^10.0 | ^11.0",
+        "illuminate/notifications": "^10.0 | ^11.0",
+        "aws/aws-sdk-php": "^3.295",
+        "aws/aws-php-sns-message-validator": "^1.9",
+        "lorisleiva/laravel-actions": "^2.7",
+        "nesbot/carbon": "^2.72"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.17 | ^9.0",
+        "phpstan/phpstan": "^1.10",
+        "laravel/pint": "^1.13",
+        "pestphp/pest": "^2.28",
+        "pestphp/pest-plugin-laravel": "^2.2"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "OpeTech\\LaravelSes\\LaravelSesServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": [
+            "@php vendor/bin/pest"
+        ],
+        "lint": [
+            "@php vendor/bin/phpstan analyse"
+        ],
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}

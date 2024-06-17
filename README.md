@@ -69,9 +69,7 @@ For example: sending domain - myemails.com, tracking domain. ses.myemails.com. O
 
 We would also suggest avoiding using tracking in the subdomain as plugins such as ad blockers, malware detection etc, don't look favourably on the wording and could block the email, or break the content.
 
-To configure the domain in AWS, you'll need to follow these steps for SSL. https://docs.aws.amazon.com/ses/latest/dg/configure-custom-open-click-domains.html#configure-custom-open-click-domainl.
-
-In short, you setup a cloudfront distribution which points to your region's tracking domain, and then setup your custom domain to point to the cloudfront disribution.
+To configure a custom tracking domain follow these steps - https://docs.aws.amazon.com/ses/latest/dg/configure-custom-open-click-domains.html#configure-custom-open-click-domain.
 
 We would also recommend setting up a custom "MAIL FROM" domain, otherwise messages sent through Amazon SES will be marked as originating from a subdomain of amazon.com. Instead of your own domain. This allows you to comply with DMARC policies and improves trust.
 

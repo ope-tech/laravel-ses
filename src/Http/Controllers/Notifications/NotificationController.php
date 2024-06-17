@@ -5,7 +5,6 @@ namespace OpeTech\LaravelSes\Http\Controllers\Notifications;
 use Aws\Sns\Message;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Log;
 use OpeTech\LaravelSes\Actions\SesEvents\PersistBounceNotification;
 use OpeTech\LaravelSes\Actions\SesEvents\PersistClickNotification;
 use OpeTech\LaravelSes\Actions\SesEvents\PersistComplaintNotification;
@@ -19,7 +18,6 @@ class NotificationController extends Controller
 {
     public function notification(Request $request)
     {
-        Log::info($request->getContent());
 
         $content = json_decode($request->getContent(), true);
 

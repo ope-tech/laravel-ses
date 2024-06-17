@@ -1,7 +1,21 @@
 {
     "name": "ope-tech/laravel-ses",
-    "description": "Tool for your Laravel Application to interact and monitor Amazon's Simple Email Service (SES).",
+    "description": "Track email engagement on any email sent out via SES using Laravel. Tracks opens, clicks, bounces, complaints, deliveries, and rejections. Can be used with transaction, marketing emails and notifications. ",
     "type": "library",
+    "keywords": [
+        "laravel",
+        "AWS",
+        "ses",
+        "email",
+        "opens",
+        "clicks",
+        "bounces",
+        "complaints",
+        "deliveries",
+        "rejections",
+        "tracking",
+        "email rejections"
+    ],
     "license": "MIT",
     "authors": [
         {

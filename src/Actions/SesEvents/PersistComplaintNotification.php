@@ -21,7 +21,9 @@ class PersistComplaintNotification
         $sentEmail = GetSentEmail::run($messageId);
 
         $complaint = LaravelSesEmailComplaint::create([
-            'type' => $message['Message']['complaint']['complaintFeedbackType'],
+            'type' => $message['Message']['complaint']['complaintFeedbackType']
+                ?? $message['Message']['complaint']['complaintSubType']
+                ?? null,
             'sent_email_id' => $sentEmail->id,
             'message_id' => $message['Message']['mail']['messageId'],
             'complained_at' => Carbon::parse($message['Message']['complaint']['timestamp']),

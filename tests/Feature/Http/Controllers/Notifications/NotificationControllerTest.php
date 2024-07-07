@@ -78,6 +78,20 @@ describe('persisting notifications', function () {
         ]);
     });
 
+    it('persists the complaint with sub type to the database', function () {
+        postNotification(sesEvent: SesEvents::Complaint, variation: 'WithComplaintSubType');
+
+        expect(LaravelSesEmailComplaint::count())
+            ->toBe(1);
+
+        expect(LaravelSesEmailComplaint::first())->toMatchArray([
+            'complained_at' => '2017-08-05T00:41:02.000000Z',
+            'type' => 'OnAccountSuppressionList',
+            'sns_raw_data' => null,
+            'message_id' => 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000',
+        ]);
+    });
+
     it('persists the open to the database', function () {
         postNotification(SesEvents::Open);
 
@@ -217,9 +231,9 @@ function postSubscriptionConfirmation()
         );
 }
 
-function postNotification(SesEvents $sesEvent, ?string $messageId = null)
+function postNotification(SesEvents $sesEvent, ?string $messageId = null, ?string $variation = null)
 {
-    $rawContent = rawSesEventContent($sesEvent);
+    $rawContent = rawSesEventContent($sesEvent, $variation);
     $messageId = $messageId ?? getMessageIdFromSesEvent($sesEvent);
 
     LaravelSesSentEmail::factory()->create([
@@ -246,9 +260,9 @@ function getMessageIdFromSesEvent(SesEvents $sesEvent)
     return $messageId;
 }
 
-function rawSesEventContent(SesEvents $sesEvent)
+function rawSesEventContent(SesEvents $sesEvent, ?string $variation = null)
 {
-    $rawContent = file_get_contents(__DIR__.'/../../../../Resources/Sns/Sns'.$sesEvent->value.'Example.json');
+    $rawContent = file_get_contents(__DIR__.'/../../../../Resources/Sns/Sns'.$sesEvent->value.($variation ? $variation : '').'Example.json');
 
     return $rawContent;
 }

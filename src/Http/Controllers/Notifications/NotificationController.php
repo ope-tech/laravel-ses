@@ -19,13 +19,22 @@ class NotificationController extends Controller
     public function notification(Request $request)
     {
 
+
         $content = json_decode($request->getContent(), true);
 
         if ($content['Type'] == 'Notification') {
-            $content['Message'] = json_decode($content['Message'], true);
+            $content['Message'] = json_decode($content['Message'], true) ?? $content['Message'];
         }
 
+
         $snsMessage = new Message($content);
+
+
+        if ($snsMessage['Message'] == 'Successfully validated SNS topic for Amazon SES event publishing.') {
+            return response()->json([
+                'message' => 'Success',
+            ]);
+        }
 
         if ($snsMessage['Type'] == 'SubscriptionConfirmation') {
             return $this->confirmSubscription($snsMessage);

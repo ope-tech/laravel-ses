@@ -15,7 +15,6 @@ use OpeTech\LaravelSes\Models\LaravelSesEmailDelivery;
 use OpeTech\LaravelSes\Models\LaravelSesEmailOpen;
 use OpeTech\LaravelSes\Models\LaravelSesEmailReject;
 use OpeTech\LaravelSes\Models\LaravelSesSentEmail;
-
 use function Pest\Laravel\withHeaders;
 
 describe('persisting notifications', function () {
@@ -24,98 +23,98 @@ describe('persisting notifications', function () {
         postNotification(SesEvents::Reject);
 
         expect(LaravelSesEmailReject::count())
-            ->toBe(1);
+            ->toBe(1)
+            ->and(LaravelSesEmailReject::first())->toMatchArray([
+                'message_id' => 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000',
+                'reason' => 'Bad content',
+            ]);
 
-        expect(LaravelSesEmailReject::first())->toMatchArray([
-            'message_id' => 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000',
-            'reason' => 'Bad content',
-        ]);
     });
 
     it('persists the click in the database', function () {
         postNotification(SesEvents::Click);
 
         expect(LaravelSesEmailClick::count())
-            ->toBe(1);
+            ->toBe(1)
+            ->and(LaravelSesEmailClick::first())->toMatchArray([
+                'clicked_at' => '2017-08-09T23:51:25.000000Z',
+                'link' => 'http://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-smtp.html',
+                'sns_raw_data' => null,
+                'message_id' => 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000',
+                'link_tags' => [
+                    'samplekey0' => ['samplevalue0'],
+                    'samplekey1' => ['samplevalue1'],
+                ],
+            ]);
 
-        expect(LaravelSesEmailClick::first())->toMatchArray([
-            'clicked_at' => '2017-08-09T23:51:25.000000Z',
-            'link' => 'http://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-smtp.html',
-            'sns_raw_data' => null,
-            'message_id' => 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000',
-            'link_tags' => [
-                'samplekey0' => ['samplevalue0'],
-                'samplekey1' => ['samplevalue1'],
-            ],
-        ]);
     });
 
     it('persists the bounce in the database', function () {
         postNotification(SesEvents::Bounce);
 
         expect(LaravelSesEmailBounce::count())
-            ->toBe(1);
+            ->toBe(1)
+            ->and(LaravelSesEmailBounce::first())->toMatchArray([
+                'bounced_at' => '2016-01-27T14:59:38.000000Z',
+                'type' => 'Permanent',
+                'sns_raw_data' => null,
+                'message_id' => '00000138111222aa-33322211-cccc-cccc-cccc-ddddaaaa0680-000000',
+            ]);
 
-        expect(LaravelSesEmailBounce::first())->toMatchArray([
-            'bounced_at' => '2016-01-27T14:59:38.000000Z',
-            'type' => 'Permanent',
-            'sns_raw_data' => null,
-            'message_id' => '00000138111222aa-33322211-cccc-cccc-cccc-ddddaaaa0680-000000',
-        ]);
     });
 
     it('persists the complaint to the database', function () {
         postNotification(SesEvents::Complaint);
 
         expect(LaravelSesEmailComplaint::count())
-            ->toBe(1);
+            ->toBe(1)
+            ->and(LaravelSesEmailComplaint::first())->toMatchArray([
+                'complained_at' => '2017-08-05T00:41:02.000000Z',
+                'type' => 'abuse',
+                'sns_raw_data' => null,
+                'message_id' => 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000',
+            ]);
 
-        expect(LaravelSesEmailComplaint::first())->toMatchArray([
-            'complained_at' => '2017-08-05T00:41:02.000000Z',
-            'type' => 'abuse',
-            'sns_raw_data' => null,
-            'message_id' => 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000',
-        ]);
     });
 
     it('persists the complaint with sub type to the database', function () {
         postNotification(sesEvent: SesEvents::Complaint, variation: 'WithComplaintSubType');
 
         expect(LaravelSesEmailComplaint::count())
-            ->toBe(1);
+            ->toBe(1)
+            ->and(LaravelSesEmailComplaint::first())->toMatchArray([
+                'complained_at' => '2017-08-05T00:41:02.000000Z',
+                'type' => 'OnAccountSuppressionList',
+                'sns_raw_data' => null,
+                'message_id' => 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000',
+            ]);
 
-        expect(LaravelSesEmailComplaint::first())->toMatchArray([
-            'complained_at' => '2017-08-05T00:41:02.000000Z',
-            'type' => 'OnAccountSuppressionList',
-            'sns_raw_data' => null,
-            'message_id' => 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000',
-        ]);
     });
 
     it('persists the open to the database', function () {
         postNotification(SesEvents::Open);
 
         expect(LaravelSesEmailOpen::count())
-            ->toBe(1);
+            ->toBe(1)
+            ->and(LaravelSesEmailOpen::first())->toMatchArray([
+                'opened_at' => '2017-08-09T22:00:19.000000Z',
+                'sns_raw_data' => null,
+                'message_id' => 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000',
+            ]);
 
-        expect(LaravelSesEmailOpen::first())->toMatchArray([
-            'opened_at' => '2017-08-09T22:00:19.000000Z',
-            'sns_raw_data' => null,
-            'message_id' => 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000',
-        ]);
     });
 
     it('persists the delivery to the database', function () {
         postNotification(SesEvents::Delivery);
 
         expect(LaravelSesEmailDelivery::count())
-            ->toBe(1);
+            ->toBe(1)
+            ->and(LaravelSesEmailDelivery::first())->toMatchArray([
+                'delivered_at' => '2016-10-19T23:21:04.000000Z',
+                'sns_raw_data' => null,
+                'message_id' => 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000',
+            ]);
 
-        expect(LaravelSesEmailDelivery::first())->toMatchArray([
-            'delivered_at' => '2016-10-19T23:21:04.000000Z',
-            'sns_raw_data' => null,
-            'message_id' => 'EXAMPLE7c191be45-e9aedb9a-02f9-4d12-a87d-dd0099a07f8a-000000',
-        ]);
     });
 
     it('persist action is dispatched on a custom queue if the setting is enabled', function (SesEvents $sesEvent) {
@@ -125,7 +124,7 @@ describe('persisting notifications', function () {
 
         postNotification($sesEvent);
 
-        $action = 'OpeTech\LaravelSes\Actions\SesEvents\Persist'.Str::ucfirst($sesEvent->value).'Notification';
+        $action = 'OpeTech\LaravelSes\Actions\SesEvents\Persist' . Str::ucfirst($sesEvent->value) . 'Notification';
 
         $action::assertPushedOn('custom-queue');
 
@@ -138,7 +137,7 @@ describe('persisting notifications', function () {
         postNotification($sesEvent);
 
         Queue::assertPushed(JobDecorator::class, function ($job) use ($sesEvent) {
-            $action = 'OpeTech\LaravelSes\Actions\SesEvents\Persist'.Str::ucfirst($sesEvent->value).'Notification';
+            $action = 'OpeTech\LaravelSes\Actions\SesEvents\Persist' . Str::ucfirst($sesEvent->value) . 'Notification';
 
             return $job->connection == 'sync'
                 && $job->queue == null
@@ -163,9 +162,9 @@ describe('persisting notifications', function () {
 
     it('persists raw sns message when the config option is on', function (SesEvents $sesEvent) {
 
-        $configKey = 'laravelses.log_raw_data.'.Str::plural(Str::lower($sesEvent->value));
+        $configKey = 'laravelses.log_raw_data.' . Str::plural(Str::lower($sesEvent->value));
 
-        $model = 'OpeTech\LaravelSes\Models\LaravelSesEmail'.ucfirst($sesEvent->value);
+        $model = 'OpeTech\LaravelSes\Models\LaravelSesEmail' . ucfirst($sesEvent->value);
 
         config([$configKey => true]);
 
@@ -180,12 +179,12 @@ describe('persisting notifications', function () {
         $messageId = getMessageIdFromSesEvent($sesEvent);
 
         //uses a different id for the sent message id.
-        expect(fn () => postNotification(
+        expect(fn() => postNotification(
             sesEvent: $sesEvent,
             messageId: '00000138111222aa-33322211-cccc-cccc-cccc-ddddaaaa0680404'
         ))->toThrow(
             LaravelSesSentEmailNotFoundException::class,
-            'Sent Email with message id: '.$messageId
+            'Sent Email with message id: ' . $messageId
         );
     })->with(SesEvents::cases());
 
@@ -201,25 +200,53 @@ describe('subscription confirmation', function () {
     it('returns the correct response', function () {
 
         expect($this->response->status())
-            ->toBe(200);
-
-        expect($this->response->json())
+            ->toBe(200)
+            ->and($this->response->json())
             ->message
             ->toBe('Subscription Confirmed.');
+
     });
 
     it('hits the subscription confirmation endpoint', function () {
         Http::assertSent(function ($request) {
-            $data = json_decode(file_get_contents(__DIR__.'/../../../../Resources/Sns/SnsConfirmationExample.json'), true);
+            $data = json_decode(file_get_contents(__DIR__ . '/../../../../Resources/Sns/SnsConfirmationExample.json'), true);
 
             return $request->url() == $data['SubscribeURL'];
         });
+    });
+
+    it('handles the notification confirmation successfully', function () {
+        postNotificationConfirmation();
+
+
+        expect($this->response->status())
+            ->toBe(200)
+            ->and($this->response->json())
+            ->message
+            ->toBe('Success');
     });
 });
 
 function postSubscriptionConfirmation()
 {
-    $rawContent = file_get_contents(__DIR__.'/../../../../Resources/Sns/SnsConfirmationExample.json');
+    $rawContent = file_get_contents(__DIR__ . '/../../../../Resources/Sns/SnsConfirmationExample.json');
+
+
+    test()->response = withHeaders([
+        'x-amz-sns-message-type' => 'SubscriptionConfirmation',
+    ])
+        ->call(
+            method: 'post',
+            uri: '/laravel-ses/sns-notification',
+            content: $rawContent,
+        );
+}
+
+function postNotificationConfirmation()
+{
+
+    $rawContent = file_get_contents(__DIR__ . '/../../../../Resources/Sns/NotificationConfirmationExample.json');
+
 
     test()->response = withHeaders([
         'x-amz-sns-message-type' => 'SubscriptionConfirmation',
@@ -244,10 +271,10 @@ function postNotification(SesEvents $sesEvent, ?string $messageId = null, ?strin
     test()->response = test()->call(
         method: 'post',
         uri: '/laravel-ses/sns-notification',
-        content: $rawContent,
         server: [
             'HTTP_X_AMZ_SNS_MESSAGE_TYPE' => 'Notification',
-        ]
+        ],
+        content: $rawContent
     );
 }
 
@@ -262,7 +289,7 @@ function getMessageIdFromSesEvent(SesEvents $sesEvent)
 
 function rawSesEventContent(SesEvents $sesEvent, ?string $variation = null)
 {
-    $rawContent = file_get_contents(__DIR__.'/../../../../Resources/Sns/Sns'.$sesEvent->value.($variation ? $variation : '').'Example.json');
+    $rawContent = file_get_contents(__DIR__ . '/../../../../Resources/Sns/Sns' . $sesEvent->value . ($variation ? $variation : '') . 'Example.json');
 
     return $rawContent;
 }

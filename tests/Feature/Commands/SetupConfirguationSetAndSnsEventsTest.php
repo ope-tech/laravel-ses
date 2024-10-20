@@ -65,7 +65,7 @@ describe('successes', function () {
             ->assertExitCode(0);
     });
 
-    it('creates SNS topic and subscribes to the HTTP endpoint for receiveing notifications', function () {
+    it('creates SNS topic and subscribes to the HTTP endpoint for receiving notifications', function () {
         $sesMock = Mockery::mock(SesV2Client::class);
         $snsMock = Mockery::mock(SnsClient::class);
 

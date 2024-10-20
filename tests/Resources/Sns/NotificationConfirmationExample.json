@@ -1,0 +1,11 @@
+{
+  "Type": "Notification",
+  "MessageId": "0ec3ac6d-9f51-5389-a925-f287c0aac55e",
+  "TopicArn": "arn:aws:sns:eu-west-2:12345:laravel-ses-local-topic",
+  "Message": "Successfully validated SNS topic for Amazon SES event publishing.",
+  "Timestamp": "2024-06-17T16:00:59.499Z",
+  "SignatureVersion": "1",
+  "Signature": "NXcpGOautj7zfa+1NWF1QPZ4GJlDM17uz2cpGwFigqkD0mQHiZ4iMDnozUuj8FPuxfWhgtojBA1lCUERAjSar23rqtMhco/SUxTpTNbA2CULGiNZ763liXQP2phLCpqR8Zaz1lq9Srfus0gt5m2hTasn1vrIr7dqCM9U8oUZ/UCXejzqyt60hXDGSEQ3B07KrQtXSKWr5VEgFp65Kvs9OGTNUxZwBSGAKO+UilYP4O5vyyvBB0hldw94mUaJrt/StweFcNB0xUOMDCNEtdBv/VmWh33WCyLFI8aV23sV5ISfr6xrIk6v1bdR9hi1k7XDd7pDzFv29pA3x/JnRDZNGg==",
+  "SigningCertURL": "https://sns.eu-west-2.amazonaws.com/SimpleNotificationService-60eadc530605d63b8e62a523676ef735.pem",
+  "UnsubscribeURL": "https://sns.eu-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-west-2:123345:laravel-ses-local-topic:a504a9b0-73d7-4e0e-b73b-5afab59ae555"
+}

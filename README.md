@@ -126,7 +126,7 @@ use Illuminate\Support\Facades\Mail;
 
 ### Batching Mail Notifications
 
-You can add batching to your notifcations using the mail channel. Instead of using `MailMessage` you need to use `OpeTech\LaravelSes\Notifications\MailMessageWithBatching`
+You can add batching to your notiflacations using the mail channel. Instead of using `MailMessage` you need to use `OpeTech\LaravelSes\Notifications\MailMessageWithBatching`
 
 ```php
  public function toMail(object $notifiable)
